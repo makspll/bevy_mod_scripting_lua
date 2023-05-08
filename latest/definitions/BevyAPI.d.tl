@@ -149,10 +149,6 @@ global record BevyAPI
 
         clip : LuaRect
 
-        -- The rect of the clip
-
-        clip : LuaRect
-
         __tostring : function(LuaCalculatedClip):(string)
 
     end
@@ -164,13 +160,13 @@ global record BevyAPI
     
     --
 
-        -- The size of the node
+        -- The size of the node in logical pixels
 
-        size : ReflectedValue
+        size : LuaVec2
 
-        -- The size of the node
+        -- Whether to attempt to preserve the aspect ratio when determining the layout for this item
 
-        size : ReflectedValue
+        preserve_aspect_ratio : boolean
 
         __tostring : function(LuaCalculatedSize):(string)
 
@@ -183,7 +179,7 @@ global record BevyAPI
     
     --
 
-        --The calculated node size as width and height in pixels
+        --The calculated node size as width and height in logical pixels
         --
         --automatically calculated by [`super::flex::flex_node_system`]
 
@@ -208,25 +204,9 @@ global record BevyAPI
 
         display : LuaDisplay
 
-        -- Whether to arrange this node and its children with flexbox layout
-        --
-        --
-        --
-        -- If this is set to [`Display::None`], this node will be collapsed.
-
-        display : LuaDisplay
-
         -- Whether to arrange this node relative to other nodes, or positioned absolutely
 
         position_type : LuaPositionType
-
-        -- Whether to arrange this node relative to other nodes, or positioned absolutely
-
-        position_type : LuaPositionType
-
-        -- Which direction the content of this node should go
-
-        direction : LuaDirection
 
         -- Which direction the content of this node should go
 
@@ -236,14 +216,6 @@ global record BevyAPI
 
         flex_direction : LuaFlexDirection
 
-        -- Whether to use column or row layout
-
-        flex_direction : LuaFlexDirection
-
-        -- How to wrap nodes
-
-        flex_wrap : LuaFlexWrap
-
         -- How to wrap nodes
 
         flex_wrap : LuaFlexWrap
@@ -252,23 +224,11 @@ global record BevyAPI
 
         align_items : LuaAlignItems
 
-        -- How items are aligned according to the cross axis
-
-        align_items : LuaAlignItems
-
-        -- Like align_items but for only this item
-
-        align_self : LuaAlignSelf
-
-        -- Like align_items but for only this item
-
-        align_self : LuaAlignSelf
-
-        -- How to align each line, only applies if flex_wrap is set to
+        -- How this item is aligned according to the cross axis.
         --
-        -- [`FlexWrap::Wrap`] and there are multiple lines of items
+        -- Overrides [`AlignItems`].
 
-        align_content : LuaAlignContent
+        align_self : LuaAlignSelf
 
         -- How to align each line, only applies if flex_wrap is set to
         --
@@ -280,45 +240,101 @@ global record BevyAPI
 
         justify_content : LuaJustifyContent
 
-        -- How items align according to the main axis
-
-        justify_content : LuaJustifyContent
-
         -- The position of the node as described by its Rect
 
         position : ReflectedValue
 
-        -- The position of the node as described by its Rect
-
-        position : ReflectedValue
-
-        -- The margin of the node
+        -- The amount of space around a node outside its border.
+        --
+        --
+        --
+        -- If a percentage value is used, the percentage is calculated based on the width of the parent node.
+        --
+        --
+        --
+        -- # Example
+        --
+        -- ```
+        --
+        -- # use bevy_ui::{Style, UiRect, Val};
+        --
+        -- let style = Style {
+        --
+        --     margin: UiRect {
+        --
+        --         left: Val::Percent(10.),
+        --
+        --         right: Val::Percent(10.),
+        --
+        --         top: Val::Percent(15.),
+        --
+        --         bottom: Val::Percent(15.)
+        --
+        --     },
+        --
+        --     ..Default::default()
+        --
+        -- };
+        --
+        -- ```
+        --
+        -- A node with this style and a parent with dimensions of 100px by 300px, will have calculated margins of 10px on both left and right edges, and 15px on both top and bottom egdes.
 
         margin : ReflectedValue
 
-        -- The margin of the node
-
-        margin : ReflectedValue
-
-        -- The padding of the node
+        -- The amount of space between the edges of a node and its contents.
+        --
+        --
+        --
+        -- If a percentage value is used, the percentage is calculated based on the width of the parent node.
+        --
+        --
+        --
+        -- # Example
+        --
+        -- ```
+        --
+        -- # use bevy_ui::{Style, UiRect, Val};
+        --
+        -- let style = Style {
+        --
+        --     padding: UiRect {
+        --
+        --         left: Val::Percent(1.),
+        --
+        --         right: Val::Percent(2.),
+        --
+        --         top: Val::Percent(3.),
+        --
+        --         bottom: Val::Percent(4.)
+        --
+        --     },
+        --
+        --     ..Default::default()
+        --
+        -- };
+        --
+        -- ```
+        --
+        -- A node with this style and a parent with dimensions of 300px by 100px, will have calculated padding of 3px on the left, 6px on the right, 9px on the top and 12px on the bottom.
 
         padding : ReflectedValue
 
-        -- The padding of the node
-
-        padding : ReflectedValue
-
-        -- The border of the node
+        -- The amount of space between the margins of a node and its padding.
+        --
+        --
+        --
+        -- If a percentage value is used, the percentage is calculated based on the width of the parent node.
+        --
+        --
+        --
+        -- The size of the node will be expanded if there are constraints that prevent the layout algorithm from placing the border within the existing node boundary.
+        --
+        --
+        --
+        -- Rendering for borders is not yet implemented.
 
         border : ReflectedValue
-
-        -- The border of the node
-
-        border : ReflectedValue
-
-        -- Defines how much a flexbox item should grow if there's space available
-
-        flex_grow : number
 
         -- Defines how much a flexbox item should grow if there's space available
 
@@ -328,45 +344,43 @@ global record BevyAPI
 
         flex_shrink : number
 
-        -- How to shrink if there's not enough space available
-
-        flex_shrink : number
-
-        -- The initial size of the item
-
-        flex_basis : LuaVal
-
-        -- The initial size of the item
+        -- The initial length of the main axis, before other properties are applied.
+        --
+        --
+        --
+        -- If both are set, `flex_basis` overrides `size` on the main axis but it obeys the bounds defined by `min_size` and `max_size`.
 
         flex_basis : LuaVal
 
-        -- The size of the flexbox
-
-        size : ReflectedValue
-
-        -- The size of the flexbox
+        -- The ideal size of the flexbox
+        --
+        --
+        --
+        -- `size.width` is used when it is within the bounds defined by `min_size.width` and `max_size.width`.
+        --
+        -- `size.height` is used when it is within the bounds defined by `min_size.height` and `max_size.height`.
 
         size : ReflectedValue
 
         -- The minimum size of the flexbox
-
-        min_size : ReflectedValue
-
-        -- The minimum size of the flexbox
+        --
+        --
+        --
+        -- `min_size.width` is used if it is greater than either `size.width` or `max_size.width`, or both.
+        --
+        -- `min_size.height` is used if it is greater than either `size.height` or `max_size.height`, or both.
 
         min_size : ReflectedValue
 
         -- The maximum size of the flexbox
+        --
+        --
+        --
+        -- `max_size.width` is used if it is within the bounds defined by `min_size.width` and `size.width`.
+        --
+        -- `max_size.height` is used if it is within the bounds defined by `min_size.height` and `size.height.
 
         max_size : ReflectedValue
-
-        -- The maximum size of the flexbox
-
-        max_size : ReflectedValue
-
-        -- The aspect ratio of the flexbox
-
-        aspect_ratio : ReflectedValue
 
         -- The aspect ratio of the flexbox
 
@@ -376,9 +390,13 @@ global record BevyAPI
 
         overflow : LuaOverflow
 
-        -- How to handle overflow
+        -- The size of the gutters between the rows and columns of the flexbox layout
+        --
+        --
+        --
+        -- Values of `Size::UNDEFINED` and `Size::AUTO` are treated as zero.
 
-        overflow : LuaOverflow
+        gap : ReflectedValue
 
         __tostring : function(LuaStyle):(string)
 
@@ -391,7 +409,28 @@ global record BevyAPI
     
     --
 
+        -- Handle to the texture
+
+        texture : ReflectedValue
+
+        -- Whether the image should be flipped along its x-axis
+
+        flip_x : boolean
+
+        -- Whether the image should be flipped along its y-axis
+
+        flip_y : boolean
+
         __tostring : function(LuaUiImage):(string)
+
+    end
+    
+    
+    record LuaUiImageClass
+
+        userdata
+    
+    --Collection of static methods for [`LuaUiImage`].
 
     end
     
@@ -403,17 +442,6 @@ global record BevyAPI
     --
 
         __tostring : function(LuaButton):(string)
-
-    end
-    
-    
-    record LuaImageMode
-
-        userdata
-    
-    --
-
-        __tostring : function(LuaImageMode):(string)
 
     end
     
@@ -486,8 +514,6 @@ global record BevyAPI
 
         value : string
 
-        value : string
-
         __tostring : function(LuaGltfExtras):(string)
 
     end
@@ -531,24 +557,7 @@ global record BevyAPI
 
         size : LuaVec2
 
-        size : LuaVec2
-
         __tostring : function(LuaText2dBounds):(string)
-
-    end
-    
-    
-    record LuaText2dSize
-
-        userdata
-    
-    --
-
-        size : LuaVec2
-
-        size : LuaVec2
-
-        __tostring : function(LuaText2dSize):(string)
 
     end
     
@@ -561,11 +570,15 @@ global record BevyAPI
 
         sections : ReflectedValue
 
-        sections : ReflectedValue
+        -- The text's internal alignment.
+        --
+        -- Should not affect its position within a container.
 
         alignment : LuaTextAlignment
 
-        alignment : LuaTextAlignment
+        -- How the text should linebreak when running out of the bounds determined by max_size
+
+        linebreak_behaviour : ReflectedValue
 
         --Returns this [`Text`] with a new [`TextAlignment`].
 
@@ -591,14 +604,6 @@ global record BevyAPI
     
     --
 
-        vertical : LuaVerticalAlign
-
-        vertical : LuaVerticalAlign
-
-        horizontal : LuaHorizontalAlign
-
-        horizontal : LuaHorizontalAlign
-
         __tostring : function(LuaTextAlignment):(string)
 
     end
@@ -611,10 +616,6 @@ global record BevyAPI
     --
 
         value : string
-
-        value : string
-
-        style : LuaTextStyle
 
         style : LuaTextStyle
 
@@ -648,39 +649,11 @@ global record BevyAPI
 
         font : ReflectedValue
 
-        font : ReflectedValue
-
         font_size : number
-
-        font_size : number
-
-        color : LuaColor
 
         color : LuaColor
 
         __tostring : function(LuaTextStyle):(string)
-
-    end
-    
-    
-    record LuaHorizontalAlign
-
-        userdata
-    
-    --
-
-        __tostring : function(LuaHorizontalAlign):(string)
-
-    end
-    
-    
-    record LuaVerticalAlign
-
-        userdata
-    
-    --
-
-        __tostring : function(LuaVerticalAlign):(string)
 
     end
     
@@ -825,7 +798,7 @@ global record BevyAPI
 
         unpause : function(LuaStopwatch):()
 
-        --Resets the stopwatch. The reset doesn’t affect the paused state of the stopwatch.
+        --Resets the stopwatch. The reset doesn't affect the paused state of the stopwatch.
         --
         --
         --
@@ -1253,7 +1226,7 @@ global record BevyAPI
 
         generation : function(LuaEntity):(integer)
 
-        --Creates a new entity reference with the specified `index` and a generation of 0.
+        --Creates a new entity ID with the specified `index` and a generation of 0.
         --
         --
         --
@@ -1276,72 +1249,6 @@ global record BevyAPI
         --`Entity` lines up between instances, but instead insert a secondary identifier as
         --
         --a component.
-        --
-        --
-        --
-        --There are still some use cases where it might be appropriate to use this function
-        --
-        --externally.
-        --
-        --
-        --
-        --## Examples
-        --
-        --
-        --
-        --Initializing a collection (e.g. `array` or `Vec`) with a known size:
-        --
-        --
-        --
-        --```no_run
-        --
-        --# use bevy_ecs::prelude::*;
-        --
-        --let mut entities: [Entity; 10] = [Entity::from_raw(0); 10];
-        --
-        --
-        --
-        --```
-        --
-        --
-        --
-        --Deriving `Reflect` for a component that has an `Entity` field:
-        --
-        --
-        --
-        --```no_run
-        --
-        --# use bevy_ecs::{prelude::*, component::*};
-        --
-        --# use bevy_reflect::Reflect;
-        --
-        --#[derive(Reflect, Component)]
-        --
-        --#[reflect(Component)]
-        --
-        --pub struct MyStruct {
-        --
-        --    pub entity: Entity,
-        --
-        --}
-        --
-        --
-        --
-        --impl FromWorld for MyStruct {
-        --
-        --    fn from_world(_world: &mut World) -> Self {
-        --
-        --        Self {
-        --
-        --            entity: Entity::from_raw(u32::MAX),
-        --
-        --        }
-        --
-        --    }
-        --
-        --}
-        --
-        --```
 
         from_raw : function(integer):(LuaEntity)
 
@@ -1364,7 +1271,7 @@ global record BevyAPI
     
     --Collection of static methods for [`LuaEntity`].
 
-        --Creates a new entity reference with the specified `index` and a generation of 0.
+        --Creates a new entity ID with the specified `index` and a generation of 0.
         --
         --
         --
@@ -1387,72 +1294,6 @@ global record BevyAPI
         --`Entity` lines up between instances, but instead insert a secondary identifier as
         --
         --a component.
-        --
-        --
-        --
-        --There are still some use cases where it might be appropriate to use this function
-        --
-        --externally.
-        --
-        --
-        --
-        --## Examples
-        --
-        --
-        --
-        --Initializing a collection (e.g. `array` or `Vec`) with a known size:
-        --
-        --
-        --
-        --```no_run
-        --
-        --# use bevy_ecs::prelude::*;
-        --
-        --let mut entities: [Entity; 10] = [Entity::from_raw(0); 10];
-        --
-        --
-        --
-        --```
-        --
-        --
-        --
-        --Deriving `Reflect` for a component that has an `Entity` field:
-        --
-        --
-        --
-        --```no_run
-        --
-        --# use bevy_ecs::{prelude::*, component::*};
-        --
-        --# use bevy_reflect::Reflect;
-        --
-        --#[derive(Reflect, Component)]
-        --
-        --#[reflect(Component)]
-        --
-        --pub struct MyStruct {
-        --
-        --    pub entity: Entity,
-        --
-        --}
-        --
-        --
-        --
-        --impl FromWorld for MyStruct {
-        --
-        --    fn from_world(_world: &mut World) -> Self {
-        --
-        --        Self {
-        --
-        --            entity: Entity::from_raw(u32::MAX),
-        --
-        --        }
-        --
-        --    }
-        --
-        --}
-        --
-        --```
 
         from_raw : function(integer):(LuaEntity)
 
@@ -1485,30 +1326,6 @@ global record BevyAPI
 
         translation : LuaVec3
 
-        -- Position of the entity. In 2d, the last value of the `Vec3` is used for z-ordering.
-        --
-        --
-        --
-        -- See the [`translations`] example for usage.
-        --
-        --
-        --
-        -- [`translations`]: https://github.com/bevyengine/bevy/blob/latest/examples/transforms/translation.rs
-
-        translation : LuaVec3
-
-        -- Rotation of the entity.
-        --
-        --
-        --
-        -- See the [`3d_rotation`] example for usage.
-        --
-        --
-        --
-        -- [`3d_rotation`]: https://github.com/bevyengine/bevy/blob/latest/examples/transforms/3d_rotation.rs
-
-        rotation : LuaQuat
-
         -- Rotation of the entity.
         --
         --
@@ -1533,25 +1350,17 @@ global record BevyAPI
 
         scale : LuaVec3
 
-        -- Scale of the entity.
+        --Returns this [`Transform`] with a new rotation so that [`Transform::forward`]
         --
-        --
-        --
-        -- See the [`scale`] example for usage.
-        --
-        --
-        --
-        -- [`scale`]: https://github.com/bevyengine/bevy/blob/latest/examples/transforms/scale.rs
-
-        scale : LuaVec3
-
-        --Updates and returns this [`Transform`] by rotating it so that its unit
-        --
-        --vector in the local negative `Z` direction is toward `target` and its
-        --
-        --unit vector in the local `Y` direction is toward `up`.
+        --points towards the `target` position and [`Transform::up`] points towards `up`.
 
         looking_at : function(LuaTransform,(LuaVec3),(LuaVec3)):(LuaTransform)
+
+        --Returns this [`Transform`] with a new rotation so that [`Transform::forward`]
+        --
+        --points in the given `direction` and [`Transform::up`] points towards `up`.
+
+        looking_to : function(LuaTransform,(LuaVec3),(LuaVec3)):(LuaTransform)
 
         --Returns this [`Transform`] with a new translation.
 
@@ -1733,11 +1542,17 @@ global record BevyAPI
 
         rotate_around : function(LuaTransform,(LuaVec3),(LuaQuat)):()
 
-        --Rotates this [`Transform`] so that its local negative `Z` direction is toward
+        --Rotates this [`Transform`] so that [`Transform::forward`] points towards the `target` position,
         --
-        --`target` and its local `Y` direction is toward `up`.
+        --and [`Transform::up`] points towards `up`.
 
         look_at : function(LuaTransform,(LuaVec3),(LuaVec3)):()
+
+        --Rotates this [`Transform`] so that [`Transform::forward`] points in the given `direction`
+        --
+        --and [`Transform::up`] points towards `up`.
+
+        look_to : function(LuaTransform,(LuaVec3),(LuaVec3)):()
 
         --Creates a new [`Transform`] at the position `(x, y, z)`. In 2d, the `z` component
         --
@@ -1845,6 +1660,74 @@ global record BevyAPI
 
         compute_transform : function(LuaGlobalTransform):(LuaTransform)
 
+        --Returns the [`Transform`] `self` would have if it was a child of an entity
+        --
+        --with the `parent` [`GlobalTransform`].
+        --
+        --
+        --
+        --This is useful if you want to "reparent" an `Entity`. Say you have an entity
+        --
+        --`e1` that you want to turn into a child of `e2`, but you want `e1` to keep the
+        --
+        --same global transform, even after re-parenting. You would use:
+        --
+        --
+        --
+        --```rust
+        --
+        --# use bevy_transform::prelude::{GlobalTransform, Transform};
+        --
+        --# use bevy_ecs::prelude::{Entity, Query, Component, Commands};
+        --
+        --# use bevy_hierarchy::{prelude::Parent, BuildChildren};
+        --
+        --#[derive(Component)]
+        --
+        --struct ToReparent {
+        --
+        --    new_parent: Entity,
+        --
+        --}
+        --
+        --fn reparent_system(
+        --
+        --    mut commands: Commands,
+        --
+        --    mut targets: Query<(&mut Transform, Entity, &GlobalTransform, &ToReparent)>,
+        --
+        --    transforms: Query<&GlobalTransform>,
+        --
+        --) {
+        --
+        --    for (mut transform, entity, initial, to_reparent) in targets.iter_mut() {
+        --
+        --        if let Ok(parent_transform) = transforms.get(to_reparent.new_parent) {
+        --
+        --            *transform = initial.reparented_to(parent_transform);
+        --
+        --            commands.entity(entity)
+        --
+        --                .remove::<ToReparent>()
+        --
+        --                .set_parent(to_reparent.new_parent);
+        --
+        --        }
+        --
+        --    }
+        --
+        --}
+        --
+        --```
+        --
+        --
+        --
+        --The transform is expected to be non-degenerate and without shearing, or the output
+        --
+        --will be invalid.
+
+        reparented_to : function(LuaGlobalTransform,LuaGlobalTransform):(LuaTransform)
+
         --Return the local right vector (X).
 
         right : function(LuaGlobalTransform):(LuaVec3)
@@ -1910,12 +1793,6 @@ global record BevyAPI
 
         color : LuaColor
 
-        color : LuaColor
-
-        -- A direct scale factor multiplied with `color` before being passed to the shader.
-
-        brightness : number
-
         -- A direct scale factor multiplied with `color` before being passed to the shader.
 
         brightness : number
@@ -1944,37 +1821,13 @@ global record BevyAPI
 
         color : LuaColor
 
-        color : LuaColor
-
-        -- Illuminance in lux
-
-        illuminance : number
-
         -- Illuminance in lux
 
         illuminance : number
 
         shadows_enabled : boolean
 
-        shadows_enabled : boolean
-
-        -- A projection that controls the volume in which shadow maps are rendered
-
-        shadow_projection : LuaOrthographicProjection
-
-        -- A projection that controls the volume in which shadow maps are rendered
-
-        shadow_projection : LuaOrthographicProjection
-
         shadow_depth_bias : number
-
-        shadow_depth_bias : number
-
-        -- A bias applied along the direction of the fragment's surface normal. It is scaled to the
-        --
-        -- shadow map's texel size so that it is automatically adjusted to the orthographic projection.
-
-        shadow_normal_bias : number
 
         -- A bias applied along the direction of the fragment's surface normal. It is scaled to the
         --
@@ -1992,8 +1845,6 @@ global record BevyAPI
         userdata
     
     --
-
-        size : integer
 
         size : integer
 
@@ -2028,35 +1879,15 @@ global record BevyAPI
 
         color : LuaColor
 
-        color : LuaColor
-
         intensity : number
-
-        intensity : number
-
-        range : number
 
         range : number
 
         radius : number
 
-        radius : number
-
-        shadows_enabled : boolean
-
         shadows_enabled : boolean
 
         shadow_depth_bias : number
-
-        shadow_depth_bias : number
-
-        -- A bias applied along the direction of the fragment's surface normal. It is scaled to the
-        --
-        -- shadow map's texel size so that it can be small close to the camera and gets larger further
-        --
-        -- away.
-
-        shadow_normal_bias : number
 
         -- A bias applied along the direction of the fragment's surface normal. It is scaled to the
         --
@@ -2076,8 +1907,6 @@ global record BevyAPI
         userdata
     
     --
-
-        size : integer
 
         size : integer
 
@@ -2113,10 +1942,6 @@ global record BevyAPI
         userdata
     
     --
-
-        -- Whether to show wireframes for all meshes. If `false`, only meshes with a [Wireframe] component will be rendered.
-
-        global : boolean
 
         -- Whether to show wireframes for all meshes. If `false`, only meshes with a [Wireframe] component will be rendered.
 
@@ -2168,8 +1993,6 @@ global record BevyAPI
 
         clear_color : LuaClearColorConfig
 
-        clear_color : LuaClearColorConfig
-
     end
     
     
@@ -2182,14 +2005,6 @@ global record BevyAPI
         -- The clear color operation to perform for the main 3d pass.
 
         clear_color : LuaClearColorConfig
-
-        -- The clear color operation to perform for the main 3d pass.
-
-        clear_color : LuaClearColorConfig
-
-        -- The depth clear operation to perform for the main 3d pass.
-
-        depth_load_op : LuaCamera3dDepthLoadOp
 
         -- The depth clear operation to perform for the main 3d pass.
 
@@ -2228,19 +2043,19 @@ global record BevyAPI
     
     --
 
-        color : LuaColor
+        -- The tint color used to draw the sprite, defaulting to [`Color::WHITE`]
 
         color : LuaColor
 
-        index : integer
+        -- Texture index in [`TextureAtlas`]
 
         index : integer
 
-        flip_x : boolean
+        -- Whether to flip the sprite in the X axis
 
         flip_x : boolean
 
-        flip_y : boolean
+        -- Whether to flip the sprite in the Y axis
 
         flip_y : boolean
 
@@ -2250,15 +2065,13 @@ global record BevyAPI
 
         custom_size : ReflectedValue
 
-        -- An optional custom size for the sprite that will be used when rendering, instead of the size
+        -- [`Anchor`] point of the sprite in the world
+
+        anchor : LuaAnchor
+
+        --Create a new [`TextureAtlasSprite`] with a sprite index,
         --
-        -- of the sprite's image in the atlas
-
-        custom_size : ReflectedValue
-
-        anchor : LuaAnchor
-
-        anchor : LuaAnchor
+        --it should be valid in the corresponding [`TextureAtlas`]
 
         new : function(integer):(LuaTextureAtlasSprite)
 
@@ -2272,6 +2085,10 @@ global record BevyAPI
         userdata
     
     --Collection of static methods for [`LuaTextureAtlasSprite`].
+
+        --Create a new [`TextureAtlasSprite`] with a sprite index,
+        --
+        --it should be valid in the corresponding [`TextureAtlas`]
 
         new : function(integer):(LuaTextureAtlasSprite)
 
@@ -2288,14 +2105,6 @@ global record BevyAPI
 
         color : LuaColor
 
-        -- The sprite's color tint
-
-        color : LuaColor
-
-        -- Flip the sprite along the `X` axis
-
-        flip_x : boolean
-
         -- Flip the sprite along the `X` axis
 
         flip_x : boolean
@@ -2303,16 +2112,6 @@ global record BevyAPI
         -- Flip the sprite along the `Y` axis
 
         flip_y : boolean
-
-        -- Flip the sprite along the `Y` axis
-
-        flip_y : boolean
-
-        -- An optional custom size for the sprite that will be used when rendering, instead of the size
-        --
-        -- of the sprite's image
-
-        custom_size : ReflectedValue
 
         -- An optional custom size for the sprite that will be used when rendering, instead of the size
         --
@@ -2325,16 +2124,6 @@ global record BevyAPI
         -- rendering the full image. This is an easy one-off alternative to using a texture atlas.
 
         rect : ReflectedValue
-
-        -- An optional rectangle representing the region of the sprite's image to render, instead of
-        --
-        -- rendering the full image. This is an easy one-off alternative to using a texture atlas.
-
-        rect : ReflectedValue
-
-        -- [`Anchor`] point of the sprite in the world
-
-        anchor : LuaAnchor
 
         -- [`Anchor`] point of the sprite in the world
 
@@ -2401,26 +2190,6 @@ global record BevyAPI
     
     --
 
-        -- Indicates whether this entity is visible. Hidden values will propagate down the entity hierarchy.
-        --
-        -- If this entity is hidden, all of its descendants will be hidden as well. See [`Children`] and [`Parent`] for
-        --
-        -- hierarchy info.
-
-        is_visible : boolean
-
-        -- Indicates whether this entity is visible. Hidden values will propagate down the entity hierarchy.
-        --
-        -- If this entity is hidden, all of its descendants will be hidden as well. See [`Children`] and [`Parent`] for
-        --
-        -- hierarchy info.
-
-        is_visible : boolean
-
-        --Toggle the visibility.
-
-        toggle : function(LuaVisibility):()
-
         __tostring : function(LuaVisibility):(string)
 
     end
@@ -2451,9 +2220,9 @@ global record BevyAPI
         --
         --are true. This is the canonical method to call to determine if an entity should be drawn.
         --
-        --This value is updated in [`CoreStage::PostUpdate`] during the [`VisibilitySystems::CheckVisibility`] system label. Reading it from the
+        --This value is updated in [`CoreSet::PostUpdate`] by the [`VisibilitySystems::CheckVisibility`] system set.
         --
-        --[`CoreStage::Update`] stage will yield the value from the previous frame.
+        --Reading it during [`CoreSet::Update`] will yield the value from the previous frame.
 
         is_visible : function(LuaComputedVisibility):(boolean)
 
@@ -2461,9 +2230,7 @@ global record BevyAPI
         --
         --This takes into account "visibility inheritance". If any of this entity's ancestors (see [`Parent`]) are hidden, this entity
         --
-        --will be hidden as well. This value is updated in the [`CoreStage::PostUpdate`] stage in the
-        --
-        --[`VisibilitySystems::VisibilityPropagate`] system label.
+        --will be hidden as well. This value is updated in the [`VisibilitySystems::VisibilityPropagate`], which lives under the [`CoreSet::PostUpdate`] set.
 
         is_visible_in_hierarchy : function(LuaComputedVisibility):(boolean)
 
@@ -2473,11 +2240,11 @@ global record BevyAPI
         --
         --
         --
-        --This value is reset to `false` every frame in [`VisibilitySystems::VisibilityPropagate`] during [`CoreStage::PostUpdate`].
+        --This value is reset to `false` every frame in [`VisibilitySystems::VisibilityPropagate`] during [`CoreSet::PostUpdate`].
         --
-        --Each entity type then chooses how to set this field in the [`CoreStage::PostUpdate`] stage in the
+        --Each entity type then chooses how to set this field in the [`VisibilitySystems::CheckVisibility`] system set, under [`CoreSet::PostUpdate`].
         --
-        --[`VisibilitySystems::CheckVisibility`] system label. Meshes might use frustum culling to decide if they are visible in a view.
+        --Meshes might use frustum culling to decide if they are visible in a view.
         --
         --Other entities might just set this to `true` every frame.
 
@@ -2506,10 +2273,6 @@ global record BevyAPI
 
         inverse_bindposes : ReflectedValue
 
-        inverse_bindposes : ReflectedValue
-
-        joints : ReflectedValue
-
         joints : ReflectedValue
 
         __tostring : function(LuaSkinnedMesh):(string)
@@ -2524,17 +2287,6 @@ global record BevyAPI
     --
 
         __tostring : function(LuaScalingMode):(string)
-
-    end
-    
-    
-    record LuaWindowOrigin
-
-        userdata
-    
-    --
-
-        __tostring : function(LuaWindowOrigin):(string)
 
     end
     
@@ -2557,9 +2309,25 @@ global record BevyAPI
 
         b : function(LuaColor):(number)
 
+        --Returns this color with red set to a new value in sRGB colorspace.
+
+        with_r : function(LuaColor,number):(LuaColor)
+
+        --Returns this color with green set to a new value in sRGB colorspace.
+
+        with_g : function(LuaColor,number):(LuaColor)
+
+        --Returns this color with blue set to a new value in sRGB colorspace.
+
+        with_b : function(LuaColor,number):(LuaColor)
+
         --Get alpha.
 
         a : function(LuaColor):(number)
+
+        --Returns this color with a new alpha value.
+
+        with_a : function(LuaColor,number):(LuaColor)
 
         --Converts a `Color` to variant `Color::Rgba`
 
@@ -2572,6 +2340,10 @@ global record BevyAPI
         --Converts a `Color` to variant `Color::Hsla`
 
         as_hsla : function(LuaColor):(LuaColor)
+
+        --Converts a `Color` to variant `Color::Lcha`
+
+        as_lcha : function(LuaColor):(LuaColor)
 
         --Converts `Color` to a `u32` from sRGB colorspace.
         --
@@ -2959,10 +2731,6 @@ global record BevyAPI
 
         center : LuaVec3A
 
-        center : LuaVec3A
-
-        half_extents : LuaVec3A
-
         half_extents : LuaVec3A
 
         min : function(LuaAabb):(LuaVec3A)
@@ -3004,9 +2772,17 @@ global record BevyAPI
     
     --
 
-        intersects_obb : function(LuaFrustum,(LuaAabb),(LuaMat4),(boolean)):(boolean)
+        intersects_obb : function(LuaFrustum,(LuaAabb),(LuaMat4),(boolean),(boolean)):(boolean)
 
-        from_view_projection : function((LuaMat4),(LuaVec3),(LuaVec3),(number)):(LuaFrustum)
+        --Returns a frustum derived from `view_projection`.
+
+        from_view_projection : function(LuaMat4):(LuaFrustum)
+
+        --Returns a frustum derived from `view_projection`, but with a custom
+        --
+        --far plane.
+
+        from_view_projection_custom_far : function((LuaMat4),(LuaVec3),(LuaVec3),(number)):(LuaFrustum)
 
         __tostring : function(LuaFrustum):(string)
 
@@ -3019,7 +2795,15 @@ global record BevyAPI
     
     --Collection of static methods for [`LuaFrustum`].
 
-        from_view_projection : function((LuaMat4),(LuaVec3),(LuaVec3),(number)):(LuaFrustum)
+        --Returns a frustum derived from `view_projection`.
+
+        from_view_projection : function(LuaMat4):(LuaFrustum)
+
+        --Returns a frustum derived from `view_projection`, but with a custom
+        --
+        --far plane.
+
+        from_view_projection_custom_far : function((LuaMat4),(LuaVec3),(LuaVec3),(number)):(LuaFrustum)
 
     end
     
@@ -3030,37 +2814,7 @@ global record BevyAPI
     
     --
 
-        -- The number of samples to run for Multi-Sample Anti-Aliasing. Higher numbers result in
-        --
-        -- smoother edges.
-        --
-        -- Defaults to 4.
-        --
-        --
-        --
-        -- Note that WGPU currently only supports 1 or 4 samples.
-        --
-        -- Ultimately we plan on supporting whatever is natively supported on a given device.
-        --
-        -- Check out this issue for more info: <https://github.com/gfx-rs/wgpu/issues/1832>
-
-        samples : integer
-
-        -- The number of samples to run for Multi-Sample Anti-Aliasing. Higher numbers result in
-        --
-        -- smoother edges.
-        --
-        -- Defaults to 4.
-        --
-        --
-        --
-        -- Note that WGPU currently only supports 1 or 4 samples.
-        --
-        -- Ultimately we plan on supporting whatever is natively supported on a given device.
-        --
-        -- Check out this issue for more info: <https://github.com/gfx-rs/wgpu/issues/1832>
-
-        samples : integer
+        samples : function(LuaMsaa):(integer)
 
     end
     
@@ -3075,33 +2829,15 @@ global record BevyAPI
 
         viewport : ReflectedValue
 
-        -- If set, this camera will render to the given [`Viewport`] rectangle within the configured [`RenderTarget`].
+        -- Cameras with a higher order are rendered later, and thus on top of lower order cameras.
 
-        viewport : ReflectedValue
-
-        -- Cameras with a lower priority will be rendered before cameras with a higher priority.
-
-        priority : integer
-
-        -- Cameras with a lower priority will be rendered before cameras with a higher priority.
-
-        priority : integer
+        order : integer
 
         -- If this is set to `true`, this camera will be rendered to its specified [`RenderTarget`]. If `false`, this
         --
         -- camera will not be rendered.
 
         is_active : boolean
-
-        -- If this is set to `true`, this camera will be rendered to its specified [`RenderTarget`]. If `false`, this
-        --
-        -- camera will not be rendered.
-
-        is_active : boolean
-
-        -- The "target" that this camera will render to.
-
-        target : LuaRenderTarget
 
         -- The "target" that this camera will render to.
 
@@ -3117,15 +2853,15 @@ global record BevyAPI
 
         hdr : boolean
 
-        -- If this is set to `true`, the camera will use an intermediate "high dynamic range" render texture.
+        -- If this is enabled, a previous camera exists that shares this camera's render target, and this camera has MSAA enabled, then the previous camera's
         --
-        -- Warning: we are still working on this feature. If MSAA is enabled, there will be artifacts in
+        -- outputs will be written to the intermediate multi-sampled render target textures for this camera. This enables cameras with MSAA enabled to
         --
-        -- some cases. When rendering with WebGL, this will crash if MSAA is enabled.
+        -- "write their results on top" of previous camera results, and include them as a part of their render results. This is enabled by default to ensure
         --
-        -- See <https://github.com/bevyengine/bevy/pull/3425> for details.
+        -- cameras with MSAA enabled layer their results in the same way as cameras without MSAA enabled by default.
 
-        hdr : boolean
+        msaa_writeback : boolean
 
         --The projection matrix computed using this camera's [`CameraProjection`].
 
@@ -3159,27 +2895,11 @@ global record BevyAPI
 
         physical_position : LuaUVec2
 
-        -- The physical position to render this viewport to within the [`RenderTarget`] of this [`Camera`].
-        --
-        -- (0,0) corresponds to the top-left corner
-
-        physical_position : LuaUVec2
-
         -- The physical size of the viewport rectangle to render to within the [`RenderTarget`] of this [`Camera`].
         --
         -- The origin of the rectangle is in the top-left corner.
 
         physical_size : LuaUVec2
-
-        -- The physical size of the viewport rectangle to render to within the [`RenderTarget`] of this [`Camera`].
-        --
-        -- The origin of the rectangle is in the top-left corner.
-
-        physical_size : LuaUVec2
-
-        -- The minimum and maximum depth to render (on a scale from 0.0 to 1.0).
-
-        depth : ReflectedValue
 
         -- The minimum and maximum depth to render (on a scale from 0.0 to 1.0).
 
@@ -3213,41 +2933,91 @@ global record BevyAPI
     
     --
 
-        left : number
-
-        left : number
-
-        right : number
-
-        right : number
-
-        bottom : number
-
-        bottom : number
-
-        top : number
-
-        top : number
+        -- The distance of the near clipping plane in world units.
+        --
+        --
+        --
+        -- Objects closer than this will not be rendered.
+        --
+        --
+        --
+        -- Defaults to `0.0`
 
         near : number
 
-        near : number
+        -- The distance of the far clipping plane in world units.
+        --
+        --
+        --
+        -- Objects further than this will not be rendered.
+        --
+        --
+        --
+        -- Defaults to `1000.0`
 
         _far : number
 
-        _far : number
+        -- Specifies the origin of the viewport as a normalized position from 0 to 1, where (0, 0) is the bottom left
+        --
+        -- and (1, 1) is the top right. This determines where the camera's position sits inside the viewport.
+        --
+        --
+        --
+        -- When the projection scales due to viewport resizing, the position of the camera, and thereby `viewport_origin`,
+        --
+        -- remains at the same relative point.
+        --
+        --
+        --
+        -- Consequently, this is pivot point when scaling. With a bottom left pivot, the projection will expand
+        --
+        -- upwards and to the right. With a top right pivot, the projection will expand downwards and to the left.
+        --
+        -- Values in between will caused the projection to scale proportionally on each axis.
+        --
+        --
+        --
+        -- Defaults to `(0.5, 0.5)`, which makes scaling affect opposite sides equally, keeping the center
+        --
+        -- point of the viewport centered.
 
-        window_origin : LuaWindowOrigin
+        viewport_origin : LuaVec2
 
-        window_origin : LuaWindowOrigin
+        -- How the projection will scale when the viewport is resized.
+        --
+        --
+        --
+        -- Defaults to `ScalingMode::WindowScale(1.0)`
 
         scaling_mode : LuaScalingMode
 
-        scaling_mode : LuaScalingMode
+        -- Scales the projection in world units.
+        --
+        --
+        --
+        -- As scale increases, the apparent size of objects decreases, and vice versa.
+        --
+        --
+        --
+        -- Defaults to `1.0`
 
         scale : number
 
-        scale : number
+        -- The area that the projection covers relative to `viewport_origin`.
+        --
+        --
+        --
+        -- Bevy's [`camera_system`](crate::camera::camera_system) automatically
+        --
+        -- updates this value when the viewport is resized depending on `OrthographicProjection`'s other fields.
+        --
+        -- In this case, `area` should not be manually modified.
+        --
+        --
+        --
+        -- It may be necessary to set this manually for shadow projections and such.
+
+        area : LuaRect
 
         get_projection_matrix : function(LuaOrthographicProjection):(LuaMat4)
 
@@ -3274,28 +3044,6 @@ global record BevyAPI
 
         fov : number
 
-        -- The vertical field of view (FOV) in radians.
-        --
-        --
-        --
-        -- Defaults to a value of π/4 radians or 45 degrees.
-
-        fov : number
-
-        -- The aspect ratio (width divided by height) of the viewing frustum.
-        --
-        --
-        --
-        -- Bevy's [`camera_system`](crate::camera::camera_system) automatically
-        --
-        -- updates this value when the aspect ratio of the associated window changes.
-        --
-        --
-        --
-        -- Defaults to a value of `1.0`.
-
-        aspect_ratio : number
-
         -- The aspect ratio (width divided by height) of the viewing frustum.
         --
         --
@@ -3321,30 +3069,6 @@ global record BevyAPI
         -- Defaults to a value of `0.1`.
 
         near : number
-
-        -- The distance from the camera in world units of the viewing frustum's near plane.
-        --
-        --
-        --
-        -- Objects closer to the camera than this value will not be visible.
-        --
-        --
-        --
-        -- Defaults to a value of `0.1`.
-
-        near : number
-
-        -- The distance from the camera in world units of the viewing frustum's far plane.
-        --
-        --
-        --
-        -- Objects farther from the camera than this value will not be visible.
-        --
-        --
-        --
-        -- Defaults to a value of `1000.0`.
-
-        _far : number
 
         -- The distance from the camera in world units of the viewing frustum's far plane.
         --
@@ -3455,10 +3179,6 @@ global record BevyAPI
     --
 
         x : number
-
-        x : number
-
-        y : number
 
         y : number
 
@@ -3609,6 +3329,10 @@ global record BevyAPI
         --- `NAN` if the number is `NAN`
 
         signum : function(LuaVec2):(LuaVec2)
+
+        --Returns a vector with signs of `rhs` and the magnitudes of `self`.
+
+        copysign : function(LuaVec2,LuaVec2):(LuaVec2)
 
         --Returns a bitmask with the lowest 2 bits set to the sign bits from the elements of `self`.
         --
@@ -4036,13 +3760,7 @@ global record BevyAPI
 
         x : number
 
-        x : number
-
         y : number
-
-        y : number
-
-        z : number
 
         z : number
 
@@ -4205,6 +3923,10 @@ global record BevyAPI
         --- `NAN` if the number is `NAN`
 
         signum : function(LuaVec3):(LuaVec3)
+
+        --Returns a vector with signs of `rhs` and the magnitudes of `self`.
+
+        copysign : function(LuaVec3,LuaVec3):(LuaVec3)
 
         --Returns a bitmask with the lowest 3 bits set to the sign bits from the elements of `self`.
         --
@@ -4784,6 +4506,10 @@ global record BevyAPI
 
         signum : function(LuaVec3A):(LuaVec3A)
 
+        --Returns a vector with signs of `rhs` and the magnitudes of `self`.
+
+        copysign : function(LuaVec3A,LuaVec3A):(LuaVec3A)
+
         --Returns a bitmask with the lowest 3 bits set to the sign bits from the elements of `self`.
         --
         --
@@ -5358,6 +5084,10 @@ global record BevyAPI
 
         signum : function(LuaVec4):(LuaVec4)
 
+        --Returns a vector with signs of `rhs` and the magnitudes of `self`.
+
+        copysign : function(LuaVec4,LuaVec4):(LuaVec4)
+
         --Returns a bitmask with the lowest 4 bits set to the sign bits from the elements of `self`.
         --
         --
@@ -5742,10 +5472,6 @@ global record BevyAPI
 
         x : boolean
 
-        x : boolean
-
-        y : boolean
-
         y : boolean
 
         --Returns a bitmask with the lowest 2 bits set from the elements of `self`.
@@ -5804,13 +5530,7 @@ global record BevyAPI
 
         x : boolean
 
-        x : boolean
-
         y : boolean
-
-        y : boolean
-
-        z : boolean
 
         z : boolean
 
@@ -5870,17 +5590,9 @@ global record BevyAPI
 
         x : boolean
 
-        x : boolean
-
-        y : boolean
-
         y : boolean
 
         z : boolean
-
-        z : boolean
-
-        w : boolean
 
         w : boolean
 
@@ -6048,10 +5760,6 @@ global record BevyAPI
 
         x : number
 
-        x : number
-
-        y : number
-
         y : number
 
         --Creates a 3D vector from `self` and the given `z` value.
@@ -6201,6 +5909,10 @@ global record BevyAPI
         --- `NAN` if the number is `NAN`
 
         signum : function(LuaDVec2):(LuaDVec2)
+
+        --Returns a vector with signs of `rhs` and the magnitudes of `self`.
+
+        copysign : function(LuaDVec2,LuaDVec2):(LuaDVec2)
 
         --Returns a bitmask with the lowest 2 bits set to the sign bits from the elements of `self`.
         --
@@ -6628,13 +6340,7 @@ global record BevyAPI
 
         x : number
 
-        x : number
-
         y : number
-
-        y : number
-
-        z : number
 
         z : number
 
@@ -6797,6 +6503,10 @@ global record BevyAPI
         --- `NAN` if the number is `NAN`
 
         signum : function(LuaDVec3):(LuaDVec3)
+
+        --Returns a vector with signs of `rhs` and the magnitudes of `self`.
+
+        copysign : function(LuaDVec3,LuaDVec3):(LuaDVec3)
 
         --Returns a bitmask with the lowest 3 bits set to the sign bits from the elements of `self`.
         --
@@ -7222,17 +6932,9 @@ global record BevyAPI
 
         x : number
 
-        x : number
-
-        y : number
-
         y : number
 
         z : number
-
-        z : number
-
-        w : number
 
         w : number
 
@@ -7387,6 +7089,10 @@ global record BevyAPI
         --- `NAN` if the number is `NAN`
 
         signum : function(LuaDVec4):(LuaDVec4)
+
+        --Returns a vector with signs of `rhs` and the magnitudes of `self`.
+
+        copysign : function(LuaDVec4,LuaDVec4):(LuaDVec4)
 
         --Returns a bitmask with the lowest 4 bits set to the sign bits from the elements of `self`.
         --
@@ -7772,10 +7478,6 @@ global record BevyAPI
 
         x : integer
 
-        x : integer
-
-        y : integer
-
         y : integer
 
         --Creates a 3D vector from `self` and the given `z` value.
@@ -7918,13 +7620,17 @@ global record BevyAPI
         --
         --
         --
-        --- `1.0` if the number is positive, `+0.0` or `INFINITY`
+        -- - `0` if the number is zero
         --
-        --- `-1.0` if the number is negative, `-0.0` or `NEG_INFINITY`
+        -- - `1` if the number is positive
         --
-        --- `NAN` if the number is `NAN`
+        -- - `-1` if the number is negative
 
         signum : function(LuaIVec2):(LuaIVec2)
+
+        --Returns a vector with signs of `rhs` and the magnitudes of `self`.
+
+        copysign : function(LuaIVec2,LuaIVec2):(LuaIVec2)
 
         --Returns a bitmask with the lowest 2 bits set to the sign bits from the elements of `self`.
         --
@@ -8054,13 +7760,7 @@ global record BevyAPI
 
         x : integer
 
-        x : integer
-
         y : integer
-
-        y : integer
-
-        z : integer
 
         z : integer
 
@@ -8216,13 +7916,17 @@ global record BevyAPI
         --
         --
         --
-        --- `1.0` if the number is positive, `+0.0` or `INFINITY`
+        -- - `0` if the number is zero
         --
-        --- `-1.0` if the number is negative, `-0.0` or `NEG_INFINITY`
+        -- - `1` if the number is positive
         --
-        --- `NAN` if the number is `NAN`
+        -- - `-1` if the number is negative
 
         signum : function(LuaIVec3):(LuaIVec3)
+
+        --Returns a vector with signs of `rhs` and the magnitudes of `self`.
+
+        copysign : function(LuaIVec3,LuaIVec3):(LuaIVec3)
 
         --Returns a bitmask with the lowest 3 bits set to the sign bits from the elements of `self`.
         --
@@ -8338,17 +8042,9 @@ global record BevyAPI
 
         x : integer
 
-        x : integer
-
-        y : integer
-
         y : integer
 
         z : integer
-
-        z : integer
-
-        w : integer
 
         w : integer
 
@@ -8496,13 +8192,17 @@ global record BevyAPI
         --
         --
         --
-        --- `1.0` if the number is positive, `+0.0` or `INFINITY`
+        -- - `0` if the number is zero
         --
-        --- `-1.0` if the number is negative, `-0.0` or `NEG_INFINITY`
+        -- - `1` if the number is positive
         --
-        --- `NAN` if the number is `NAN`
+        -- - `-1` if the number is negative
 
         signum : function(LuaIVec4):(LuaIVec4)
+
+        --Returns a vector with signs of `rhs` and the magnitudes of `self`.
+
+        copysign : function(LuaIVec4,LuaIVec4):(LuaIVec4)
 
         --Returns a bitmask with the lowest 4 bits set to the sign bits from the elements of `self`.
         --
@@ -8613,10 +8313,6 @@ global record BevyAPI
     --
 
         x : integer
-
-        x : integer
-
-        y : integer
 
         y : integer
 
@@ -8850,13 +8546,7 @@ global record BevyAPI
 
         x : integer
 
-        x : integer
-
         y : integer
-
-        y : integer
-
-        z : integer
 
         z : integer
 
@@ -9106,17 +8796,9 @@ global record BevyAPI
 
         x : integer
 
-        x : integer
-
-        y : integer
-
         y : integer
 
         z : integer
-
-        z : integer
-
-        w : integer
 
         w : integer
 
@@ -9354,13 +9036,7 @@ global record BevyAPI
 
         x_axis : LuaVec3
 
-        x_axis : LuaVec3
-
         y_axis : LuaVec3
-
-        y_axis : LuaVec3
-
-        z_axis : LuaVec3
 
         z_axis : LuaVec3
 
@@ -9970,13 +9646,7 @@ global record BevyAPI
 
         x_axis : LuaVec3A
 
-        x_axis : LuaVec3A
-
         y_axis : LuaVec3A
-
-        y_axis : LuaVec3A
-
-        z_axis : LuaVec3A
 
         z_axis : LuaVec3A
 
@@ -10398,17 +10068,9 @@ global record BevyAPI
 
         x_axis : LuaVec4
 
-        x_axis : LuaVec4
-
-        y_axis : LuaVec4
-
         y_axis : LuaVec4
 
         z_axis : LuaVec4
-
-        z_axis : LuaVec4
-
-        w_axis : LuaVec4
 
         w_axis : LuaVec4
 
@@ -11280,10 +10942,6 @@ global record BevyAPI
 
         x_axis : LuaDVec2
 
-        x_axis : LuaDVec2
-
-        y_axis : LuaDVec2
-
         y_axis : LuaDVec2
 
         --Returns the matrix column for the given `index`.
@@ -11468,13 +11126,7 @@ global record BevyAPI
 
         x_axis : LuaDVec3
 
-        x_axis : LuaDVec3
-
         y_axis : LuaDVec3
-
-        y_axis : LuaDVec3
-
-        z_axis : LuaDVec3
 
         z_axis : LuaDVec3
 
@@ -11892,17 +11544,9 @@ global record BevyAPI
 
         x_axis : LuaDVec4
 
-        x_axis : LuaDVec4
-
-        y_axis : LuaDVec4
-
         y_axis : LuaDVec4
 
         z_axis : LuaDVec4
-
-        z_axis : LuaDVec4
-
-        w_axis : LuaDVec4
 
         w_axis : LuaDVec4
 
@@ -12734,10 +12378,6 @@ global record BevyAPI
 
         matrix2 : LuaMat2
 
-        matrix2 : LuaMat2
-
-        translation : LuaVec2
-
         translation : LuaVec2
 
         --Transforms the given 2D point, applying shear, scale, rotation and translation.
@@ -12949,10 +12589,6 @@ global record BevyAPI
     --
 
         matrix3 : LuaMat3A
-
-        matrix3 : LuaMat3A
-
-        translation : LuaVec3A
 
         translation : LuaVec3A
 
@@ -13324,10 +12960,6 @@ global record BevyAPI
 
         matrix2 : LuaDMat2
 
-        matrix2 : LuaDMat2
-
-        translation : LuaDVec2
-
         translation : LuaDVec2
 
         --Transforms the given 2D point, applying shear, scale, rotation and translation.
@@ -13531,10 +13163,6 @@ global record BevyAPI
     --
 
         matrix3 : LuaDMat3
-
-        matrix3 : LuaDMat3
-
-        translation : LuaDVec3
 
         translation : LuaDVec3
 
@@ -14492,17 +14120,9 @@ global record BevyAPI
 
         x : number
 
-        x : number
-
-        y : number
-
         y : number
 
         z : number
-
-        z : number
-
-        w : number
 
         w : number
 
@@ -15108,14 +14728,6 @@ global record BevyAPI
         -- The minimum corner point of the rect.
 
         min : LuaVec2
-
-        -- The minimum corner point of the rect.
-
-        min : LuaVec2
-
-        -- The maximum corner point of the rect.
-
-        max : LuaVec2
 
         -- The maximum corner point of the rect.
 
@@ -15851,6 +15463,10 @@ global record BevyAPI
     end
     
 end
+
+    --
+
+    global UiImage : BevyAPI.LuaUiImageClass
 
     --
 
