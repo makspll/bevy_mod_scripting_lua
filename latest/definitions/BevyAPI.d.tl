@@ -946,15 +946,15 @@ global record BevyAPI
         --
         -- Should not affect its position within a container.
 
-        alignment : LuaTextAlignment
+        justify : LuaJustifyText
 
         -- How the text should linebreak when running out of the bounds determined by max_size
 
         linebreak_behavior : ReflectedValue
 
-        --Returns this [`Text`] with a new [`TextAlignment`].
+        --Returns this [`Text`] with a new [`JustifyText`].
 
-        with_alignment : function(self:LuaText , LuaTextAlignment):(LuaText)
+        with_justify : function(self:LuaText , LuaJustifyText):(LuaText)
 
         --Returns this [`Text`] with soft wrapping disabled.
         --
@@ -976,13 +976,13 @@ global record BevyAPI
     end
     
     
-    record LuaTextAlignment
+    record LuaJustifyText
 
         userdata
     
     --
 
-        __tostring : function(self:LuaTextAlignment):(string)
+        __tostring : function(self:LuaJustifyText):(string)
 
     end
     
@@ -1392,7 +1392,7 @@ global record BevyAPI
 
         paused : function(self:LuaTimer):(boolean)
 
-        --Returns the percentage of the timer elapsed time (goes from 0.0 to 1.0).
+        --Returns the fraction of the timer elapsed time (goes from 0.0 to 1.0).
         --
         --
         --
@@ -1408,13 +1408,13 @@ global record BevyAPI
         --
         --timer.tick(Duration::from_secs_f32(0.5));
         --
-        --assert_eq!(timer.percent(), 0.25);
+        --assert_eq!(timer.fraction(), 0.25);
         --
         --```
 
-        percent : function(self:LuaTimer):(number)
+        fraction : function(self:LuaTimer):(number)
 
-        --Returns the percentage of the timer remaining time (goes from 1.0 to 0.0).
+        --Returns the fraction of the timer remaining time (goes from 1.0 to 0.0).
         --
         --
         --
@@ -1430,11 +1430,11 @@ global record BevyAPI
         --
         --timer.tick(Duration::from_secs_f32(0.5));
         --
-        --assert_eq!(timer.percent_left(), 0.75);
+        --assert_eq!(timer.fraction_remaining(), 0.75);
         --
         --```
 
-        percent_left : function(self:LuaTimer):(number)
+        fraction_remaining : function(self:LuaTimer):(number)
 
         --Returns the remaining time in seconds
         --
@@ -1646,7 +1646,7 @@ global record BevyAPI
 
         generation : function(self:LuaEntity):(integer)
 
-        --Creates a new entity ID with the specified `index` and a generation of 0.
+        --Creates a new entity ID with the specified `index` and a generation of 1.
         --
         --
         --
@@ -1677,6 +1677,14 @@ global record BevyAPI
         --
         --
         --Only useful when applied to results from `to_bits` in the same instance of an application.
+        --
+        --
+        --
+        --# Panics
+        --
+        --
+        --
+        --This method will likely panic if given `u64` values that did not come from [`Entity::to_bits`].
 
         from_bits : function(integer):(LuaEntity)
 
@@ -1691,7 +1699,7 @@ global record BevyAPI
     
     --Collection of static methods for [``].
 
-        --Creates a new entity ID with the specified `index` and a generation of 0.
+        --Creates a new entity ID with the specified `index` and a generation of 1.
         --
         --
         --
@@ -1722,6 +1730,14 @@ global record BevyAPI
         --
         --
         --Only useful when applied to results from `to_bits` in the same instance of an application.
+        --
+        --
+        --
+        --# Panics
+        --
+        --
+        --
+        --This method will likely panic if given `u64` values that did not come from [`Entity::to_bits`].
 
         from_bits : function(integer):(LuaEntity)
 
@@ -1826,42 +1842,6 @@ global record BevyAPI
 
         compute_affine : function(self:LuaTransform):(LuaAffine3A)
 
-        --Get the unit vector in the local `X` direction.
-
-        local_x : function(self:LuaTransform):(LuaVec3)
-
-        --Equivalent to [`-local_x()`][Transform::local_x()]
-
-        left : function(self:LuaTransform):(LuaVec3)
-
-        --Equivalent to [`local_x()`][Transform::local_x()]
-
-        right : function(self:LuaTransform):(LuaVec3)
-
-        --Get the unit vector in the local `Y` direction.
-
-        local_y : function(self:LuaTransform):(LuaVec3)
-
-        --Equivalent to [`local_y()`][Transform::local_y]
-
-        up : function(self:LuaTransform):(LuaVec3)
-
-        --Equivalent to [`-local_y()`][Transform::local_y]
-
-        down : function(self:LuaTransform):(LuaVec3)
-
-        --Get the unit vector in the local `Z` direction.
-
-        local_z : function(self:LuaTransform):(LuaVec3)
-
-        --Equivalent to [`-local_z()`][Transform::local_z]
-
-        forward : function(self:LuaTransform):(LuaVec3)
-
-        --Equivalent to [`local_z()`][Transform::local_z]
-
-        back : function(self:LuaTransform):(LuaVec3)
-
         --Multiplies `self` with `transform` component by component, returning the
         --
         --resulting [`Transform`]
@@ -1889,6 +1869,14 @@ global record BevyAPI
         --consider using [`GlobalTransform::transform_point()`] instead.
 
         transform_point : function(self:LuaTransform , LuaVec3):(LuaVec3)
+
+        --Returns `true` if, and only if, translation, rotation and scale all are
+        --
+        --finite. If any of them contains a `NaN`, positive or negative infinity,
+        --
+        --this will return `false`.
+
+        is_finite : function(self:LuaTransform):(boolean)
 
         --Rotates this [`Transform`] by the given rotation.
         --
@@ -2134,7 +2122,7 @@ global record BevyAPI
         --
         --
         --
-        --```rust
+        --```
         --
         --# use bevy_transform::prelude::{GlobalTransform, Transform};
         --
@@ -2281,7 +2269,17 @@ global record BevyAPI
 
         color : LuaColor
 
-        -- Illuminance in lux
+        -- Illuminance in lux (lumens per square meter), representing the amount of
+        --
+        -- light projected onto surfaces by this light source. Lux is used here
+        --
+        -- instead of lumens because a directional light illuminates all surfaces
+        --
+        -- more-or-less the same way (depending on the angle of incidence). Lumens
+        --
+        -- can only be specified for light sources which emit light from a specific
+        --
+        -- area.
 
         illuminance : number
 
@@ -2339,7 +2337,7 @@ global record BevyAPI
 
         color : LuaColor
 
-        -- Luminous power in lumens
+        -- Luminous power in lumens, representing the amount of light emitted by this source in all directions.
 
         intensity : number
 
@@ -2463,8 +2461,6 @@ global record BevyAPI
     
     --
 
-        clear_color : LuaClearColorConfig
-
     end
     
     
@@ -2473,10 +2469,6 @@ global record BevyAPI
         userdata
     
     --
-
-        -- The clear color operation to perform for the main 3d pass.
-
-        clear_color : LuaClearColorConfig
 
         -- The depth clear operation to perform for the main 3d pass.
 
@@ -2510,7 +2502,7 @@ global record BevyAPI
         --
         --   back to refracting only the environment map light's texture.
         --
-        -- - If set to more than `0`, any opaque [`clear_color`](Camera3d::clear_color) will obscure the environment
+        -- - If set to more than `0`, any opaque [`clear_color`](Camera::clear_color) will obscure the environment
         --
         --   map light's texture, preventing it from being visible “through” transmissive materials. If you'd like
         --
@@ -2563,60 +2555,21 @@ global record BevyAPI
     end
     
     
-    record LuaTextureAtlasSprite
+    record LuaTextureAtlas
 
         userdata
     
     --
 
-        -- The tint color used to draw the sprite, defaulting to [`Color::WHITE`]
+        -- Texture atlas layout handle
 
-        color : LuaColor
+        layout : ReflectedValue
 
-        -- Texture index in [`TextureAtlas`]
+        -- Texture atlas section index
 
         index : integer
 
-        -- Whether to flip the sprite in the X axis
-
-        flip_x : boolean
-
-        -- Whether to flip the sprite in the Y axis
-
-        flip_y : boolean
-
-        -- An optional custom size for the sprite that will be used when rendering, instead of the size
-        --
-        -- of the sprite's image in the atlas
-
-        custom_size : ReflectedValue
-
-        -- [`Anchor`] point of the sprite in the world
-
-        anchor : LuaAnchor
-
-        --Create a new [`TextureAtlasSprite`] with a sprite index,
-        --
-        --it should be valid in the corresponding [`TextureAtlas`]
-
-        new : function(integer):(LuaTextureAtlasSprite)
-
-        __tostring : function(self:LuaTextureAtlasSprite):(string)
-
-    end
-    
-    
-    record ClassLuaTextureAtlasSprite
-
-        userdata
-    
-    --Collection of static methods for [``].
-
-        --Create a new [`TextureAtlasSprite`] with a sprite index,
-        --
-        --it should be valid in the corresponding [`TextureAtlas`]
-
-        new : function(integer):(LuaTextureAtlasSprite)
+        __tostring : function(self:LuaTextureAtlas):(string)
 
     end
     
@@ -2645,9 +2598,15 @@ global record BevyAPI
 
         custom_size : ReflectedValue
 
-        -- An optional rectangle representing the region of the sprite's image to render, instead of
+        -- An optional rectangle representing the region of the sprite's image to render, instead of rendering
         --
-        -- rendering the full image. This is an easy one-off alternative to using a texture atlas.
+        -- the full image. This is an easy one-off alternative to using a [`TextureAtlas`](crate::TextureAtlas).
+        --
+        --
+        --
+        -- When used with a [`TextureAtlas`](crate::TextureAtlas), the rect
+        --
+        -- is offset by the atlas's minimal (top-left) corner position.
 
         rect : ReflectedValue
 
@@ -2679,6 +2638,10 @@ global record BevyAPI
         --`RenderLayers`, even another with no layers.
 
         intersects : function(self:LuaRenderLayers , LuaRenderLayers):(boolean)
+
+        --get the bitmask representation of the contained layers
+
+        bits : function(self:LuaRenderLayers):(integer)
 
         --Create a new `RenderLayers` that belongs to all layers.
 
@@ -2819,6 +2782,10 @@ global record BevyAPI
 
         __tostring : function(self:LuaScalingMode):(string)
 
+        __div : function(any , any):(any)
+
+        __mul : function(any , any):(any)
+
     end
     
     
@@ -2945,6 +2912,38 @@ global record BevyAPI
         --`A` will be the most significant byte and `R` the least significant.
 
         as_linear_rgba_u32 : function(self:LuaColor):(integer)
+
+        --Convert `Color` to RGBA and return as `Vec4`.
+
+        rgba_to_vec4 : function(self:LuaColor):(LuaVec4)
+
+        --Convert `Color` to RGBA and return as `Vec3`.
+
+        rgb_to_vec3 : function(self:LuaColor):(LuaVec3)
+
+        --Convert `Color` to linear RGBA and return as `Vec4`.
+
+        rgba_linear_to_vec4 : function(self:LuaColor):(LuaVec4)
+
+        --Convert `Color` to linear RGBA and return as `Vec3`.
+
+        rgb_linear_to_vec3 : function(self:LuaColor):(LuaVec3)
+
+        --Convert `Color` to HSLA and return as `Vec4`.
+
+        hsla_to_vec4 : function(self:LuaColor):(LuaVec4)
+
+        --Convert `Color` to HSLA and return as `Vec3`.
+
+        hsl_to_vec3 : function(self:LuaColor):(LuaVec3)
+
+        --Convert `Color` to LCHA and return as `Vec4`.
+
+        lcha_to_vec4 : function(self:LuaColor):(LuaVec4)
+
+        --Convert `Color` to LCHA and return as `Vec3`.
+
+        lch_to_vec3 : function(self:LuaColor):(LuaVec3)
 
         --New `Color` from sRGB colorspace.
         --
@@ -3532,6 +3531,10 @@ global record BevyAPI
 
         msaa_writeback : boolean
 
+        -- The clear color operation to perform on the render target.
+
+        clear_color : LuaClearColorConfig
+
         --The projection matrix computed using this camera's [`CameraProjection`].
 
         projection_matrix : function(self:LuaCamera):(LuaMat4)
@@ -3652,7 +3655,7 @@ global record BevyAPI
 
         viewport_origin : LuaVec2
 
-        -- How the projection will scale when the viewport is resized.
+        -- How the projection will scale to the viewport.
         --
         --
         --
@@ -3660,7 +3663,7 @@ global record BevyAPI
 
         scaling_mode : LuaScalingMode
 
-        -- Scales the projection in world units.
+        -- Scales the projection.
         --
         --
         --
@@ -3668,7 +3671,17 @@ global record BevyAPI
         --
         --
         --
-        -- Defaults to `1.0`
+        -- Note: scaling can be set by [`scaling_mode`](Self::scaling_mode) as well.
+        --
+        -- This parameter scales on top of that.
+        --
+        --
+        --
+        -- This property is particularly useful in implementing zoom functionality.
+        --
+        --
+        --
+        -- Defaults to `1.0`.
 
         scale : number
 
@@ -4009,6 +4022,18 @@ global record BevyAPI
 
         distance_squared : function(self:LuaVec2 , LuaVec2):(number)
 
+        --Returns the element-wise quotient of [Euclidean division] of `self` by `rhs`.
+
+        div_euclid : function(self:LuaVec2 , LuaVec2):(LuaVec2)
+
+        --Returns the element-wise remainder of [Euclidean division] of `self` by `rhs`.
+        --
+        --
+        --
+        --[Euclidean division]: f32::rem_euclid
+
+        rem_euclid : function(self:LuaVec2 , LuaVec2):(LuaVec2)
+
         --Returns `self` normalized to length 1.0.
         --
         --
@@ -4242,6 +4267,14 @@ global record BevyAPI
         --mind.
 
         mul_add : function(self:LuaVec2 , LuaVec2 , LuaVec2):(LuaVec2)
+
+        --Returns the angle (in radians) of this vector in the range `[-π, +π]`.
+        --
+        --
+        --
+        --The input does not need to be a unit vector however it must be non-zero.
+
+        to_angle : function(self:LuaVec2):(number)
 
         --Returns the angle (in radians) between `self` and `rhs` in the range `[-π, +π]`.
         --
@@ -4612,6 +4645,18 @@ global record BevyAPI
         --Compute the squared euclidean distance between two points in space.
 
         distance_squared : function(self:LuaVec3 , LuaVec3):(number)
+
+        --Returns the element-wise quotient of [Euclidean division] of `self` by `rhs`.
+
+        div_euclid : function(self:LuaVec3 , LuaVec3):(LuaVec3)
+
+        --Returns the element-wise remainder of [Euclidean division] of `self` by `rhs`.
+        --
+        --
+        --
+        --[Euclidean division]: f32::rem_euclid
+
+        rem_euclid : function(self:LuaVec3 , LuaVec3):(LuaVec3)
 
         --Returns `self` normalized to length 1.0.
         --
@@ -5203,6 +5248,18 @@ global record BevyAPI
 
         distance_squared : function(self:LuaVec3A , LuaVec3A):(number)
 
+        --Returns the element-wise quotient of [Euclidean division] of `self` by `rhs`.
+
+        div_euclid : function(self:LuaVec3A , LuaVec3A):(LuaVec3A)
+
+        --Returns the element-wise remainder of [Euclidean division] of `self` by `rhs`.
+        --
+        --
+        --
+        --[Euclidean division]: f32::rem_euclid
+
+        rem_euclid : function(self:LuaVec3A , LuaVec3A):(LuaVec3A)
+
         --Returns `self` normalized to length 1.0.
         --
         --
@@ -5573,7 +5630,7 @@ global record BevyAPI
     
     --
 
-        --Creates a 2D vector from the `x`, `y` and `z` elements of `self`, discarding `w`.
+        --Creates a 3D vector from the `x`, `y` and `z` elements of `self`, discarding `w`.
         --
         --
         --
@@ -5788,6 +5845,18 @@ global record BevyAPI
         --Compute the squared euclidean distance between two points in space.
 
         distance_squared : function(self:LuaVec4 , LuaVec4):(number)
+
+        --Returns the element-wise quotient of [Euclidean division] of `self` by `rhs`.
+
+        div_euclid : function(self:LuaVec4 , LuaVec4):(LuaVec4)
+
+        --Returns the element-wise remainder of [Euclidean division] of `self` by `rhs`.
+        --
+        --
+        --
+        --[Euclidean division]: f32::rem_euclid
+
+        rem_euclid : function(self:LuaVec4 , LuaVec4):(LuaVec4)
 
         --Returns `self` normalized to length 1.0.
         --
@@ -6701,6 +6770,18 @@ global record BevyAPI
 
         distance_squared : function(self:LuaDVec2 , LuaDVec2):(number)
 
+        --Returns the element-wise quotient of [Euclidean division] of `self` by `rhs`.
+
+        div_euclid : function(self:LuaDVec2 , LuaDVec2):(LuaDVec2)
+
+        --Returns the element-wise remainder of [Euclidean division] of `self` by `rhs`.
+        --
+        --
+        --
+        --[Euclidean division]: f64::rem_euclid
+
+        rem_euclid : function(self:LuaDVec2 , LuaDVec2):(LuaDVec2)
+
         --Returns `self` normalized to length 1.0.
         --
         --
@@ -6934,6 +7015,14 @@ global record BevyAPI
         --mind.
 
         mul_add : function(self:LuaDVec2 , LuaDVec2 , LuaDVec2):(LuaDVec2)
+
+        --Returns the angle (in radians) of this vector in the range `[-π, +π]`.
+        --
+        --
+        --
+        --The input does not need to be a unit vector however it must be non-zero.
+
+        to_angle : function(self:LuaDVec2):(number)
 
         --Returns the angle (in radians) between `self` and `rhs` in the range `[-π, +π]`.
         --
@@ -7304,6 +7393,18 @@ global record BevyAPI
         --Compute the squared euclidean distance between two points in space.
 
         distance_squared : function(self:LuaDVec3 , LuaDVec3):(number)
+
+        --Returns the element-wise quotient of [Euclidean division] of `self` by `rhs`.
+
+        div_euclid : function(self:LuaDVec3 , LuaDVec3):(LuaDVec3)
+
+        --Returns the element-wise remainder of [Euclidean division] of `self` by `rhs`.
+        --
+        --
+        --
+        --[Euclidean division]: f64::rem_euclid
+
+        rem_euclid : function(self:LuaDVec3 , LuaDVec3):(LuaDVec3)
 
         --Returns `self` normalized to length 1.0.
         --
@@ -7687,7 +7788,7 @@ global record BevyAPI
 
         w : number
 
-        --Creates a 2D vector from the `x`, `y` and `z` elements of `self`, discarding `w`.
+        --Creates a 3D vector from the `x`, `y` and `z` elements of `self`, discarding `w`.
         --
         --
         --
@@ -7898,6 +7999,18 @@ global record BevyAPI
         --Compute the squared euclidean distance between two points in space.
 
         distance_squared : function(self:LuaDVec4 , LuaDVec4):(number)
+
+        --Returns the element-wise quotient of [Euclidean division] of `self` by `rhs`.
+
+        div_euclid : function(self:LuaDVec4 , LuaDVec4):(LuaDVec4)
+
+        --Returns the element-wise remainder of [Euclidean division] of `self` by `rhs`.
+        --
+        --
+        --
+        --[Euclidean division]: f64::rem_euclid
+
+        rem_euclid : function(self:LuaDVec4 , LuaDVec4):(LuaDVec4)
 
         --Returns `self` normalized to length 1.0.
         --
@@ -8401,6 +8514,30 @@ global record BevyAPI
 
         distance_squared : function(self:LuaIVec2 , LuaIVec2):(integer)
 
+        --Returns the element-wise quotient of [Euclidean division] of `self` by `rhs`.
+        --
+        --
+        --
+        --# Panics
+        --
+        --This function will panic if any `rhs` element is 0 or the division results in overflow.
+
+        div_euclid : function(self:LuaIVec2 , LuaIVec2):(LuaIVec2)
+
+        --Returns the element-wise remainder of [Euclidean division] of `self` by `rhs`.
+        --
+        --
+        --
+        --# Panics
+        --
+        --This function will panic if any `rhs` element is 0 or the division results in overflow.
+        --
+        --
+        --
+        --[Euclidean division]: i32::rem_euclid
+
+        rem_euclid : function(self:LuaIVec2 , LuaIVec2):(LuaIVec2)
+
         --Returns a vector that is equal to `self` rotated by 90 degrees.
 
         perp : function(self:LuaIVec2):(LuaIVec2)
@@ -8430,6 +8567,70 @@ global record BevyAPI
         --Casts all elements of `self` to `u32`.
 
         as_uvec2 : function(self:LuaIVec2):(LuaUVec2)
+
+        --Returns a vector containing the wrapping addition of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.wrapping_add(rhs.x), self.y.wrapping_add(rhs.y), ..]`.
+
+        wrapping_add : function(self:LuaIVec2 , LuaIVec2):(LuaIVec2)
+
+        --Returns a vector containing the wrapping subtraction of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.wrapping_sub(rhs.x), self.y.wrapping_sub(rhs.y), ..]`.
+
+        wrapping_sub : function(self:LuaIVec2 , LuaIVec2):(LuaIVec2)
+
+        --Returns a vector containing the wrapping multiplication of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.wrapping_mul(rhs.x), self.y.wrapping_mul(rhs.y), ..]`.
+
+        wrapping_mul : function(self:LuaIVec2 , LuaIVec2):(LuaIVec2)
+
+        --Returns a vector containing the wrapping division of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.wrapping_div(rhs.x), self.y.wrapping_div(rhs.y), ..]`.
+
+        wrapping_div : function(self:LuaIVec2 , LuaIVec2):(LuaIVec2)
+
+        --Returns a vector containing the saturating addition of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.saturating_add(rhs.x), self.y.saturating_add(rhs.y), ..]`.
+
+        saturating_add : function(self:LuaIVec2 , LuaIVec2):(LuaIVec2)
+
+        --Returns a vector containing the saturating subtraction of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.saturating_sub(rhs.x), self.y.saturating_sub(rhs.y), ..]`.
+
+        saturating_sub : function(self:LuaIVec2 , LuaIVec2):(LuaIVec2)
+
+        --Returns a vector containing the saturating multiplication of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.saturating_mul(rhs.x), self.y.saturating_mul(rhs.y), ..]`.
+
+        saturating_mul : function(self:LuaIVec2 , LuaIVec2):(LuaIVec2)
+
+        --Returns a vector containing the saturating division of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.saturating_div(rhs.x), self.y.saturating_div(rhs.y), ..]`.
+
+        saturating_div : function(self:LuaIVec2 , LuaIVec2):(LuaIVec2)
 
         --Creates a new vector.
 
@@ -8701,6 +8902,30 @@ global record BevyAPI
 
         distance_squared : function(self:LuaIVec3 , LuaIVec3):(integer)
 
+        --Returns the element-wise quotient of [Euclidean division] of `self` by `rhs`.
+        --
+        --
+        --
+        --# Panics
+        --
+        --This function will panic if any `rhs` element is 0 or the division results in overflow.
+
+        div_euclid : function(self:LuaIVec3 , LuaIVec3):(LuaIVec3)
+
+        --Returns the element-wise remainder of [Euclidean division] of `self` by `rhs`.
+        --
+        --
+        --
+        --# Panics
+        --
+        --This function will panic if any `rhs` element is 0 or the division results in overflow.
+        --
+        --
+        --
+        --[Euclidean division]: i32::rem_euclid
+
+        rem_euclid : function(self:LuaIVec3 , LuaIVec3):(LuaIVec3)
+
         --Casts all elements of `self` to `f32`.
 
         as_vec3 : function(self:LuaIVec3):(LuaVec3)
@@ -8716,6 +8941,70 @@ global record BevyAPI
         --Casts all elements of `self` to `u32`.
 
         as_uvec3 : function(self:LuaIVec3):(LuaUVec3)
+
+        --Returns a vector containing the wrapping addition of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.wrapping_add(rhs.x), self.y.wrapping_add(rhs.y), ..]`.
+
+        wrapping_add : function(self:LuaIVec3 , LuaIVec3):(LuaIVec3)
+
+        --Returns a vector containing the wrapping subtraction of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.wrapping_sub(rhs.x), self.y.wrapping_sub(rhs.y), ..]`.
+
+        wrapping_sub : function(self:LuaIVec3 , LuaIVec3):(LuaIVec3)
+
+        --Returns a vector containing the wrapping multiplication of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.wrapping_mul(rhs.x), self.y.wrapping_mul(rhs.y), ..]`.
+
+        wrapping_mul : function(self:LuaIVec3 , LuaIVec3):(LuaIVec3)
+
+        --Returns a vector containing the wrapping division of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.wrapping_div(rhs.x), self.y.wrapping_div(rhs.y), ..]`.
+
+        wrapping_div : function(self:LuaIVec3 , LuaIVec3):(LuaIVec3)
+
+        --Returns a vector containing the saturating addition of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.saturating_add(rhs.x), self.y.saturating_add(rhs.y), ..]`.
+
+        saturating_add : function(self:LuaIVec3 , LuaIVec3):(LuaIVec3)
+
+        --Returns a vector containing the saturating subtraction of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.saturating_sub(rhs.x), self.y.saturating_sub(rhs.y), ..]`.
+
+        saturating_sub : function(self:LuaIVec3 , LuaIVec3):(LuaIVec3)
+
+        --Returns a vector containing the saturating multiplication of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.saturating_mul(rhs.x), self.y.saturating_mul(rhs.y), ..]`.
+
+        saturating_mul : function(self:LuaIVec3 , LuaIVec3):(LuaIVec3)
+
+        --Returns a vector containing the saturating division of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.saturating_div(rhs.x), self.y.saturating_div(rhs.y), ..]`.
+
+        saturating_div : function(self:LuaIVec3 , LuaIVec3):(LuaIVec3)
 
         --Creates a new vector.
 
@@ -8811,7 +9100,7 @@ global record BevyAPI
 
         w : integer
 
-        --Creates a 2D vector from the `x`, `y` and `z` elements of `self`, discarding `w`.
+        --Creates a 3D vector from the `x`, `y` and `z` elements of `self`, discarding `w`.
         --
         --
         --
@@ -8981,6 +9270,30 @@ global record BevyAPI
 
         distance_squared : function(self:LuaIVec4 , LuaIVec4):(integer)
 
+        --Returns the element-wise quotient of [Euclidean division] of `self` by `rhs`.
+        --
+        --
+        --
+        --# Panics
+        --
+        --This function will panic if any `rhs` element is 0 or the division results in overflow.
+
+        div_euclid : function(self:LuaIVec4 , LuaIVec4):(LuaIVec4)
+
+        --Returns the element-wise remainder of [Euclidean division] of `self` by `rhs`.
+        --
+        --
+        --
+        --# Panics
+        --
+        --This function will panic if any `rhs` element is 0 or the division results in overflow.
+        --
+        --
+        --
+        --[Euclidean division]: i32::rem_euclid
+
+        rem_euclid : function(self:LuaIVec4 , LuaIVec4):(LuaIVec4)
+
         --Casts all elements of `self` to `f32`.
 
         as_vec4 : function(self:LuaIVec4):(LuaVec4)
@@ -8992,6 +9305,70 @@ global record BevyAPI
         --Casts all elements of `self` to `u32`.
 
         as_uvec4 : function(self:LuaIVec4):(LuaUVec4)
+
+        --Returns a vector containing the wrapping addition of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.wrapping_add(rhs.x), self.y.wrapping_add(rhs.y), ..]`.
+
+        wrapping_add : function(self:LuaIVec4 , LuaIVec4):(LuaIVec4)
+
+        --Returns a vector containing the wrapping subtraction of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.wrapping_sub(rhs.x), self.y.wrapping_sub(rhs.y), ..]`.
+
+        wrapping_sub : function(self:LuaIVec4 , LuaIVec4):(LuaIVec4)
+
+        --Returns a vector containing the wrapping multiplication of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.wrapping_mul(rhs.x), self.y.wrapping_mul(rhs.y), ..]`.
+
+        wrapping_mul : function(self:LuaIVec4 , LuaIVec4):(LuaIVec4)
+
+        --Returns a vector containing the wrapping division of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.wrapping_div(rhs.x), self.y.wrapping_div(rhs.y), ..]`.
+
+        wrapping_div : function(self:LuaIVec4 , LuaIVec4):(LuaIVec4)
+
+        --Returns a vector containing the saturating addition of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.saturating_add(rhs.x), self.y.saturating_add(rhs.y), ..]`.
+
+        saturating_add : function(self:LuaIVec4 , LuaIVec4):(LuaIVec4)
+
+        --Returns a vector containing the saturating subtraction of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.saturating_sub(rhs.x), self.y.saturating_sub(rhs.y), ..]`.
+
+        saturating_sub : function(self:LuaIVec4 , LuaIVec4):(LuaIVec4)
+
+        --Returns a vector containing the saturating multiplication of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.saturating_mul(rhs.x), self.y.saturating_mul(rhs.y), ..]`.
+
+        saturating_mul : function(self:LuaIVec4 , LuaIVec4):(LuaIVec4)
+
+        --Returns a vector containing the saturating division of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.saturating_div(rhs.x), self.y.saturating_div(rhs.y), ..]`.
+
+        saturating_div : function(self:LuaIVec4 , LuaIVec4):(LuaIVec4)
 
         --Creates a new vector.
 
@@ -9230,6 +9607,70 @@ global record BevyAPI
         --Casts all elements of `self` to `i32`.
 
         as_ivec2 : function(self:LuaUVec2):(LuaIVec2)
+
+        --Returns a vector containing the wrapping addition of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.wrapping_add(rhs.x), self.y.wrapping_add(rhs.y), ..]`.
+
+        wrapping_add : function(self:LuaUVec2 , LuaUVec2):(LuaUVec2)
+
+        --Returns a vector containing the wrapping subtraction of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.wrapping_sub(rhs.x), self.y.wrapping_sub(rhs.y), ..]`.
+
+        wrapping_sub : function(self:LuaUVec2 , LuaUVec2):(LuaUVec2)
+
+        --Returns a vector containing the wrapping multiplication of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.wrapping_mul(rhs.x), self.y.wrapping_mul(rhs.y), ..]`.
+
+        wrapping_mul : function(self:LuaUVec2 , LuaUVec2):(LuaUVec2)
+
+        --Returns a vector containing the wrapping division of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.wrapping_div(rhs.x), self.y.wrapping_div(rhs.y), ..]`.
+
+        wrapping_div : function(self:LuaUVec2 , LuaUVec2):(LuaUVec2)
+
+        --Returns a vector containing the saturating addition of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.saturating_add(rhs.x), self.y.saturating_add(rhs.y), ..]`.
+
+        saturating_add : function(self:LuaUVec2 , LuaUVec2):(LuaUVec2)
+
+        --Returns a vector containing the saturating subtraction of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.saturating_sub(rhs.x), self.y.saturating_sub(rhs.y), ..]`.
+
+        saturating_sub : function(self:LuaUVec2 , LuaUVec2):(LuaUVec2)
+
+        --Returns a vector containing the saturating multiplication of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.saturating_mul(rhs.x), self.y.saturating_mul(rhs.y), ..]`.
+
+        saturating_mul : function(self:LuaUVec2 , LuaUVec2):(LuaUVec2)
+
+        --Returns a vector containing the saturating division of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.saturating_div(rhs.x), self.y.saturating_div(rhs.y), ..]`.
+
+        saturating_div : function(self:LuaUVec2 , LuaUVec2):(LuaUVec2)
 
         --Creates a new vector.
 
@@ -9485,6 +9926,70 @@ global record BevyAPI
 
         as_ivec3 : function(self:LuaUVec3):(LuaIVec3)
 
+        --Returns a vector containing the wrapping addition of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.wrapping_add(rhs.x), self.y.wrapping_add(rhs.y), ..]`.
+
+        wrapping_add : function(self:LuaUVec3 , LuaUVec3):(LuaUVec3)
+
+        --Returns a vector containing the wrapping subtraction of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.wrapping_sub(rhs.x), self.y.wrapping_sub(rhs.y), ..]`.
+
+        wrapping_sub : function(self:LuaUVec3 , LuaUVec3):(LuaUVec3)
+
+        --Returns a vector containing the wrapping multiplication of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.wrapping_mul(rhs.x), self.y.wrapping_mul(rhs.y), ..]`.
+
+        wrapping_mul : function(self:LuaUVec3 , LuaUVec3):(LuaUVec3)
+
+        --Returns a vector containing the wrapping division of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.wrapping_div(rhs.x), self.y.wrapping_div(rhs.y), ..]`.
+
+        wrapping_div : function(self:LuaUVec3 , LuaUVec3):(LuaUVec3)
+
+        --Returns a vector containing the saturating addition of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.saturating_add(rhs.x), self.y.saturating_add(rhs.y), ..]`.
+
+        saturating_add : function(self:LuaUVec3 , LuaUVec3):(LuaUVec3)
+
+        --Returns a vector containing the saturating subtraction of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.saturating_sub(rhs.x), self.y.saturating_sub(rhs.y), ..]`.
+
+        saturating_sub : function(self:LuaUVec3 , LuaUVec3):(LuaUVec3)
+
+        --Returns a vector containing the saturating multiplication of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.saturating_mul(rhs.x), self.y.saturating_mul(rhs.y), ..]`.
+
+        saturating_mul : function(self:LuaUVec3 , LuaUVec3):(LuaUVec3)
+
+        --Returns a vector containing the saturating division of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.saturating_div(rhs.x), self.y.saturating_div(rhs.y), ..]`.
+
+        saturating_div : function(self:LuaUVec3 , LuaUVec3):(LuaUVec3)
+
         --Creates a new vector.
 
         new : function(integer , integer , integer):(LuaUVec3)
@@ -9577,7 +10082,7 @@ global record BevyAPI
 
         w : integer
 
-        --Creates a 2D vector from the `x`, `y` and `z` elements of `self`, discarding `w`.
+        --Creates a 3D vector from the `x`, `y` and `z` elements of `self`, discarding `w`.
         --
         --
         --
@@ -9728,6 +10233,70 @@ global record BevyAPI
         --Casts all elements of `self` to `i32`.
 
         as_ivec4 : function(self:LuaUVec4):(LuaIVec4)
+
+        --Returns a vector containing the wrapping addition of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.wrapping_add(rhs.x), self.y.wrapping_add(rhs.y), ..]`.
+
+        wrapping_add : function(self:LuaUVec4 , LuaUVec4):(LuaUVec4)
+
+        --Returns a vector containing the wrapping subtraction of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.wrapping_sub(rhs.x), self.y.wrapping_sub(rhs.y), ..]`.
+
+        wrapping_sub : function(self:LuaUVec4 , LuaUVec4):(LuaUVec4)
+
+        --Returns a vector containing the wrapping multiplication of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.wrapping_mul(rhs.x), self.y.wrapping_mul(rhs.y), ..]`.
+
+        wrapping_mul : function(self:LuaUVec4 , LuaUVec4):(LuaUVec4)
+
+        --Returns a vector containing the wrapping division of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.wrapping_div(rhs.x), self.y.wrapping_div(rhs.y), ..]`.
+
+        wrapping_div : function(self:LuaUVec4 , LuaUVec4):(LuaUVec4)
+
+        --Returns a vector containing the saturating addition of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.saturating_add(rhs.x), self.y.saturating_add(rhs.y), ..]`.
+
+        saturating_add : function(self:LuaUVec4 , LuaUVec4):(LuaUVec4)
+
+        --Returns a vector containing the saturating subtraction of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.saturating_sub(rhs.x), self.y.saturating_sub(rhs.y), ..]`.
+
+        saturating_sub : function(self:LuaUVec4 , LuaUVec4):(LuaUVec4)
+
+        --Returns a vector containing the saturating multiplication of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.saturating_mul(rhs.x), self.y.saturating_mul(rhs.y), ..]`.
+
+        saturating_mul : function(self:LuaUVec4 , LuaUVec4):(LuaUVec4)
+
+        --Returns a vector containing the saturating division of `self` and `rhs`.
+        --
+        --
+        --
+        --In other words this computes `[self.x.saturating_div(rhs.x), self.y.saturating_div(rhs.y), ..]`.
+
+        saturating_div : function(self:LuaUVec4 , LuaUVec4):(LuaUVec4)
 
         --Creates a new vector.
 
@@ -14505,6 +15074,8 @@ global record BevyAPI
 
         mul_vec3a : function(self:LuaQuat , LuaVec3A):(LuaVec3A)
 
+        as_dquat : function(self:LuaQuat):(LuaDQuat)
+
         as_f64 : function(self:LuaQuat):(LuaDQuat)
 
         --Creates a new rotation quaternion.
@@ -15113,6 +15684,8 @@ global record BevyAPI
 
         mul_quat : function(self:LuaDQuat , LuaDQuat):(LuaDQuat)
 
+        as_quat : function(self:LuaDQuat):(LuaQuat)
+
         as_f32 : function(self:LuaDQuat):(LuaQuat)
 
         --Creates a new rotation quaternion.
@@ -15528,7 +16101,7 @@ global record BevyAPI
         --
         --
         --
-        --```rust
+        --```
         --
         --# use bevy_math::{Rect, Vec2};
         --
@@ -15548,7 +16121,7 @@ global record BevyAPI
         --
         --
         --
-        --```rust
+        --```
         --
         --# use bevy_math::Rect;
         --
@@ -15568,7 +16141,7 @@ global record BevyAPI
         --
         --
         --
-        --```rust
+        --```
         --
         --# use bevy_math::Rect;
         --
@@ -15588,7 +16161,7 @@ global record BevyAPI
         --
         --
         --
-        --```rust
+        --```
         --
         --# use bevy_math::{Rect, Vec2};
         --
@@ -15608,7 +16181,7 @@ global record BevyAPI
         --
         --
         --
-        --```rust
+        --```
         --
         --# use bevy_math::{Rect, Vec2};
         --
@@ -15628,7 +16201,7 @@ global record BevyAPI
         --
         --
         --
-        --```rust
+        --```
         --
         --# use bevy_math::{Rect, Vec2};
         --
@@ -15648,7 +16221,7 @@ global record BevyAPI
         --
         --
         --
-        --```rust
+        --```
         --
         --# use bevy_math::Rect;
         --
@@ -15676,7 +16249,7 @@ global record BevyAPI
         --
         --
         --
-        --```rust
+        --```
         --
         --# use bevy_math::{Rect, Vec2};
         --
@@ -15708,7 +16281,7 @@ global record BevyAPI
         --
         --
         --
-        --```rust
+        --```
         --
         --# use bevy_math::{Rect, Vec2};
         --
@@ -15740,7 +16313,7 @@ global record BevyAPI
         --
         --
         --
-        --```rust
+        --```
         --
         --# use bevy_math::{Rect, Vec2};
         --
@@ -15774,7 +16347,7 @@ global record BevyAPI
         --
         --
         --
-        --```rust
+        --```
         --
         --# use bevy_math::{Rect, Vec2};
         --
@@ -15810,7 +16383,7 @@ global record BevyAPI
         --
         --
         --
-        --```rust
+        --```
         --
         --# use bevy_math::{Rect, Vec2};
         --
@@ -15848,7 +16421,7 @@ global record BevyAPI
         --
         --
         --
-        --```rust
+        --```
         --
         --# use bevy_math::Rect;
         --
@@ -15874,7 +16447,7 @@ global record BevyAPI
         --
         --
         --
-        --```rust
+        --```
         --
         --# use bevy_math::{Rect, Vec2};
         --
@@ -15902,7 +16475,7 @@ global record BevyAPI
         --
         --
         --
-        --```rust
+        --```
         --
         --# use bevy_math::{Rect, Vec2};
         --
@@ -15932,7 +16505,7 @@ global record BevyAPI
         --
         --
         --
-        --```rust
+        --```
         --
         --# use bevy_math::{Rect, Vec2};
         --
@@ -15971,7 +16544,7 @@ global record BevyAPI
         --
         --
         --
-        --```rust
+        --```
         --
         --# use bevy_math::Rect;
         --
@@ -15997,7 +16570,7 @@ global record BevyAPI
         --
         --
         --
-        --```rust
+        --```
         --
         --# use bevy_math::{Rect, Vec2};
         --
@@ -16025,7 +16598,7 @@ global record BevyAPI
         --
         --
         --
-        --```rust
+        --```
         --
         --# use bevy_math::{Rect, Vec2};
         --
@@ -16055,7 +16628,7 @@ global record BevyAPI
         --
         --
         --
-        --```rust
+        --```
         --
         --# use bevy_math::{Rect, Vec2};
         --
@@ -16324,10 +16897,6 @@ end
     --
 
     global Transform : BevyAPI.ClassLuaTransform
-
-    --
-
-    global TextureAtlasSprite : BevyAPI.ClassLuaTextureAtlasSprite
 
     --
 
