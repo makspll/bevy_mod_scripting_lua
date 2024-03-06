@@ -9,7 +9,7 @@ global record BevyAPI
     
     --
 
-        __tostring : function(LuaAlignContent):(string)
+        __tostring : function(self:LuaAlignContent):(string)
 
     end
     
@@ -20,7 +20,7 @@ global record BevyAPI
     
     --
 
-        __tostring : function(LuaAlignItems):(string)
+        __tostring : function(self:LuaAlignItems):(string)
 
     end
     
@@ -31,7 +31,7 @@ global record BevyAPI
     
     --
 
-        __tostring : function(LuaAlignSelf):(string)
+        __tostring : function(self:LuaAlignSelf):(string)
 
     end
     
@@ -42,7 +42,7 @@ global record BevyAPI
     
     --
 
-        __tostring : function(LuaDirection):(string)
+        __tostring : function(self:LuaDirection):(string)
 
     end
     
@@ -53,7 +53,7 @@ global record BevyAPI
     
     --
 
-        __tostring : function(LuaFlexDirection):(string)
+        __tostring : function(self:LuaFlexDirection):(string)
 
     end
     
@@ -64,7 +64,7 @@ global record BevyAPI
     
     --
 
-        __tostring : function(LuaFlexWrap):(string)
+        __tostring : function(self:LuaFlexWrap):(string)
 
     end
     
@@ -75,7 +75,7 @@ global record BevyAPI
     
     --
 
-        __tostring : function(LuaFocusPolicy):(string)
+        __tostring : function(self:LuaFocusPolicy):(string)
 
     end
     
@@ -86,7 +86,7 @@ global record BevyAPI
     
     --
 
-        __tostring : function(LuaInteraction):(string)
+        __tostring : function(self:LuaInteraction):(string)
 
     end
     
@@ -97,7 +97,7 @@ global record BevyAPI
     
     --
 
-        __tostring : function(LuaJustifyContent):(string)
+        __tostring : function(self:LuaJustifyContent):(string)
 
     end
     
@@ -108,7 +108,60 @@ global record BevyAPI
     
     --
 
-        __tostring : function(LuaOverflow):(string)
+        -- Whether to show or clip overflowing items on the x axis
+
+        x : ReflectedValue
+
+        -- Whether to show or clip overflowing items on the y axis
+
+        y : ReflectedValue
+
+        --Overflow is visible on both axes
+
+        is_visible : function(self:LuaOverflow):(boolean)
+
+        --Show overflowing items on both axes
+
+        visible : function():(LuaOverflow)
+
+        --Clip overflowing items on both axes
+
+        clip : function():(LuaOverflow)
+
+        --Clip overflowing items on the x axis
+
+        clip_x : function():(LuaOverflow)
+
+        --Clip overflowing items on the y axis
+
+        clip_y : function():(LuaOverflow)
+
+        __tostring : function(self:LuaOverflow):(string)
+
+    end
+    
+    
+    record ClassLuaOverflow
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        --Show overflowing items on both axes
+
+        visible : function():(LuaOverflow)
+
+        --Clip overflowing items on both axes
+
+        clip : function():(LuaOverflow)
+
+        --Clip overflowing items on the x axis
+
+        clip_x : function():(LuaOverflow)
+
+        --Clip overflowing items on the y axis
+
+        clip_y : function():(LuaOverflow)
 
     end
     
@@ -119,7 +172,7 @@ global record BevyAPI
     
     --
 
-        __tostring : function(LuaPositionType):(string)
+        __tostring : function(self:LuaPositionType):(string)
 
     end
     
@@ -130,11 +183,13 @@ global record BevyAPI
     
     --
 
-        __tostring : function(LuaVal):(string)
+        __tostring : function(self:LuaVal):(string)
 
-        __div : function((any),(any)):(any)
+        __unm : function(self:LuaVal):(LuaVal)
 
-        __mul : function((any),(any)):(any)
+        __div : function(any , any):(any)
+
+        __mul : function(any , any):(any)
 
     end
     
@@ -149,26 +204,7 @@ global record BevyAPI
 
         clip : LuaRect
 
-        __tostring : function(LuaCalculatedClip):(string)
-
-    end
-    
-    
-    record LuaCalculatedSize
-
-        userdata
-    
-    --
-
-        -- The size of the node in logical pixels
-
-        size : LuaVec2
-
-        -- Whether to attempt to preserve the aspect ratio when determining the layout for this item
-
-        preserve_aspect_ratio : boolean
-
-        __tostring : function(LuaCalculatedSize):(string)
+        __tostring : function(self:LuaCalculatedClip):(string)
 
     end
     
@@ -179,13 +215,47 @@ global record BevyAPI
     
     --
 
-        --The calculated node size as width and height in logical pixels
+        --The calculated node size as width and height in logical pixels.
         --
-        --automatically calculated by [`super::flex::flex_node_system`]
+        --
+        --
+        --Automatically calculated by [`super::layout::ui_layout_system`].
 
-        size : function(LuaNode):(LuaVec2)
+        size : function(self:LuaNode):(LuaVec2)
 
-        __tostring : function(LuaNode):(string)
+        --The order of the node in the UI layout.
+        --
+        --Nodes with a higher stack index are drawn on top of and recieve interactions before nodes with lower stack indices.
+
+        stack_index : function(self:LuaNode):(integer)
+
+        --The calculated node size as width and height in logical pixels before rounding.
+        --
+        --
+        --
+        --Automatically calculated by [`super::layout::ui_layout_system`].
+
+        unrounded_size : function(self:LuaNode):(LuaVec2)
+
+        --Returns the size of the node in physical pixels based on the given scale factor and `UiScale`.
+
+        physical_size : function(self:LuaNode , number , number):(LuaVec2)
+
+        --Returns the logical pixel coordinates of the UI node, based on its [`GlobalTransform`].
+
+        logical_rect : function(self:LuaNode , LuaGlobalTransform):(LuaRect)
+
+        --Returns the physical pixel coordinates of the UI node, based on its [`GlobalTransform`] and the scale factor.
+
+        physical_rect : function(self:LuaNode , LuaGlobalTransform , number , number):(LuaRect)
+
+        --Returns the thickness of the UI node's outline.
+        --
+        --If this value is negative or `0.` then no outline will be rendered.
+
+        outline_width : function(self:LuaNode):(number)
+
+        __tostring : function(self:LuaNode):(string)
 
     end
     
@@ -196,53 +266,243 @@ global record BevyAPI
     
     --
 
-        -- Whether to arrange this node and its children with flexbox layout
+        -- Which layout algorithm to use when laying out this node's contents:
+        --
+        --   - [`Display::Flex`]: Use the Flexbox layout algorithm
+        --
+        --   - [`Display::Grid`]: Use the CSS Grid layout algorithm
+        --
+        --   - [`Display::None`]: Hide this node and perform layout as if it does not exist.
         --
         --
         --
-        -- If this is set to [`Display::None`], this node will be collapsed.
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/display>
 
         display : LuaDisplay
 
-        -- Whether to arrange this node relative to other nodes, or positioned absolutely
+        -- Whether a node should be laid out in-flow with, or independently of its siblings:
+        --
+        --  - [`PositionType::Relative`]: Layout this node in-flow with other nodes using the usual (flexbox/grid) layout algorithm.
+        --
+        --  - [`PositionType::Absolute`]: Layout this node on top and independently of other nodes.
+        --
+        --
+        --
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/position>
 
         position_type : LuaPositionType
 
-        -- Which direction the content of this node should go
+        -- Whether overflowing content should be displayed or clipped.
+        --
+        --
+        --
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/overflow>
+
+        overflow : LuaOverflow
+
+        -- Defines the text direction. For example, English is written LTR (left-to-right) while Arabic is written RTL (right-to-left).
+        --
+        --
+        --
+        -- Note: the corresponding CSS property also affects box layout order, but this isn't yet implemented in Bevy.
+        --
+        --
+        --
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/direction>
 
         direction : LuaDirection
 
-        -- Whether to use column or row layout
+        -- The horizontal position of the left edge of the node.
+        --
+        --  - For relatively positioned nodes, this is relative to the node's position as computed during regular layout.
+        --
+        --  - For absolutely positioned nodes, this is relative to the *parent* node's bounding box.
+        --
+        --
+        --
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/left>
 
-        flex_direction : LuaFlexDirection
+        left : LuaVal
 
-        -- How to wrap nodes
+        -- The horizontal position of the right edge of the node.
+        --
+        --  - For relatively positioned nodes, this is relative to the node's position as computed during regular layout.
+        --
+        --  - For absolutely positioned nodes, this is relative to the *parent* node's bounding box.
+        --
+        --
+        --
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/right>
 
-        flex_wrap : LuaFlexWrap
+        right : LuaVal
 
-        -- How items are aligned according to the cross axis
+        -- The vertical position of the top edge of the node.
+        --
+        --  - For relatively positioned nodes, this is relative to the node's position as computed during regular layout.
+        --
+        --  - For absolutely positioned nodes, this is relative to the *parent* node's bounding box.
+        --
+        --
+        --
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/top>
+
+        top : LuaVal
+
+        -- The vertical position of the bottom edge of the node.
+        --
+        --  - For relatively positioned nodes, this is relative to the node's position as computed during regular layout.
+        --
+        --  - For absolutely positioned nodes, this is relative to the *parent* node's bounding box.
+        --
+        --
+        --
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/bottom>
+
+        bottom : LuaVal
+
+        -- The ideal width of the node. `width` is used when it is within the bounds defined by `min_width` and `max_width`.
+        --
+        --
+        --
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/width>
+
+        width : LuaVal
+
+        -- The ideal height of the node. `height` is used when it is within the bounds defined by `min_height` and `max_height`.
+        --
+        --
+        --
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/height>
+
+        height : LuaVal
+
+        -- The minimum width of the node. `min_width` is used if it is greater than `width` and/or `max_width`.
+        --
+        --
+        --
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/min-width>
+
+        min_width : LuaVal
+
+        -- The minimum height of the node. `min_height` is used if it is greater than `height` and/or `max_height`.
+        --
+        --
+        --
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/min-height>
+
+        min_height : LuaVal
+
+        -- The maximum width of the node. `max_width` is used if it is within the bounds defined by `min_width` and `width`.
+        --
+        --
+        --
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/max-width>
+
+        max_width : LuaVal
+
+        -- The maximum height of the node. `max_height` is used if it is within the bounds defined by `min_height` and `height`.
+        --
+        --
+        --
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/max-height>
+
+        max_height : LuaVal
+
+        -- The aspect ratio of the node (defined as `width / height`)
+        --
+        --
+        --
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/aspect-ratio>
+
+        aspect_ratio : ReflectedValue
+
+        -- Used to control how each individual item is aligned by default within the space they're given.
+        --
+        -- - For Flexbox containers, sets default cross axis alignment of the child items.
+        --
+        -- - For CSS Grid containers, controls block (vertical) axis alignment of children of this grid container within their grid areas.
+        --
+        --
+        --
+        -- This value is overridden if [`AlignSelf`] on the child node is set.
+        --
+        --
+        --
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/align-items>
 
         align_items : LuaAlignItems
 
-        -- How this item is aligned according to the cross axis.
+        -- Used to control how each individual item is aligned by default within the space they're given.
         --
-        -- Overrides [`AlignItems`].
+        -- - For Flexbox containers, this property has no effect. See `justify_content` for main axis alignment of flex items.
+        --
+        -- - For CSS Grid containers, sets default inline (horizontal) axis alignment of child items within their grid areas.
+        --
+        --
+        --
+        -- This value is overridden if [`JustifySelf`] on the child node is set.
+        --
+        --
+        --
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/justify-items>
+
+        justify_items : ReflectedValue
+
+        -- Used to control how the specified item is aligned within the space it's given.
+        --
+        -- - For Flexbox items, controls cross axis alignment of the item.
+        --
+        -- - For CSS Grid items, controls block (vertical) axis alignment of a grid item within its grid area.
+        --
+        --
+        --
+        -- If set to `Auto`, alignment is inherited from the value of [`AlignItems`] set on the parent node.
+        --
+        --
+        --
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/align-self>
 
         align_self : LuaAlignSelf
 
-        -- How to align each line, only applies if flex_wrap is set to
+        -- Used to control how the specified item is aligned within the space it's given.
         --
-        -- [`FlexWrap::Wrap`] and there are multiple lines of items
+        -- - For Flexbox items, this property has no effect. See `justify_content` for main axis alignment of flex items.
+        --
+        -- - For CSS Grid items, controls inline (horizontal) axis alignment of a grid item within its grid area.
+        --
+        --
+        --
+        -- If set to `Auto`, alignment is inherited from the value of [`JustifyItems`] set on the parent node.
+        --
+        --
+        --
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/justify-self>
+
+        justify_self : ReflectedValue
+
+        -- Used to control how items are distributed.
+        --
+        -- - For Flexbox containers, controls alignment of lines if `flex_wrap` is set to [`FlexWrap::Wrap`] and there are multiple lines of items.
+        --
+        -- - For CSS Grid containers, controls alignment of grid rows.
+        --
+        --
+        --
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/align-content>
 
         align_content : LuaAlignContent
 
-        -- How items align according to the main axis
+        -- Used to control how items are distributed.
+        --
+        -- - For Flexbox containers, controls alignment of items in the main axis.
+        --
+        -- - For CSS Grid containers, controls alignment of grid columns.
+        --
+        --
+        --
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/justify-content>
 
         justify_content : LuaJustifyContent
-
-        -- The position of the node as described by its Rect
-
-        position : ReflectedValue
 
         -- The amount of space around a node outside its border.
         --
@@ -278,7 +538,11 @@ global record BevyAPI
         --
         -- ```
         --
-        -- A node with this style and a parent with dimensions of 100px by 300px, will have calculated margins of 10px on both left and right edges, and 15px on both top and bottom egdes.
+        -- A node with this style and a parent with dimensions of 100px by 300px will have calculated margins of 10px on both left and right edges, and 15px on both top and bottom edges.
+        --
+        --
+        --
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/margin>
 
         margin : ReflectedValue
 
@@ -316,7 +580,11 @@ global record BevyAPI
         --
         -- ```
         --
-        -- A node with this style and a parent with dimensions of 300px by 100px, will have calculated padding of 3px on the left, 6px on the right, 9px on the top and 12px on the bottom.
+        -- A node with this style and a parent with dimensions of 300px by 100px will have calculated padding of 3px on the left, 6px on the right, 9px on the top and 12px on the bottom.
+        --
+        --
+        --
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/padding>
 
         padding : ReflectedValue
 
@@ -332,73 +600,145 @@ global record BevyAPI
         --
         --
         --
-        -- Rendering for borders is not yet implemented.
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/border-width>
 
         border : ReflectedValue
 
-        -- Defines how much a flexbox item should grow if there's space available
+        -- Whether a Flexbox container should be a row or a column. This property has no effect on Grid nodes.
+        --
+        --
+        --
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/flex-direction>
+
+        flex_direction : LuaFlexDirection
+
+        -- Whether a Flexbox container should wrap its contents onto multiple lines if they overflow. This property has no effect on Grid nodes.
+        --
+        --
+        --
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/flex-wrap>
+
+        flex_wrap : LuaFlexWrap
+
+        -- Defines how much a flexbox item should grow if there's space available. Defaults to 0 (don't grow at all).
+        --
+        --
+        --
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/flex-grow>
 
         flex_grow : number
 
-        -- How to shrink if there's not enough space available
+        -- Defines how much a flexbox item should shrink if there's not enough space available. Defaults to 1.
+        --
+        --
+        --
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/flex-shrink>
 
         flex_shrink : number
 
-        -- The initial length of the main axis, before other properties are applied.
+        -- The initial length of a flexbox in the main axis, before flex growing/shrinking properties are applied.
         --
         --
         --
-        -- If both are set, `flex_basis` overrides `size` on the main axis but it obeys the bounds defined by `min_size` and `max_size`.
+        -- `flex_basis` overrides `size` on the main axis if both are set, but it obeys the bounds defined by `min_size` and `max_size`.
+        --
+        --
+        --
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/flex-basis>
 
         flex_basis : LuaVal
 
-        -- The ideal size of the flexbox
+        -- The size of the gutters between items in a vertical flexbox layout or between rows in a grid layout.
         --
         --
         --
-        -- `size.width` is used when it is within the bounds defined by `min_size.width` and `max_size.width`.
+        -- Note: Values of `Val::Auto` are not valid and are treated as zero.
         --
-        -- `size.height` is used when it is within the bounds defined by `min_size.height` and `max_size.height`.
+        --
+        --
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/row-gap>
 
-        size : ReflectedValue
+        row_gap : LuaVal
 
-        -- The minimum size of the flexbox
+        -- The size of the gutters between items in a horizontal flexbox layout or between column in a grid layout.
         --
         --
         --
-        -- `min_size.width` is used if it is greater than either `size.width` or `max_size.width`, or both.
-        --
-        -- `min_size.height` is used if it is greater than either `size.height` or `max_size.height`, or both.
-
-        min_size : ReflectedValue
-
-        -- The maximum size of the flexbox
+        -- Note: Values of `Val::Auto` are not valid and are treated as zero.
         --
         --
         --
-        -- `max_size.width` is used if it is within the bounds defined by `min_size.width` and `size.width`.
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/column-gap>
+
+        column_gap : LuaVal
+
+        -- Controls whether automatically placed grid items are placed row-wise or column-wise as well as whether the sparse or dense packing algorithm is used.
         --
-        -- `max_size.height` is used if it is within the bounds defined by `min_size.height` and `size.height.
-
-        max_size : ReflectedValue
-
-        -- The aspect ratio of the flexbox
-
-        aspect_ratio : ReflectedValue
-
-        -- How to handle overflow
-
-        overflow : LuaOverflow
-
-        -- The size of the gutters between the rows and columns of the flexbox layout
+        -- Only affects Grid layouts.
         --
         --
         --
-        -- Values of `Size::UNDEFINED` and `Size::AUTO` are treated as zero.
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/grid-auto-flow>
 
-        gap : ReflectedValue
+        grid_auto_flow : ReflectedValue
 
-        __tostring : function(LuaStyle):(string)
+        -- Defines the number of rows a grid has and the sizes of those rows. If grid items are given explicit placements then more rows may
+        --
+        -- be implicitly generated by items that are placed out of bounds. The sizes of those rows are controlled by `grid_auto_rows` property.
+        --
+        --
+        --
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-rows>
+
+        grid_template_rows : ReflectedValue
+
+        -- Defines the number of columns a grid has and the sizes of those columns. If grid items are given explicit placements then more columns may
+        --
+        -- be implicitly generated by items that are placed out of bounds. The sizes of those columns are controlled by `grid_auto_columns` property.
+        --
+        --
+        --
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-columns>
+
+        grid_template_columns : ReflectedValue
+
+        -- Defines the size of implicitly created rows. Rows are created implicitly when grid items are given explicit placements that are out of bounds
+        --
+        -- of the rows explicitly created using `grid_template_rows`.
+        --
+        --
+        --
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/grid-auto-rows>
+
+        grid_auto_rows : ReflectedValue
+
+        -- Defines the size of implicitly created columns. Columns are created implicitly when grid items are given explicit placements that are out of bounds
+        --
+        -- of the columns explicitly created using `grid_template_columns`.
+        --
+        --
+        --
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/grid-auto-columns>
+
+        grid_auto_columns : ReflectedValue
+
+        -- The row in which a grid item starts and how many rows it spans.
+        --
+        --
+        --
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/grid-row>
+
+        grid_row : ReflectedValue
+
+        -- The column in which a grid item starts and how many columns it spans.
+        --
+        --
+        --
+        -- <https://developer.mozilla.org/en-US/docs/Web/CSS/grid-column>
+
+        grid_column : ReflectedValue
+
+        __tostring : function(self:LuaStyle):(string)
 
     end
     
@@ -421,16 +761,24 @@ global record BevyAPI
 
         flip_y : boolean
 
-        __tostring : function(LuaUiImage):(string)
+        --Flip the image along its x-axis
+
+        with_flip_x : function(self:LuaUiImage):(LuaUiImage)
+
+        --Flip the image along its y-axis
+
+        with_flip_y : function(self:LuaUiImage):(LuaUiImage)
+
+        __tostring : function(self:LuaUiImage):(string)
 
     end
     
     
-    record LuaUiImageClass
+    record ClassLuaUiImage
 
         userdata
     
-    --Collection of static methods for [`LuaUiImage`].
+    --Collection of static methods for [``].
 
     end
     
@@ -441,7 +789,7 @@ global record BevyAPI
     
     --
 
-        __tostring : function(LuaButton):(string)
+        __tostring : function(self:LuaButton):(string)
 
     end
     
@@ -452,7 +800,7 @@ global record BevyAPI
     
     --
 
-        __tostring : function(LuaDisplay):(string)
+        __tostring : function(self:LuaDisplay):(string)
 
     end
     
@@ -463,25 +811,45 @@ global record BevyAPI
     
     --
 
+        --Check if the playing animation has finished, according to the repetition behavior.
+
+        is_finished : function(self:LuaAnimationPlayer):(boolean)
+
+        --Number of times the animation has completed.
+
+        completions : function(self:LuaAnimationPlayer):(integer)
+
+        --Check if the animation is playing in reverse.
+
+        is_playback_reversed : function(self:LuaAnimationPlayer):(boolean)
+
         --Is the animation paused
 
-        is_paused : function(LuaAnimationPlayer):(boolean)
+        is_paused : function(self:LuaAnimationPlayer):(boolean)
 
         --Speed of the animation playback
 
-        speed : function(LuaAnimationPlayer):(number)
+        speed : function(self:LuaAnimationPlayer):(number)
 
         --Time elapsed playing the animation
 
-        elapsed : function(LuaAnimationPlayer):(number)
+        elapsed : function(self:LuaAnimationPlayer):(number)
+
+        --Seek time inside of the animation. Always within the range [0.0, clip duration].
+
+        seek_time : function(self:LuaAnimationPlayer):(number)
 
         --Pause the animation
 
-        pause : function(LuaAnimationPlayer):()
+        pause : function(self:LuaAnimationPlayer)
 
         --Unpause the animation
 
-        resume : function(LuaAnimationPlayer):()
+        resume : function(self:LuaAnimationPlayer)
+
+        --Reset the animation to its initial state, as if no time has elapsed.
+
+        replay : function(self:LuaAnimationPlayer)
 
     end
     
@@ -492,16 +860,16 @@ global record BevyAPI
     
     --
 
-        __tostring : function(LuaName):(string)
+        __tostring : function(self:LuaName):(string)
 
     end
     
     
-    record LuaNameClass
+    record ClassLuaName
 
         userdata
     
-    --Collection of static methods for [`LuaName`].
+    --Collection of static methods for [``].
 
     end
     
@@ -512,9 +880,11 @@ global record BevyAPI
     
     --
 
+        -- Content of the extra data.
+
         value : string
 
-        __tostring : function(LuaGltfExtras):(string)
+        __tostring : function(self:LuaGltfExtras):(string)
 
     end
     
@@ -527,9 +897,9 @@ global record BevyAPI
 
         --Swaps the child at `a_index` with the child at `b_index`.
 
-        swap : function(LuaChildren,(integer),(integer)):()
+        swap : function(self:LuaChildren , integer , integer)
 
-        __tostring : function(LuaChildren):(string)
+        __tostring : function(self:LuaChildren):(string)
 
     end
     
@@ -542,9 +912,9 @@ global record BevyAPI
 
         --Gets the [`Entity`] ID of the parent.
 
-        get : function(LuaParent):(LuaEntity)
+        get : function(self:LuaParent):(LuaEntity)
 
-        __tostring : function(LuaParent):(string)
+        __tostring : function(self:LuaParent):(string)
 
     end
     
@@ -555,9 +925,11 @@ global record BevyAPI
     
     --
 
+        -- The maximum width and height of text in logical pixels.
+
         size : LuaVec2
 
-        __tostring : function(LuaText2dBounds):(string)
+        __tostring : function(self:LuaText2dBounds):(string)
 
     end
     
@@ -578,22 +950,28 @@ global record BevyAPI
 
         -- How the text should linebreak when running out of the bounds determined by max_size
 
-        linebreak_behaviour : ReflectedValue
+        linebreak_behavior : ReflectedValue
 
         --Returns this [`Text`] with a new [`TextAlignment`].
 
-        with_alignment : function(LuaText,LuaTextAlignment):(LuaText)
+        with_alignment : function(self:LuaText , LuaTextAlignment):(LuaText)
 
-        __tostring : function(LuaText):(string)
+        --Returns this [`Text`] with soft wrapping disabled.
+        --
+        --Hard wrapping, where text contains an explicit linebreak such as the escape sequence `\n`, will still occur.
+
+        with_no_wrap : function(self:LuaText):(LuaText)
+
+        __tostring : function(self:LuaText):(string)
 
     end
     
     
-    record LuaTextClass
+    record ClassLuaText
 
         userdata
     
-    --Collection of static methods for [`LuaText`].
+    --Collection of static methods for [``].
 
     end
     
@@ -604,7 +982,7 @@ global record BevyAPI
     
     --
 
-        __tostring : function(LuaTextAlignment):(string)
+        __tostring : function(self:LuaTextAlignment):(string)
 
     end
     
@@ -623,16 +1001,16 @@ global record BevyAPI
 
         from_style : function(LuaTextStyle):(LuaTextSection)
 
-        __tostring : function(LuaTextSection):(string)
+        __tostring : function(self:LuaTextSection):(string)
 
     end
     
     
-    record LuaTextSectionClass
+    record ClassLuaTextSection
 
         userdata
     
-    --Collection of static methods for [`LuaTextSection`].
+    --Collection of static methods for [``].
 
         --Create an empty [`TextSection`] from a style. Useful when the value will be set dynamically.
 
@@ -647,13 +1025,35 @@ global record BevyAPI
     
     --
 
+        -- If this is not specified, then
+        --
+        -- * if `default_font` feature is enabled (enabled by default in `bevy` crate),
+        --
+        --  `FiraMono-subset.ttf` compiled into the library is used.
+        --
+        -- * otherwise no text will be rendered.
+
         font : ReflectedValue
+
+        -- The vertical height of rasterized glyphs in the font atlas in pixels.
+        --
+        --
+        --
+        -- This is multiplied by the window scale factor and `UiScale`, but not the text entity
+        --
+        -- transform or camera projection.
+        --
+        --
+        --
+        -- A new font atlas is generated for every combination of font handle and scaled font size
+        --
+        -- which can have a strong performance impact.
 
         font_size : number
 
         color : LuaColor
 
-        __tostring : function(LuaTextStyle):(string)
+        __tostring : function(self:LuaTextStyle):(string)
 
     end
     
@@ -696,7 +1096,7 @@ global record BevyAPI
         --
         --[`elapsed_secs_f64`](Stopwatch::elapsed_secs_f64) - if an `f64` is desirable instead.
 
-        elapsed_secs : function(LuaStopwatch):(number)
+        elapsed_secs : function(self:LuaStopwatch):(number)
 
         --Returns the elapsed time since the last [`reset`](Stopwatch::reset)
         --
@@ -712,7 +1112,7 @@ global record BevyAPI
         --
         --[`elapsed_secs`](Stopwatch::elapsed_secs) - if an `f32` is desirable instead.
 
-        elapsed_secs_f64 : function(LuaStopwatch):(number)
+        elapsed_secs_f64 : function(self:LuaStopwatch):(number)
 
         --Returns `true` if the stopwatch is paused.
         --
@@ -738,7 +1138,7 @@ global record BevyAPI
         --
         --```
 
-        paused : function(LuaStopwatch):(boolean)
+        paused : function(self:LuaStopwatch):(boolean)
 
         --Pauses the stopwatch. Any call to [`tick`](Stopwatch::tick) while
         --
@@ -766,7 +1166,7 @@ global record BevyAPI
         --
         --```
 
-        pause : function(LuaStopwatch):()
+        pause : function(self:LuaStopwatch)
 
         --Unpauses the stopwatch. Resume the effect of ticking on elapsed time.
         --
@@ -796,7 +1196,7 @@ global record BevyAPI
         --
         --```
 
-        unpause : function(LuaStopwatch):()
+        unpause : function(self:LuaStopwatch)
 
         --Resets the stopwatch. The reset doesn't affect the paused state of the stopwatch.
         --
@@ -820,7 +1220,7 @@ global record BevyAPI
         --
         --```
 
-        reset : function(LuaStopwatch):()
+        reset : function(self:LuaStopwatch)
 
         --Create a new unpaused `Stopwatch` with no elapsed time.
         --
@@ -842,16 +1242,16 @@ global record BevyAPI
 
         new : function():(LuaStopwatch)
 
-        __tostring : function(LuaStopwatch):(string)
+        __tostring : function(self:LuaStopwatch):(string)
 
     end
     
     
-    record LuaStopwatchClass
+    record ClassLuaStopwatch
 
         userdata
     
-    --Collection of static methods for [`LuaStopwatch`].
+    --Collection of static methods for [``].
 
         --Create a new unpaused `Stopwatch` with no elapsed time.
         --
@@ -882,9 +1282,11 @@ global record BevyAPI
     
     --
 
-        --Returns `true` if the timer has reached its duration at least once.
+        --Returns `true` if the timer has reached its duration.
         --
-        --See also [`Timer::just_finished`](Timer::just_finished).
+        --
+        --
+        --For repeating timers, this method behaves identically to [`Timer::just_finished`].
         --
         --
         --
@@ -896,19 +1298,37 @@ global record BevyAPI
         --
         --use std::time::Duration;
         --
-        --let mut timer = Timer::from_seconds(1.0, TimerMode::Once);
         --
-        --timer.tick(Duration::from_secs_f32(1.5));
         --
-        --assert!(timer.finished());
+        --let mut timer_once = Timer::from_seconds(1.0, TimerMode::Once);
         --
-        --timer.tick(Duration::from_secs_f32(0.5));
+        --timer_once.tick(Duration::from_secs_f32(1.5));
         --
-        --assert!(timer.finished());
+        --assert!(timer_once.finished());
+        --
+        --timer_once.tick(Duration::from_secs_f32(0.5));
+        --
+        --assert!(timer_once.finished());
+        --
+        --
+        --
+        --let mut timer_repeating = Timer::from_seconds(1.0, TimerMode::Repeating);
+        --
+        --timer_repeating.tick(Duration::from_secs_f32(1.1));
+        --
+        --assert!(timer_repeating.finished());
+        --
+        --timer_repeating.tick(Duration::from_secs_f32(0.8));
+        --
+        --assert!(!timer_repeating.finished());
+        --
+        --timer_repeating.tick(Duration::from_secs_f32(0.6));
+        --
+        --assert!(timer_repeating.finished());
         --
         --```
 
-        finished : function(LuaTimer):(boolean)
+        finished : function(self:LuaTimer):(boolean)
 
         --Returns `true` only on the tick the timer reached its duration.
         --
@@ -934,13 +1354,13 @@ global record BevyAPI
         --
         --```
 
-        just_finished : function(LuaTimer):(boolean)
+        just_finished : function(self:LuaTimer):(boolean)
 
         --Returns the time elapsed on the timer as an `f32`.
         --
         --See also [`Timer::elapsed`](Timer::elapsed).
 
-        elapsed_secs : function(LuaTimer):(number)
+        elapsed_secs : function(self:LuaTimer):(number)
 
         --Returns `true` if the timer is paused.
         --
@@ -970,7 +1390,7 @@ global record BevyAPI
         --
         --```
 
-        paused : function(LuaTimer):(boolean)
+        paused : function(self:LuaTimer):(boolean)
 
         --Returns the percentage of the timer elapsed time (goes from 0.0 to 1.0).
         --
@@ -992,7 +1412,7 @@ global record BevyAPI
         --
         --```
 
-        percent : function(LuaTimer):(number)
+        percent : function(self:LuaTimer):(number)
 
         --Returns the percentage of the timer remaining time (goes from 1.0 to 0.0).
         --
@@ -1014,7 +1434,7 @@ global record BevyAPI
         --
         --```
 
-        percent_left : function(LuaTimer):(number)
+        percent_left : function(self:LuaTimer):(number)
 
         --Returns the remaining time in seconds
         --
@@ -1040,7 +1460,7 @@ global record BevyAPI
         --
         --```
 
-        remaining_secs : function(LuaTimer):(number)
+        remaining_secs : function(self:LuaTimer):(number)
 
         --Returns the number of times a repeating timer
         --
@@ -1078,7 +1498,7 @@ global record BevyAPI
         --
         --```
 
-        times_finished_this_tick : function(LuaTimer):(integer)
+        times_finished_this_tick : function(self:LuaTimer):(integer)
 
         --Pauses the Timer. Disables the ticking of the timer.
         --
@@ -1106,7 +1526,7 @@ global record BevyAPI
         --
         --```
 
-        pause : function(LuaTimer):()
+        pause : function(self:LuaTimer)
 
         --Unpauses the Timer. Resumes the ticking of the timer.
         --
@@ -1138,7 +1558,7 @@ global record BevyAPI
         --
         --```
 
-        unpause : function(LuaTimer):()
+        unpause : function(self:LuaTimer)
 
         --Resets the timer. The reset doesn't affect the `paused` state of the timer.
         --
@@ -1170,18 +1590,18 @@ global record BevyAPI
         --
         --```
 
-        reset : function(LuaTimer):()
+        reset : function(self:LuaTimer)
 
-        __tostring : function(LuaTimer):(string)
+        __tostring : function(self:LuaTimer):(string)
 
     end
     
     
-    record LuaTimerClass
+    record ClassLuaTimer
 
         userdata
     
-    --Collection of static methods for [`LuaTimer`].
+    --Collection of static methods for [``].
 
     end
     
@@ -1204,7 +1624,7 @@ global record BevyAPI
         --
         --No particular structure is guaranteed for the returned bits.
 
-        to_bits : function(LuaEntity):(integer)
+        to_bits : function(self:LuaEntity):(integer)
 
         --Return a transiently unique identifier.
         --
@@ -1216,7 +1636,7 @@ global record BevyAPI
         --
         --specific snapshot of the world, such as when serializing.
 
-        index : function(LuaEntity):(integer)
+        index : function(self:LuaEntity):(integer)
 
         --Returns the generation of this Entity's index. The generation is incremented each time an
         --
@@ -1224,7 +1644,7 @@ global record BevyAPI
         --
         --given index has been reused (index, generation) pairs uniquely identify a given Entity.
 
-        generation : function(LuaEntity):(integer)
+        generation : function(self:LuaEntity):(integer)
 
         --Creates a new entity ID with the specified `index` and a generation of 0.
         --
@@ -1260,16 +1680,16 @@ global record BevyAPI
 
         from_bits : function(integer):(LuaEntity)
 
-        __tostring : function(LuaEntity):(string)
+        __tostring : function(self:LuaEntity):(string)
 
     end
     
     
-    record LuaEntityClass
+    record ClassLuaEntity
 
         userdata
     
-    --Collection of static methods for [`LuaEntity`].
+    --Collection of static methods for [``].
 
         --Creates a new entity ID with the specified `index` and a generation of 0.
         --
@@ -1353,80 +1773,100 @@ global record BevyAPI
         --Returns this [`Transform`] with a new rotation so that [`Transform::forward`]
         --
         --points towards the `target` position and [`Transform::up`] points towards `up`.
+        --
+        --
+        --
+        --In some cases it's not possible to construct a rotation. Another axis will be picked in those cases:
+        --
+        --* if `target` is the same as the transform translation, `Vec3::Z` is used instead
+        --
+        --* if `up` is zero, `Vec3::Y` is used instead
+        --
+        --* if the resulting forward direction is parallel with `up`, an orthogonal vector is used as the "right" direction
 
-        looking_at : function(LuaTransform,(LuaVec3),(LuaVec3)):(LuaTransform)
+        looking_at : function(self:LuaTransform , LuaVec3 , LuaVec3):(LuaTransform)
 
         --Returns this [`Transform`] with a new rotation so that [`Transform::forward`]
         --
         --points in the given `direction` and [`Transform::up`] points towards `up`.
+        --
+        --
+        --
+        --In some cases it's not possible to construct a rotation. Another axis will be picked in those cases:
+        --
+        --* if `direction` is zero, `Vec3::Z` is used instead
+        --
+        --* if `up` is zero, `Vec3::Y` is used instead
+        --
+        --* if `direction` is parallel with `up`, an orthogonal vector is used as the "right" direction
 
-        looking_to : function(LuaTransform,(LuaVec3),(LuaVec3)):(LuaTransform)
+        looking_to : function(self:LuaTransform , LuaVec3 , LuaVec3):(LuaTransform)
 
         --Returns this [`Transform`] with a new translation.
 
-        with_translation : function(LuaTransform,LuaVec3):(LuaTransform)
+        with_translation : function(self:LuaTransform , LuaVec3):(LuaTransform)
 
         --Returns this [`Transform`] with a new rotation.
 
-        with_rotation : function(LuaTransform,LuaQuat):(LuaTransform)
+        with_rotation : function(self:LuaTransform , LuaQuat):(LuaTransform)
 
         --Returns this [`Transform`] with a new scale.
 
-        with_scale : function(LuaTransform,LuaVec3):(LuaTransform)
+        with_scale : function(self:LuaTransform , LuaVec3):(LuaTransform)
 
         --Returns the 3d affine transformation matrix from this transforms translation,
         --
         --rotation, and scale.
 
-        compute_matrix : function(LuaTransform):(LuaMat4)
+        compute_matrix : function(self:LuaTransform):(LuaMat4)
 
         --Returns the 3d affine transformation matrix from this transforms translation,
         --
         --rotation, and scale.
 
-        compute_affine : function(LuaTransform):(LuaAffine3A)
+        compute_affine : function(self:LuaTransform):(LuaAffine3A)
 
         --Get the unit vector in the local `X` direction.
 
-        local_x : function(LuaTransform):(LuaVec3)
+        local_x : function(self:LuaTransform):(LuaVec3)
 
         --Equivalent to [`-local_x()`][Transform::local_x()]
 
-        left : function(LuaTransform):(LuaVec3)
+        left : function(self:LuaTransform):(LuaVec3)
 
         --Equivalent to [`local_x()`][Transform::local_x()]
 
-        right : function(LuaTransform):(LuaVec3)
+        right : function(self:LuaTransform):(LuaVec3)
 
         --Get the unit vector in the local `Y` direction.
 
-        local_y : function(LuaTransform):(LuaVec3)
+        local_y : function(self:LuaTransform):(LuaVec3)
 
         --Equivalent to [`local_y()`][Transform::local_y]
 
-        up : function(LuaTransform):(LuaVec3)
+        up : function(self:LuaTransform):(LuaVec3)
 
         --Equivalent to [`-local_y()`][Transform::local_y]
 
-        down : function(LuaTransform):(LuaVec3)
+        down : function(self:LuaTransform):(LuaVec3)
 
         --Get the unit vector in the local `Z` direction.
 
-        local_z : function(LuaTransform):(LuaVec3)
+        local_z : function(self:LuaTransform):(LuaVec3)
 
         --Equivalent to [`-local_z()`][Transform::local_z]
 
-        forward : function(LuaTransform):(LuaVec3)
+        forward : function(self:LuaTransform):(LuaVec3)
 
         --Equivalent to [`local_z()`][Transform::local_z]
 
-        back : function(LuaTransform):(LuaVec3)
+        back : function(self:LuaTransform):(LuaVec3)
 
         --Multiplies `self` with `transform` component by component, returning the
         --
         --resulting [`Transform`]
 
-        mul_transform : function(LuaTransform,LuaTransform):(LuaTransform)
+        mul_transform : function(self:LuaTransform , LuaTransform):(LuaTransform)
 
         --Transforms the given `point`, applying scale, rotation and translation.
         --
@@ -1448,7 +1888,7 @@ global record BevyAPI
         --
         --consider using [`GlobalTransform::transform_point()`] instead.
 
-        transform_point : function(LuaTransform,LuaVec3):(LuaVec3)
+        transform_point : function(self:LuaTransform , LuaVec3):(LuaVec3)
 
         --Rotates this [`Transform`] by the given rotation.
         --
@@ -1468,7 +1908,7 @@ global record BevyAPI
         --
         --[`3d_rotation`]: https://github.com/bevyengine/bevy/blob/latest/examples/transforms/3d_rotation.rs
 
-        rotate : function(LuaTransform,LuaQuat):()
+        rotate : function(self:LuaTransform , LuaQuat)
 
         --Rotates this [`Transform`] around the given `axis` by `angle` (in radians).
         --
@@ -1476,7 +1916,7 @@ global record BevyAPI
         --
         --If this [`Transform`] has a parent, the `axis` is relative to the rotation of the parent.
 
-        rotate_axis : function(LuaTransform,(LuaVec3),(number)):()
+        rotate_axis : function(self:LuaTransform , LuaVec3 , number)
 
         --Rotates this [`Transform`] around the `X` axis by `angle` (in radians).
         --
@@ -1484,7 +1924,7 @@ global record BevyAPI
         --
         --If this [`Transform`] has a parent, the axis is relative to the rotation of the parent.
 
-        rotate_x : function(LuaTransform,number):()
+        rotate_x : function(self:LuaTransform , number)
 
         --Rotates this [`Transform`] around the `Y` axis by `angle` (in radians).
         --
@@ -1492,7 +1932,7 @@ global record BevyAPI
         --
         --If this [`Transform`] has a parent, the axis is relative to the rotation of the parent.
 
-        rotate_y : function(LuaTransform,number):()
+        rotate_y : function(self:LuaTransform , number)
 
         --Rotates this [`Transform`] around the `Z` axis by `angle` (in radians).
         --
@@ -1500,7 +1940,7 @@ global record BevyAPI
         --
         --If this [`Transform`] has a parent, the axis is relative to the rotation of the parent.
 
-        rotate_z : function(LuaTransform,number):()
+        rotate_z : function(self:LuaTransform , number)
 
         --Rotates this [`Transform`] by the given `rotation`.
         --
@@ -1508,23 +1948,23 @@ global record BevyAPI
         --
         --The `rotation` is relative to this [`Transform`]'s current rotation.
 
-        rotate_local : function(LuaTransform,LuaQuat):()
+        rotate_local : function(self:LuaTransform , LuaQuat)
 
         --Rotates this [`Transform`] around its local `axis` by `angle` (in radians).
 
-        rotate_local_axis : function(LuaTransform,(LuaVec3),(number)):()
+        rotate_local_axis : function(self:LuaTransform , LuaVec3 , number)
 
         --Rotates this [`Transform`] around its local `X` axis by `angle` (in radians).
 
-        rotate_local_x : function(LuaTransform,number):()
+        rotate_local_x : function(self:LuaTransform , number)
 
         --Rotates this [`Transform`] around its local `Y` axis by `angle` (in radians).
 
-        rotate_local_y : function(LuaTransform,number):()
+        rotate_local_y : function(self:LuaTransform , number)
 
         --Rotates this [`Transform`] around its local `Z` axis by `angle` (in radians).
 
-        rotate_local_z : function(LuaTransform,number):()
+        rotate_local_z : function(self:LuaTransform , number)
 
         --Translates this [`Transform`] around a `point` in space.
         --
@@ -1532,7 +1972,7 @@ global record BevyAPI
         --
         --If this [`Transform`] has a parent, the `point` is relative to the [`Transform`] of the parent.
 
-        translate_around : function(LuaTransform,(LuaVec3),(LuaQuat)):()
+        translate_around : function(self:LuaTransform , LuaVec3 , LuaQuat)
 
         --Rotates this [`Transform`] around a `point` in space.
         --
@@ -1540,19 +1980,39 @@ global record BevyAPI
         --
         --If this [`Transform`] has a parent, the `point` is relative to the [`Transform`] of the parent.
 
-        rotate_around : function(LuaTransform,(LuaVec3),(LuaQuat)):()
+        rotate_around : function(self:LuaTransform , LuaVec3 , LuaQuat)
 
         --Rotates this [`Transform`] so that [`Transform::forward`] points towards the `target` position,
         --
         --and [`Transform::up`] points towards `up`.
+        --
+        --
+        --
+        --In some cases it's not possible to construct a rotation. Another axis will be picked in those cases:
+        --
+        --* if `target` is the same as the transform translation, `Vec3::Z` is used instead
+        --
+        --* if `up` is zero, `Vec3::Y` is used instead
+        --
+        --* if the resulting forward direction is parallel with `up`, an orthogonal vector is used as the "right" direction
 
-        look_at : function(LuaTransform,(LuaVec3),(LuaVec3)):()
+        look_at : function(self:LuaTransform , LuaVec3 , LuaVec3)
 
         --Rotates this [`Transform`] so that [`Transform::forward`] points in the given `direction`
         --
         --and [`Transform::up`] points towards `up`.
+        --
+        --
+        --
+        --In some cases it's not possible to construct a rotation. Another axis will be picked in those cases:
+        --
+        --* if `direction` is zero, `Vec3::NEG_Z` is used instead
+        --
+        --* if `up` is zero, `Vec3::Y` is used instead
+        --
+        --* if `direction` is parallel with `up`, an orthogonal vector is used as the "right" direction
 
-        look_to : function(LuaTransform,(LuaVec3),(LuaVec3)):()
+        look_to : function(self:LuaTransform , LuaVec3 , LuaVec3)
 
         --Creates a new [`Transform`] at the position `(x, y, z)`. In 2d, the `z` component
         --
@@ -1560,7 +2020,7 @@ global record BevyAPI
         --
         --`z`-value.
 
-        from_xyz : function((number),(number),(number)):(LuaTransform)
+        from_xyz : function(number , number , number):(LuaTransform)
 
         --Extracts the translation, rotation, and scale from `matrix`. It must be a 3d affine
         --
@@ -1586,18 +2046,18 @@ global record BevyAPI
 
         from_scale : function(LuaVec3):(LuaTransform)
 
-        __tostring : function(LuaTransform):(string)
+        __tostring : function(self:LuaTransform):(string)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
     end
     
     
-    record LuaTransformClass
+    record ClassLuaTransform
 
         userdata
     
-    --Collection of static methods for [`LuaTransform`].
+    --Collection of static methods for [``].
 
         --Creates a new [`Transform`] at the position `(x, y, z)`. In 2d, the `z` component
         --
@@ -1605,7 +2065,7 @@ global record BevyAPI
         --
         --`z`-value.
 
-        from_xyz : function((number),(number),(number)):(LuaTransform)
+        from_xyz : function(number , number , number):(LuaTransform)
 
         --Extracts the translation, rotation, and scale from `matrix`. It must be a 3d affine
         --
@@ -1631,7 +2091,7 @@ global record BevyAPI
 
         from_scale : function(LuaVec3):(LuaTransform)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
     end
     
@@ -1644,11 +2104,11 @@ global record BevyAPI
 
         --Returns the 3d affine transformation matrix as a [`Mat4`].
 
-        compute_matrix : function(LuaGlobalTransform):(LuaMat4)
+        compute_matrix : function(self:LuaGlobalTransform):(LuaMat4)
 
         --Returns the 3d affine transformation matrix as an [`Affine3A`].
 
-        affine : function(LuaGlobalTransform):(LuaAffine3A)
+        affine : function(self:LuaGlobalTransform):(LuaAffine3A)
 
         --Returns the transformation as a [`Transform`].
         --
@@ -1658,7 +2118,7 @@ global record BevyAPI
         --
         --will be invalid.
 
-        compute_transform : function(LuaGlobalTransform):(LuaTransform)
+        compute_transform : function(self:LuaGlobalTransform):(LuaTransform)
 
         --Returns the [`Transform`] `self` would have if it was a child of an entity
         --
@@ -1666,11 +2126,11 @@ global record BevyAPI
         --
         --
         --
-        --This is useful if you want to "reparent" an `Entity`. Say you have an entity
+        --This is useful if you want to "reparent" an [`Entity`](bevy_ecs::entity::Entity).
         --
-        --`e1` that you want to turn into a child of `e2`, but you want `e1` to keep the
+        --Say you have an entity `e1` that you want to turn into a child of `e2`,
         --
-        --same global transform, even after re-parenting. You would use:
+        --but you want `e1` to keep the same global transform, even after re-parenting. You would use:
         --
         --
         --
@@ -1726,43 +2186,43 @@ global record BevyAPI
         --
         --will be invalid.
 
-        reparented_to : function(LuaGlobalTransform,LuaGlobalTransform):(LuaTransform)
+        reparented_to : function(self:LuaGlobalTransform , LuaGlobalTransform):(LuaTransform)
 
         --Return the local right vector (X).
 
-        right : function(LuaGlobalTransform):(LuaVec3)
+        right : function(self:LuaGlobalTransform):(LuaVec3)
 
         --Return the local left vector (-X).
 
-        left : function(LuaGlobalTransform):(LuaVec3)
+        left : function(self:LuaGlobalTransform):(LuaVec3)
 
         --Return the local up vector (Y).
 
-        up : function(LuaGlobalTransform):(LuaVec3)
+        up : function(self:LuaGlobalTransform):(LuaVec3)
 
         --Return the local down vector (-Y).
 
-        down : function(LuaGlobalTransform):(LuaVec3)
+        down : function(self:LuaGlobalTransform):(LuaVec3)
 
         --Return the local back vector (Z).
 
-        back : function(LuaGlobalTransform):(LuaVec3)
+        back : function(self:LuaGlobalTransform):(LuaVec3)
 
         --Return the local forward vector (-Z).
 
-        forward : function(LuaGlobalTransform):(LuaVec3)
+        forward : function(self:LuaGlobalTransform):(LuaVec3)
 
         --Get the translation as a [`Vec3`].
 
-        translation : function(LuaGlobalTransform):(LuaVec3)
+        translation : function(self:LuaGlobalTransform):(LuaVec3)
 
         --Get the translation as a [`Vec3A`].
 
-        translation_vec3a : function(LuaGlobalTransform):(LuaVec3A)
+        translation_vec3a : function(self:LuaGlobalTransform):(LuaVec3A)
 
         --Get an upper bound of the radius from the given `extents`.
 
-        radius_vec3a : function(LuaGlobalTransform,LuaVec3A):(number)
+        radius_vec3a : function(self:LuaGlobalTransform , LuaVec3A):(number)
 
         --Transforms the given `point`, applying shear, scale, rotation and translation.
         --
@@ -1770,17 +2230,17 @@ global record BevyAPI
         --
         --This moves `point` into the local space of this [`GlobalTransform`].
 
-        transform_point : function(LuaGlobalTransform,LuaVec3):(LuaVec3)
+        transform_point : function(self:LuaGlobalTransform , LuaVec3):(LuaVec3)
 
         --Multiplies `self` with `transform` component by component, returning the
         --
         --resulting [`GlobalTransform`]
 
-        mul_transform : function(LuaGlobalTransform,LuaTransform):(LuaGlobalTransform)
+        mul_transform : function(self:LuaGlobalTransform , LuaTransform):(LuaGlobalTransform)
 
-        __tostring : function(LuaGlobalTransform):(string)
+        __tostring : function(self:LuaGlobalTransform):(string)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
     end
     
@@ -1797,7 +2257,7 @@ global record BevyAPI
 
         brightness : number
 
-        __tostring : function(LuaAmbientLight):(string)
+        __tostring : function(self:LuaAmbientLight):(string)
 
     end
     
@@ -1808,7 +2268,7 @@ global record BevyAPI
     
     --
 
-        __tostring : function(LuaCubemapVisibleEntities):(string)
+        __tostring : function(self:LuaCubemapVisibleEntities):(string)
 
     end
     
@@ -1835,7 +2295,7 @@ global record BevyAPI
 
         shadow_normal_bias : number
 
-        __tostring : function(LuaDirectionalLight):(string)
+        __tostring : function(self:LuaDirectionalLight):(string)
 
     end
     
@@ -1848,7 +2308,7 @@ global record BevyAPI
 
         size : integer
 
-        __tostring : function(LuaDirectionalLightShadowMap):(string)
+        __tostring : function(self:LuaDirectionalLightShadowMap):(string)
 
     end
     
@@ -1879,6 +2339,8 @@ global record BevyAPI
 
         color : LuaColor
 
+        -- Luminous power in lumens
+
         intensity : number
 
         range : number
@@ -1897,7 +2359,7 @@ global record BevyAPI
 
         shadow_normal_bias : number
 
-        __tostring : function(LuaPointLight):(string)
+        __tostring : function(self:LuaPointLight):(string)
 
     end
     
@@ -1910,7 +2372,7 @@ global record BevyAPI
 
         size : integer
 
-        __tostring : function(LuaPointLightShadowMap):(string)
+        __tostring : function(self:LuaPointLightShadowMap):(string)
 
     end
     
@@ -1921,7 +2383,7 @@ global record BevyAPI
     
     --
 
-        __tostring : function(LuaAlphaMode):(string)
+        __tostring : function(self:LuaAlphaMode):(string)
 
     end
     
@@ -1932,7 +2394,7 @@ global record BevyAPI
     
     --
 
-        __tostring : function(LuaWireframe):(string)
+        __tostring : function(self:LuaWireframe):(string)
 
     end
     
@@ -1943,11 +2405,21 @@ global record BevyAPI
     
     --
 
-        -- Whether to show wireframes for all meshes. If `false`, only meshes with a [Wireframe] component will be rendered.
+        -- Whether to show wireframes for all meshes.
+        --
+        -- Can be overridden for individual meshes by adding a [`Wireframe`] or [`NoWireframe`] component.
 
         global : boolean
 
-        __tostring : function(LuaWireframeConfig):(string)
+        -- If [`Self::global`] is set, any [`Entity`] that does not have a [`Wireframe`] component attached to it will have
+        --
+        -- wireframes using this color. Otherwise, this will be the fallback color for any entity that has a [`Wireframe`],
+        --
+        -- but no [`WireframeColor`].
+
+        default_color : LuaColor
+
+        __tostring : function(self:LuaWireframeConfig):(string)
 
     end
     
@@ -1958,7 +2430,7 @@ global record BevyAPI
     
     --
 
-        __tostring : function(LuaCamera3dDepthLoadOp):(string)
+        __tostring : function(self:LuaCamera3dDepthLoadOp):(string)
 
     end
     
@@ -1969,7 +2441,7 @@ global record BevyAPI
     
     --
 
-        __tostring : function(LuaClearColor):(string)
+        __tostring : function(self:LuaClearColor):(string)
 
     end
     
@@ -1980,7 +2452,7 @@ global record BevyAPI
     
     --
 
-        __tostring : function(LuaClearColorConfig):(string)
+        __tostring : function(self:LuaClearColorConfig):(string)
 
     end
     
@@ -2010,6 +2482,60 @@ global record BevyAPI
 
         depth_load_op : LuaCamera3dDepthLoadOp
 
+        -- The texture usages for the depth texture created for the main 3d pass.
+
+        depth_texture_usages : ReflectedValue
+
+        -- How many individual steps should be performed in the [`Transmissive3d`](crate::core_3d::Transmissive3d) pass.
+        --
+        --
+        --
+        -- Roughly corresponds to how many “layers of transparency” are rendered for screen space
+        --
+        -- specular transmissive objects. Each step requires making one additional
+        --
+        -- texture copy, so it's recommended to keep this number to a resonably low value. Defaults to `1`.
+        --
+        --
+        --
+        -- ### Notes
+        --
+        --
+        --
+        -- - No copies will be performed if there are no transmissive materials currently being rendered,
+        --
+        --   regardless of this setting.
+        --
+        -- - Setting this to `0` disables the screen-space refraction effect entirely, and falls
+        --
+        --   back to refracting only the environment map light's texture.
+        --
+        -- - If set to more than `0`, any opaque [`clear_color`](Camera3d::clear_color) will obscure the environment
+        --
+        --   map light's texture, preventing it from being visible “through” transmissive materials. If you'd like
+        --
+        --   to still have the environment map show up in your refractions, you can set the clear color's alpha to `0.0`.
+        --
+        --   Keep in mind that depending on the platform and your window settings, this may cause the window to become
+        --
+        --   transparent.
+
+        screen_space_specular_transmission_steps : integer
+
+        -- The quality of the screen space specular transmission blur effect, applied to whatever's “behind” transmissive
+        --
+        -- objects when their `roughness` is greater than `0.0`.
+        --
+        --
+        --
+        -- Higher qualities are more GPU-intensive.
+        --
+        --
+        --
+        -- **Note:** You can get better-looking results at any quality level by enabling TAA. See: [`TemporalAntiAliasPlugin`](crate::experimental::taa::TemporalAntiAliasPlugin).
+
+        screen_space_specular_transmission_quality : ReflectedValue
+
     end
     
     
@@ -2019,9 +2545,9 @@ global record BevyAPI
     
     --
 
-        as_vec : function(LuaAnchor):(LuaVec2)
+        as_vec : function(self:LuaAnchor):(LuaVec2)
 
-        __tostring : function(LuaAnchor):(string)
+        __tostring : function(self:LuaAnchor):(string)
 
     end
     
@@ -2032,7 +2558,7 @@ global record BevyAPI
     
     --
 
-        __tostring : function(LuaMesh2dHandle):(string)
+        __tostring : function(self:LuaMesh2dHandle):(string)
 
     end
     
@@ -2075,16 +2601,16 @@ global record BevyAPI
 
         new : function(integer):(LuaTextureAtlasSprite)
 
-        __tostring : function(LuaTextureAtlasSprite):(string)
+        __tostring : function(self:LuaTextureAtlasSprite):(string)
 
     end
     
     
-    record LuaTextureAtlasSpriteClass
+    record ClassLuaTextureAtlasSprite
 
         userdata
     
-    --Collection of static methods for [`LuaTextureAtlasSprite`].
+    --Collection of static methods for [``].
 
         --Create a new [`TextureAtlasSprite`] with a sprite index,
         --
@@ -2129,7 +2655,7 @@ global record BevyAPI
 
         anchor : LuaAnchor
 
-        __tostring : function(LuaSprite):(string)
+        __tostring : function(self:LuaSprite):(string)
 
     end
     
@@ -2152,7 +2678,7 @@ global record BevyAPI
         --
         --`RenderLayers`, even another with no layers.
 
-        intersects : function(LuaRenderLayers,LuaRenderLayers):(boolean)
+        intersects : function(self:LuaRenderLayers , LuaRenderLayers):(boolean)
 
         --Create a new `RenderLayers` that belongs to all layers.
 
@@ -2162,16 +2688,16 @@ global record BevyAPI
 
         none : function():(LuaRenderLayers)
 
-        __tostring : function(LuaRenderLayers):(string)
+        __tostring : function(self:LuaRenderLayers):(string)
 
     end
     
     
-    record LuaRenderLayersClass
+    record ClassLuaRenderLayers
 
         userdata
     
-    --Collection of static methods for [`LuaRenderLayers`].
+    --Collection of static methods for [``].
 
         --Create a new `RenderLayers` that belongs to all layers.
 
@@ -2190,7 +2716,7 @@ global record BevyAPI
     
     --
 
-        __tostring : function(LuaVisibility):(string)
+        __tostring : function(self:LuaVisibility):(string)
 
     end
     
@@ -2201,66 +2727,71 @@ global record BevyAPI
     
     --
 
-        len : function(LuaVisibleEntities):(integer)
+        len : function(self:LuaVisibleEntities):(integer)
 
-        is_empty : function(LuaVisibleEntities):(boolean)
+        is_empty : function(self:LuaVisibleEntities):(boolean)
 
-        __tostring : function(LuaVisibleEntities):(string)
+        __tostring : function(self:LuaVisibleEntities):(string)
 
     end
     
     
-    record LuaComputedVisibility
+    record LuaInheritedVisibility
 
         userdata
     
     --
 
-        --Whether this entity is visible to something this frame. This is true if and only if [`Self::is_visible_in_hierarchy`] and [`Self::is_visible_in_view`]
+        --Returns `true` if the entity is visible in the hierarchy.
         --
-        --are true. This is the canonical method to call to determine if an entity should be drawn.
-        --
-        --This value is updated in [`CoreSet::PostUpdate`] by the [`VisibilitySystems::CheckVisibility`] system set.
-        --
-        --Reading it during [`CoreSet::Update`] will yield the value from the previous frame.
+        --Otherwise, returns `false`.
 
-        is_visible : function(LuaComputedVisibility):(boolean)
+        get : function(self:LuaInheritedVisibility):(boolean)
 
-        --Whether this entity is visible in the entity hierarchy, which is determined by the [`Visibility`] component.
-        --
-        --This takes into account "visibility inheritance". If any of this entity's ancestors (see [`Parent`]) are hidden, this entity
-        --
-        --will be hidden as well. This value is updated in the [`VisibilitySystems::VisibilityPropagate`], which lives under the [`CoreSet::PostUpdate`] set.
+        __tostring : function(self:LuaInheritedVisibility):(string)
 
-        is_visible_in_hierarchy : function(LuaComputedVisibility):(boolean)
+    end
+    
+    
+    record LuaViewVisibility
 
-        --Whether this entity is visible in _any_ view (Cameras, Lights, etc). Each entity type (and view type) should choose how to set this
-        --
-        --value. For cameras and drawn entities, this will take into account [`RenderLayers`].
-        --
-        --
-        --
-        --This value is reset to `false` every frame in [`VisibilitySystems::VisibilityPropagate`] during [`CoreSet::PostUpdate`].
-        --
-        --Each entity type then chooses how to set this field in the [`VisibilitySystems::CheckVisibility`] system set, under [`CoreSet::PostUpdate`].
-        --
-        --Meshes might use frustum culling to decide if they are visible in a view.
-        --
-        --Other entities might just set this to `true` every frame.
+        userdata
+    
+    --
 
-        is_visible_in_view : function(LuaComputedVisibility):(boolean)
-
-        --Sets `is_visible_in_view` to `true`. This is not reversible for a given frame, as it encodes whether or not this is visible in
+        --Returns `true` if the entity is visible in any view.
         --
-        --_any_ view. This will be automatically reset to `false` every frame in [`VisibilitySystems::VisibilityPropagate`] and then set
-        --
-        --to the proper value in [`VisibilitySystems::CheckVisibility`]. This should _only_ be set in systems with the [`VisibilitySystems::CheckVisibility`]
-        --
-        --label. Don't call this unless you are defining a custom visibility system. For normal user-defined entity visibility, see [`Visibility`].
+        --Otherwise, returns `false`.
 
-        set_visible_in_view : function(LuaComputedVisibility):()
+        get : function(self:LuaViewVisibility):(boolean)
 
-        __tostring : function(LuaComputedVisibility):(string)
+        --Sets the visibility to `true`. This should not be considered reversible for a given frame,
+        --
+        --as this component tracks whether or not the entity visible in _any_ view.
+        --
+        --
+        --
+        --This will be automatically reset to `false` every frame in [`VisibilityPropagate`] and then set
+        --
+        --to the proper value in [`CheckVisibility`].
+        --
+        --
+        --
+        --You should only manually set this if you are defining a custom visibility system,
+        --
+        --in which case the system should be placed in the [`CheckVisibility`] set.
+        --
+        --For normal user-defined entity visibility, see [`Visibility`].
+        --
+        --
+        --
+        --[`VisibilityPropagate`]: VisibilitySystems::VisibilityPropagate
+        --
+        --[`CheckVisibility`]: VisibilitySystems::CheckVisibility
+
+        set : function(self:LuaViewVisibility)
+
+        __tostring : function(self:LuaViewVisibility):(string)
 
     end
     
@@ -2275,7 +2806,7 @@ global record BevyAPI
 
         joints : ReflectedValue
 
-        __tostring : function(LuaSkinnedMesh):(string)
+        __tostring : function(self:LuaSkinnedMesh):(string)
 
     end
     
@@ -2286,7 +2817,7 @@ global record BevyAPI
     
     --
 
-        __tostring : function(LuaScalingMode):(string)
+        __tostring : function(self:LuaScalingMode):(string)
 
     end
     
@@ -2297,53 +2828,103 @@ global record BevyAPI
     
     --
 
-        --Get red in sRGB colorspace.
+        --Converts a Color to variant [`Color::Rgba`] and return red in sRGB colorspace
 
-        r : function(LuaColor):(number)
+        r : function(self:LuaColor):(number)
 
-        --Get green in sRGB colorspace.
+        --Converts a Color to variant [`Color::Rgba`] and return green in sRGB colorspace
 
-        g : function(LuaColor):(number)
+        g : function(self:LuaColor):(number)
 
-        --Get blue in sRGB colorspace.
+        --Converts a Color to variant [`Color::Rgba`] and return blue in sRGB colorspace
 
-        b : function(LuaColor):(number)
+        b : function(self:LuaColor):(number)
 
-        --Returns this color with red set to a new value in sRGB colorspace.
+        --Converts a Color to variant [`Color::Rgba`] and return this color with red set to a new value
 
-        with_r : function(LuaColor,number):(LuaColor)
+        with_r : function(self:LuaColor , number):(LuaColor)
 
-        --Returns this color with green set to a new value in sRGB colorspace.
+        --Converts a Color to variant [`Color::Rgba`] and return this color with green set to a new value
 
-        with_g : function(LuaColor,number):(LuaColor)
+        with_g : function(self:LuaColor , number):(LuaColor)
 
-        --Returns this color with blue set to a new value in sRGB colorspace.
+        --Converts a Color to variant [`Color::Rgba`] and return this color with blue set to a new value
 
-        with_b : function(LuaColor,number):(LuaColor)
+        with_b : function(self:LuaColor , number):(LuaColor)
+
+        --Converts a Color to variant [`Color::Hsla`] and return hue
+
+        h : function(self:LuaColor):(number)
+
+        --Converts a Color to variant [`Color::Hsla`] and return saturation
+
+        s : function(self:LuaColor):(number)
+
+        --Converts a Color to variant [`Color::Hsla`] and return lightness
+
+        l : function(self:LuaColor):(number)
+
+        --Converts a Color to variant [`Color::Hsla`] and return this color with hue set to a new value
+
+        with_h : function(self:LuaColor , number):(LuaColor)
+
+        --Converts a Color to variant [`Color::Hsla`] and return this color with saturation set to a new value
+
+        with_s : function(self:LuaColor , number):(LuaColor)
+
+        --Converts a Color to variant [`Color::Hsla`] and return this color with lightness set to a new value
+
+        with_l : function(self:LuaColor , number):(LuaColor)
 
         --Get alpha.
 
-        a : function(LuaColor):(number)
+        a : function(self:LuaColor):(number)
 
         --Returns this color with a new alpha value.
 
-        with_a : function(LuaColor,number):(LuaColor)
+        with_a : function(self:LuaColor , number):(LuaColor)
+
+        --Determine if the color is fully transparent, i.e. if the alpha is 0.
+        --
+        --
+        --
+        --# Examples
+        --
+        --
+        --
+        --```
+        --
+        --# use bevy_render::color::Color;
+        --
+        --assert!(Color::NONE.is_fully_transparent());
+        --
+        --assert!(Color::rgba(1.0, 0.5, 0.5, 0.0).is_fully_transparent());
+        --
+        --
+        --
+        --assert!(!Color::BLACK.is_fully_transparent());
+        --
+        --assert!(!Color::rgba(1.0, 0.5, 0.5, 0.2).is_fully_transparent());
+        --
+        --```
+
+        is_fully_transparent : function(self:LuaColor):(boolean)
 
         --Converts a `Color` to variant `Color::Rgba`
 
-        as_rgba : function(LuaColor):(LuaColor)
+        as_rgba : function(self:LuaColor):(LuaColor)
 
         --Converts a `Color` to variant `Color::RgbaLinear`
 
-        as_rgba_linear : function(LuaColor):(LuaColor)
+        as_rgba_linear : function(self:LuaColor):(LuaColor)
 
         --Converts a `Color` to variant `Color::Hsla`
 
-        as_hsla : function(LuaColor):(LuaColor)
+        as_hsla : function(self:LuaColor):(LuaColor)
 
         --Converts a `Color` to variant `Color::Lcha`
 
-        as_lcha : function(LuaColor):(LuaColor)
+        as_lcha : function(self:LuaColor):(LuaColor)
 
         --Converts `Color` to a `u32` from sRGB colorspace.
         --
@@ -2353,7 +2934,7 @@ global record BevyAPI
         --
         --`A` will be the most significant byte and `R` the least significant.
 
-        as_rgba_u32 : function(LuaColor):(integer)
+        as_rgba_u32 : function(self:LuaColor):(integer)
 
         --Converts Color to a u32 from linear RGB colorspace.
         --
@@ -2363,7 +2944,7 @@ global record BevyAPI
         --
         --`A` will be the most significant byte and `R` the least significant.
 
-        as_linear_rgba_u32 : function(LuaColor):(integer)
+        as_linear_rgba_u32 : function(self:LuaColor):(integer)
 
         --New `Color` from sRGB colorspace.
         --
@@ -2383,7 +2964,7 @@ global record BevyAPI
         --
         --See also [`Color::rgba`], [`Color::rgb_u8`], [`Color::hex`].
 
-        rgb : function((number),(number),(number)):(LuaColor)
+        rgb : function(number , number , number):(LuaColor)
 
         --New `Color` from sRGB colorspace.
         --
@@ -2405,7 +2986,7 @@ global record BevyAPI
         --
         --See also [`Color::rgb`], [`Color::rgba_u8`], [`Color::hex`].
 
-        rgba : function((number),(number),(number),(number)):(LuaColor)
+        rgba : function(number , number , number , number):(LuaColor)
 
         --New `Color` from linear RGB colorspace.
         --
@@ -2425,7 +3006,7 @@ global record BevyAPI
         --
         --See also [`Color::rgb`], [`Color::rgba_linear`].
 
-        rgb_linear : function((number),(number),(number)):(LuaColor)
+        rgb_linear : function(number , number , number):(LuaColor)
 
         --New `Color` from linear RGB colorspace.
         --
@@ -2447,7 +3028,7 @@ global record BevyAPI
         --
         --See also [`Color::rgba`], [`Color::rgb_linear`].
 
-        rgba_linear : function((number),(number),(number),(number)):(LuaColor)
+        rgba_linear : function(number , number , number , number):(LuaColor)
 
         --New `Color` with HSL representation in sRGB colorspace.
         --
@@ -2467,7 +3048,7 @@ global record BevyAPI
         --
         --See also [`Color::hsla`].
 
-        hsl : function((number),(number),(number)):(LuaColor)
+        hsl : function(number , number , number):(LuaColor)
 
         --New `Color` with HSL representation in sRGB colorspace.
         --
@@ -2489,7 +3070,49 @@ global record BevyAPI
         --
         --See also [`Color::hsl`].
 
-        hsla : function((number),(number),(number),(number)):(LuaColor)
+        hsla : function(number , number , number , number):(LuaColor)
+
+        --New `Color` with LCH representation in sRGB colorspace.
+        --
+        --
+        --
+        --# Arguments
+        --
+        --
+        --
+        --* `lightness` - Lightness channel. [0.0, 1.5]
+        --
+        --* `chroma` - Chroma channel. [0.0, 1.5]
+        --
+        --* `hue` - Hue channel. [0.0, 360.0]
+        --
+        --
+        --
+        --See also [`Color::lcha`].
+
+        lch : function(number , number , number):(LuaColor)
+
+        --New `Color` with LCH representation in sRGB colorspace.
+        --
+        --
+        --
+        --# Arguments
+        --
+        --
+        --
+        --* `lightness` - Lightness channel. [0.0, 1.5]
+        --
+        --* `chroma` - Chroma channel. [0.0, 1.5]
+        --
+        --* `hue` - Hue channel. [0.0, 360.0]
+        --
+        --* `alpha` - Alpha channel. [0.0, 1.0]
+        --
+        --
+        --
+        --See also [`Color::lch`].
+
+        lcha : function(number , number , number , number):(LuaColor)
 
         --New `Color` from sRGB colorspace.
         --
@@ -2509,7 +3132,7 @@ global record BevyAPI
         --
         --See also [`Color::rgb`], [`Color::rgba_u8`], [`Color::hex`].
 
-        rgb_u8 : function((integer),(integer),(integer)):(LuaColor)
+        rgb_u8 : function(integer , integer , integer):(LuaColor)
 
         --New `Color` from sRGB colorspace.
         --
@@ -2531,22 +3154,22 @@ global record BevyAPI
         --
         --See also [`Color::rgba`], [`Color::rgb_u8`], [`Color::hex`].
 
-        rgba_u8 : function((integer),(integer),(integer),(integer)):(LuaColor)
+        rgba_u8 : function(integer , integer , integer , integer):(LuaColor)
 
-        __tostring : function(LuaColor):(string)
+        __tostring : function(self:LuaColor):(string)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
     end
     
     
-    record LuaColorClass
+    record ClassLuaColor
 
         userdata
     
-    --Collection of static methods for [`LuaColor`].
+    --Collection of static methods for [``].
 
         --New `Color` from sRGB colorspace.
         --
@@ -2566,7 +3189,7 @@ global record BevyAPI
         --
         --See also [`Color::rgba`], [`Color::rgb_u8`], [`Color::hex`].
 
-        rgb : function((number),(number),(number)):(LuaColor)
+        rgb : function(number , number , number):(LuaColor)
 
         --New `Color` from sRGB colorspace.
         --
@@ -2588,7 +3211,7 @@ global record BevyAPI
         --
         --See also [`Color::rgb`], [`Color::rgba_u8`], [`Color::hex`].
 
-        rgba : function((number),(number),(number),(number)):(LuaColor)
+        rgba : function(number , number , number , number):(LuaColor)
 
         --New `Color` from linear RGB colorspace.
         --
@@ -2608,7 +3231,7 @@ global record BevyAPI
         --
         --See also [`Color::rgb`], [`Color::rgba_linear`].
 
-        rgb_linear : function((number),(number),(number)):(LuaColor)
+        rgb_linear : function(number , number , number):(LuaColor)
 
         --New `Color` from linear RGB colorspace.
         --
@@ -2630,7 +3253,7 @@ global record BevyAPI
         --
         --See also [`Color::rgba`], [`Color::rgb_linear`].
 
-        rgba_linear : function((number),(number),(number),(number)):(LuaColor)
+        rgba_linear : function(number , number , number , number):(LuaColor)
 
         --New `Color` with HSL representation in sRGB colorspace.
         --
@@ -2650,7 +3273,7 @@ global record BevyAPI
         --
         --See also [`Color::hsla`].
 
-        hsl : function((number),(number),(number)):(LuaColor)
+        hsl : function(number , number , number):(LuaColor)
 
         --New `Color` with HSL representation in sRGB colorspace.
         --
@@ -2672,7 +3295,49 @@ global record BevyAPI
         --
         --See also [`Color::hsl`].
 
-        hsla : function((number),(number),(number),(number)):(LuaColor)
+        hsla : function(number , number , number , number):(LuaColor)
+
+        --New `Color` with LCH representation in sRGB colorspace.
+        --
+        --
+        --
+        --# Arguments
+        --
+        --
+        --
+        --* `lightness` - Lightness channel. [0.0, 1.5]
+        --
+        --* `chroma` - Chroma channel. [0.0, 1.5]
+        --
+        --* `hue` - Hue channel. [0.0, 360.0]
+        --
+        --
+        --
+        --See also [`Color::lcha`].
+
+        lch : function(number , number , number):(LuaColor)
+
+        --New `Color` with LCH representation in sRGB colorspace.
+        --
+        --
+        --
+        --# Arguments
+        --
+        --
+        --
+        --* `lightness` - Lightness channel. [0.0, 1.5]
+        --
+        --* `chroma` - Chroma channel. [0.0, 1.5]
+        --
+        --* `hue` - Hue channel. [0.0, 360.0]
+        --
+        --* `alpha` - Alpha channel. [0.0, 1.0]
+        --
+        --
+        --
+        --See also [`Color::lch`].
+
+        lcha : function(number , number , number , number):(LuaColor)
 
         --New `Color` from sRGB colorspace.
         --
@@ -2692,7 +3357,7 @@ global record BevyAPI
         --
         --See also [`Color::rgb`], [`Color::rgba_u8`], [`Color::hex`].
 
-        rgb_u8 : function((integer),(integer),(integer)):(LuaColor)
+        rgb_u8 : function(integer , integer , integer):(LuaColor)
 
         --New `Color` from sRGB colorspace.
         --
@@ -2714,11 +3379,11 @@ global record BevyAPI
         --
         --See also [`Color::rgba`], [`Color::rgb_u8`], [`Color::hex`].
 
-        rgba_u8 : function((integer),(integer),(integer),(integer)):(LuaColor)
+        rgba_u8 : function(integer , integer , integer , integer):(LuaColor)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
     end
     
@@ -2733,24 +3398,28 @@ global record BevyAPI
 
         half_extents : LuaVec3A
 
-        min : function(LuaAabb):(LuaVec3A)
+        --Calculate the relative radius of the AABB with respect to a plane
 
-        max : function(LuaAabb):(LuaVec3A)
+        relative_radius : function(self:LuaAabb , LuaVec3A , LuaMat3A):(number)
 
-        from_min_max : function((LuaVec3),(LuaVec3)):(LuaAabb)
+        min : function(self:LuaAabb):(LuaVec3A)
 
-        __tostring : function(LuaAabb):(string)
+        max : function(self:LuaAabb):(LuaVec3A)
+
+        from_min_max : function(LuaVec3 , LuaVec3):(LuaAabb)
+
+        __tostring : function(self:LuaAabb):(string)
 
     end
     
     
-    record LuaAabbClass
+    record ClassLuaAabb
 
         userdata
     
-    --Collection of static methods for [`LuaAabb`].
+    --Collection of static methods for [``].
 
-        from_min_max : function((LuaVec3),(LuaVec3)):(LuaAabb)
+        from_min_max : function(LuaVec3 , LuaVec3):(LuaAabb)
 
     end
     
@@ -2761,7 +3430,7 @@ global record BevyAPI
     
     --
 
-        __tostring : function(LuaCubemapFrusta):(string)
+        __tostring : function(self:LuaCubemapFrusta):(string)
 
     end
     
@@ -2772,38 +3441,40 @@ global record BevyAPI
     
     --
 
-        intersects_obb : function(LuaFrustum,(LuaAabb),(LuaMat4),(boolean),(boolean)):(boolean)
+        --Checks if an Oriented Bounding Box (obb) intersects the frustum.
+
+        intersects_obb : function(self:LuaFrustum , LuaAabb , LuaAffine3A , boolean , boolean):(boolean)
 
         --Returns a frustum derived from `view_projection`.
 
         from_view_projection : function(LuaMat4):(LuaFrustum)
 
-        --Returns a frustum derived from `view_projection`, but with a custom
+        --Returns a frustum derived from `view_projection`,
         --
-        --far plane.
+        --but with a custom far plane.
 
-        from_view_projection_custom_far : function((LuaMat4),(LuaVec3),(LuaVec3),(number)):(LuaFrustum)
+        from_view_projection_custom_far : function(LuaMat4 , LuaVec3 , LuaVec3 , number):(LuaFrustum)
 
-        __tostring : function(LuaFrustum):(string)
+        __tostring : function(self:LuaFrustum):(string)
 
     end
     
     
-    record LuaFrustumClass
+    record ClassLuaFrustum
 
         userdata
     
-    --Collection of static methods for [`LuaFrustum`].
+    --Collection of static methods for [``].
 
         --Returns a frustum derived from `view_projection`.
 
         from_view_projection : function(LuaMat4):(LuaFrustum)
 
-        --Returns a frustum derived from `view_projection`, but with a custom
+        --Returns a frustum derived from `view_projection`,
         --
-        --far plane.
+        --but with a custom far plane.
 
-        from_view_projection_custom_far : function((LuaMat4),(LuaVec3),(LuaVec3),(number)):(LuaFrustum)
+        from_view_projection_custom_far : function(LuaMat4 , LuaVec3 , LuaVec3 , number):(LuaFrustum)
 
     end
     
@@ -2814,7 +3485,9 @@ global record BevyAPI
     
     --
 
-        samples : function(LuaMsaa):(integer)
+        samples : function(self:LuaMsaa):(integer)
+
+        __tostring : function(self:LuaMsaa):(string)
 
     end
     
@@ -2845,11 +3518,7 @@ global record BevyAPI
 
         -- If this is set to `true`, the camera will use an intermediate "high dynamic range" render texture.
         --
-        -- Warning: we are still working on this feature. If MSAA is enabled, there will be artifacts in
-        --
-        -- some cases. When rendering with WebGL, this will crash if MSAA is enabled.
-        --
-        -- See <https://github.com/bevyengine/bevy/pull/3425> for details.
+        -- This allows rendering with a wider range of lighting values.
 
         hdr : boolean
 
@@ -2865,9 +3534,9 @@ global record BevyAPI
 
         --The projection matrix computed using this camera's [`CameraProjection`].
 
-        projection_matrix : function(LuaCamera):(LuaMat4)
+        projection_matrix : function(self:LuaCamera):(LuaMat4)
 
-        __tostring : function(LuaCamera):(string)
+        __tostring : function(self:LuaCamera):(string)
 
     end
     
@@ -2878,7 +3547,7 @@ global record BevyAPI
     
     --
 
-        __tostring : function(LuaRenderTarget):(string)
+        __tostring : function(self:LuaRenderTarget):(string)
 
     end
     
@@ -2905,7 +3574,7 @@ global record BevyAPI
 
         depth : ReflectedValue
 
-        __tostring : function(LuaViewport):(string)
+        __tostring : function(self:LuaViewport):(string)
 
     end
     
@@ -2916,13 +3585,13 @@ global record BevyAPI
     
     --
 
-        get_projection_matrix : function(LuaProjection):(LuaMat4)
+        get_projection_matrix : function(self:LuaProjection):(LuaMat4)
 
-        far : function(LuaProjection):(number)
+        far : function(self:LuaProjection):(number)
 
-        update : function(LuaProjection,(number),(number)):()
+        update : function(self:LuaProjection , number , number)
 
-        __tostring : function(LuaProjection):(string)
+        __tostring : function(self:LuaProjection):(string)
 
     end
     
@@ -2987,7 +3656,7 @@ global record BevyAPI
         --
         --
         --
-        -- Defaults to `ScalingMode::WindowScale(1.0)`
+        -- Defaults to `ScalingMode::WindowSize(1.0)`
 
         scaling_mode : LuaScalingMode
 
@@ -3019,13 +3688,13 @@ global record BevyAPI
 
         area : LuaRect
 
-        get_projection_matrix : function(LuaOrthographicProjection):(LuaMat4)
+        get_projection_matrix : function(self:LuaOrthographicProjection):(LuaMat4)
 
-        far : function(LuaOrthographicProjection):(number)
+        far : function(self:LuaOrthographicProjection):(number)
 
-        update : function(LuaOrthographicProjection,(number),(number)):()
+        update : function(self:LuaOrthographicProjection , number , number)
 
-        __tostring : function(LuaOrthographicProjection):(string)
+        __tostring : function(self:LuaOrthographicProjection):(string)
 
     end
     
@@ -3082,13 +3751,13 @@ global record BevyAPI
 
         _far : number
 
-        get_projection_matrix : function(LuaPerspectiveProjection):(LuaMat4)
+        get_projection_matrix : function(self:LuaPerspectiveProjection):(LuaMat4)
 
-        far : function(LuaPerspectiveProjection):(number)
+        far : function(self:LuaPerspectiveProjection):(number)
 
-        update : function(LuaPerspectiveProjection,(number),(number)):()
+        update : function(self:LuaPerspectiveProjection , number , number)
 
-        __tostring : function(LuaPerspectiveProjection):(string)
+        __tostring : function(self:LuaPerspectiveProjection):(string)
 
     end
     
@@ -3102,72 +3771,22 @@ global record BevyAPI
     end
     
     
-    record LuaCameraRenderGraphClass
+    record ClassLuaCameraRenderGraph
 
         userdata
     
-    --Collection of static methods for [`LuaCameraRenderGraph`].
+    --Collection of static methods for [``].
 
     end
     
     
-    record LuaAssetPathId
+    record LuaAssetIndex
 
         userdata
     
     --
 
-        --Gets the id of the source path.
-
-        source_path_id : function(LuaAssetPathId):(LuaSourcePathId)
-
-        --Gets the id of the sub-asset label.
-
-        label_id : function(LuaAssetPathId):(LuaLabelId)
-
-        __tostring : function(LuaAssetPathId):(string)
-
-    end
-    
-    
-    record LuaLabelId
-
-        userdata
-    
-    --
-
-        __tostring : function(LuaLabelId):(string)
-
-    end
-    
-    
-    record LuaSourcePathId
-
-        userdata
-    
-    --
-
-        __tostring : function(LuaSourcePathId):(string)
-
-    end
-    
-    
-    record LuaHandleId
-
-        userdata
-    
-    --
-
-        __tostring : function(LuaHandleId):(string)
-
-    end
-    
-    
-    record LuaHandleIdClass
-
-        userdata
-    
-    --Collection of static methods for [`LuaHandleId`].
+        __tostring : function(self:LuaAssetIndex):(string)
 
     end
     
@@ -3184,15 +3803,15 @@ global record BevyAPI
 
         --Creates a 3D vector from `self` and the given `z` value.
 
-        extend : function(LuaVec2,number):(LuaVec3)
+        extend : function(self:LuaVec2 , number):(LuaVec3)
 
         --Computes the dot product of `self` and `rhs`.
 
-        dot : function(LuaVec2,LuaVec2):(number)
+        dot : function(self:LuaVec2 , LuaVec2):(number)
 
         --Returns a vector where every component is the dot product of `self` and `rhs`.
 
-        dot_into_vec : function(LuaVec2,LuaVec2):(LuaVec2)
+        dot_into_vec : function(self:LuaVec2 , LuaVec2):(LuaVec2)
 
         --Returns a vector containing the minimum values for each element of `self` and `rhs`.
         --
@@ -3200,7 +3819,7 @@ global record BevyAPI
         --
         --In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
 
-        min : function(LuaVec2,LuaVec2):(LuaVec2)
+        min : function(self:LuaVec2 , LuaVec2):(LuaVec2)
 
         --Returns a vector containing the maximum values for each element of `self` and `rhs`.
         --
@@ -3208,7 +3827,7 @@ global record BevyAPI
         --
         --In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
 
-        max : function(LuaVec2,LuaVec2):(LuaVec2)
+        max : function(self:LuaVec2 , LuaVec2):(LuaVec2)
 
         --Component-wise clamping of values, similar to [`f32::clamp`].
         --
@@ -3224,7 +3843,7 @@ global record BevyAPI
         --
         --Will panic if `min` is greater than `max` when `glam_assert` is enabled.
 
-        clamp : function(LuaVec2,(LuaVec2),(LuaVec2)):(LuaVec2)
+        clamp : function(self:LuaVec2 , LuaVec2 , LuaVec2):(LuaVec2)
 
         --Returns the horizontal minimum of `self`.
         --
@@ -3232,7 +3851,7 @@ global record BevyAPI
         --
         --In other words this computes `min(x, y, ..)`.
 
-        min_element : function(LuaVec2):(number)
+        min_element : function(self:LuaVec2):(number)
 
         --Returns the horizontal maximum of `self`.
         --
@@ -3240,7 +3859,7 @@ global record BevyAPI
         --
         --In other words this computes `max(x, y, ..)`.
 
-        max_element : function(LuaVec2):(number)
+        max_element : function(self:LuaVec2):(number)
 
         --Returns a vector mask containing the result of a `==` comparison for each element of
         --
@@ -3252,7 +3871,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpeq : function(LuaVec2,LuaVec2):(LuaBVec2)
+        cmpeq : function(self:LuaVec2 , LuaVec2):(LuaBVec2)
 
         --Returns a vector mask containing the result of a `!=` comparison for each element of
         --
@@ -3264,7 +3883,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpne : function(LuaVec2,LuaVec2):(LuaBVec2)
+        cmpne : function(self:LuaVec2 , LuaVec2):(LuaBVec2)
 
         --Returns a vector mask containing the result of a `>=` comparison for each element of
         --
@@ -3276,7 +3895,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpge : function(LuaVec2,LuaVec2):(LuaBVec2)
+        cmpge : function(self:LuaVec2 , LuaVec2):(LuaBVec2)
 
         --Returns a vector mask containing the result of a `>` comparison for each element of
         --
@@ -3288,7 +3907,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpgt : function(LuaVec2,LuaVec2):(LuaBVec2)
+        cmpgt : function(self:LuaVec2 , LuaVec2):(LuaBVec2)
 
         --Returns a vector mask containing the result of a `<=` comparison for each element of
         --
@@ -3300,7 +3919,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmple : function(LuaVec2,LuaVec2):(LuaBVec2)
+        cmple : function(self:LuaVec2 , LuaVec2):(LuaBVec2)
 
         --Returns a vector mask containing the result of a `<` comparison for each element of
         --
@@ -3312,11 +3931,11 @@ global record BevyAPI
         --
         --elements.
 
-        cmplt : function(LuaVec2,LuaVec2):(LuaBVec2)
+        cmplt : function(self:LuaVec2 , LuaVec2):(LuaBVec2)
 
         --Returns a vector containing the absolute value of each element of `self`.
 
-        abs : function(LuaVec2):(LuaVec2)
+        abs : function(self:LuaVec2):(LuaVec2)
 
         --Returns a vector with elements representing the sign of `self`.
         --
@@ -3328,11 +3947,11 @@ global record BevyAPI
         --
         --- `NAN` if the number is `NAN`
 
-        signum : function(LuaVec2):(LuaVec2)
+        signum : function(self:LuaVec2):(LuaVec2)
 
         --Returns a vector with signs of `rhs` and the magnitudes of `self`.
 
-        copysign : function(LuaVec2,LuaVec2):(LuaVec2)
+        copysign : function(self:LuaVec2 , LuaVec2):(LuaVec2)
 
         --Returns a bitmask with the lowest 2 bits set to the sign bits from the elements of `self`.
         --
@@ -3342,17 +3961,17 @@ global record BevyAPI
         --
         --into the first lowest bit, element `y` into the second, etc.
 
-        is_negative_bitmask : function(LuaVec2):(integer)
+        is_negative_bitmask : function(self:LuaVec2):(integer)
 
         --Returns `true` if, and only if, all elements are finite.  If any element is either
         --
         --`NaN`, positive or negative infinity, this will return `false`.
 
-        is_finite : function(LuaVec2):(boolean)
+        is_finite : function(self:LuaVec2):(boolean)
 
         --Returns `true` if any elements are `NaN`.
 
-        is_nan : function(LuaVec2):(boolean)
+        is_nan : function(self:LuaVec2):(boolean)
 
         --Performs `is_nan` on each element of self, returning a vector mask of the results.
         --
@@ -3360,11 +3979,11 @@ global record BevyAPI
         --
         --In other words, this computes `[x.is_nan(), y.is_nan(), z.is_nan(), w.is_nan()]`.
 
-        is_nan_mask : function(LuaVec2):(LuaBVec2)
+        is_nan_mask : function(self:LuaVec2):(LuaBVec2)
 
         --Computes the length of `self`.
 
-        length : function(LuaVec2):(number)
+        length : function(self:LuaVec2):(number)
 
         --Computes the squared length of `self`.
         --
@@ -3372,7 +3991,7 @@ global record BevyAPI
         --
         --This is faster than `length()` as it avoids a square root operation.
 
-        length_squared : function(LuaVec2):(number)
+        length_squared : function(self:LuaVec2):(number)
 
         --Computes `1.0 / length()`.
         --
@@ -3380,15 +3999,15 @@ global record BevyAPI
         --
         --For valid results, `self` must _not_ be of length zero.
 
-        length_recip : function(LuaVec2):(number)
+        length_recip : function(self:LuaVec2):(number)
 
         --Computes the Euclidean distance between two points in space.
 
-        distance : function(LuaVec2,LuaVec2):(number)
+        distance : function(self:LuaVec2 , LuaVec2):(number)
 
         --Compute the squared euclidean distance between two points in space.
 
-        distance_squared : function(LuaVec2,LuaVec2):(number)
+        distance_squared : function(self:LuaVec2 , LuaVec2):(number)
 
         --Returns `self` normalized to length 1.0.
         --
@@ -3398,7 +4017,7 @@ global record BevyAPI
         --
         --
         --
-        --See also [`Self::try_normalize`] and [`Self::normalize_or_zero`].
+        --See also [`Self::try_normalize()`] and [`Self::normalize_or_zero()`].
         --
         --
         --
@@ -3408,7 +4027,7 @@ global record BevyAPI
         --
         --Will panic if `self` is zero length when `glam_assert` is enabled.
 
-        normalize : function(LuaVec2):(LuaVec2)
+        normalize : function(self:LuaVec2):(LuaVec2)
 
         --Returns `self` normalized to length 1.0 if possible, else returns zero.
         --
@@ -3420,9 +4039,9 @@ global record BevyAPI
         --
         --
         --
-        --See also [`Self::try_normalize`].
+        --See also [`Self::try_normalize()`].
 
-        normalize_or_zero : function(LuaVec2):(LuaVec2)
+        normalize_or_zero : function(self:LuaVec2):(LuaVec2)
 
         --Returns whether `self` is length `1.0` or not.
         --
@@ -3430,7 +4049,7 @@ global record BevyAPI
         --
         --Uses a precision threshold of `1e-6`.
 
-        is_normalized : function(LuaVec2):(boolean)
+        is_normalized : function(self:LuaVec2):(boolean)
 
         --Returns the vector projection of `self` onto `rhs`.
         --
@@ -3446,7 +4065,7 @@ global record BevyAPI
         --
         --Will panic if `rhs` is zero length when `glam_assert` is enabled.
 
-        project_onto : function(LuaVec2,LuaVec2):(LuaVec2)
+        project_onto : function(self:LuaVec2 , LuaVec2):(LuaVec2)
 
         --Returns the vector rejection of `self` from `rhs`.
         --
@@ -3468,7 +4087,7 @@ global record BevyAPI
         --
         --Will panic if `rhs` has a length of zero when `glam_assert` is enabled.
 
-        reject_from : function(LuaVec2,LuaVec2):(LuaVec2)
+        reject_from : function(self:LuaVec2 , LuaVec2):(LuaVec2)
 
         --Returns the vector projection of `self` onto `rhs`.
         --
@@ -3484,7 +4103,7 @@ global record BevyAPI
         --
         --Will panic if `rhs` is not normalized when `glam_assert` is enabled.
 
-        project_onto_normalized : function(LuaVec2,LuaVec2):(LuaVec2)
+        project_onto_normalized : function(self:LuaVec2 , LuaVec2):(LuaVec2)
 
         --Returns the vector rejection of `self` from `rhs`.
         --
@@ -3506,25 +4125,31 @@ global record BevyAPI
         --
         --Will panic if `rhs` is not normalized when `glam_assert` is enabled.
 
-        reject_from_normalized : function(LuaVec2,LuaVec2):(LuaVec2)
+        reject_from_normalized : function(self:LuaVec2 , LuaVec2):(LuaVec2)
 
         --Returns a vector containing the nearest integer to a number for each element of `self`.
         --
         --Round half-way cases away from 0.0.
 
-        round : function(LuaVec2):(LuaVec2)
+        round : function(self:LuaVec2):(LuaVec2)
 
         --Returns a vector containing the largest integer less than or equal to a number for each
         --
         --element of `self`.
 
-        floor : function(LuaVec2):(LuaVec2)
+        floor : function(self:LuaVec2):(LuaVec2)
 
         --Returns a vector containing the smallest integer greater than or equal to a number for
         --
         --each element of `self`.
 
-        ceil : function(LuaVec2):(LuaVec2)
+        ceil : function(self:LuaVec2):(LuaVec2)
+
+        --Returns a vector containing the integer part each element of `self`. This means numbers are
+        --
+        --always truncated towards zero.
+
+        trunc : function(self:LuaVec2):(LuaVec2)
 
         --Returns a vector containing the fractional part of the vector, e.g. `self -
         --
@@ -3534,21 +4159,21 @@ global record BevyAPI
         --
         --Note that this is fast but not precise for large numbers.
 
-        fract : function(LuaVec2):(LuaVec2)
+        fract : function(self:LuaVec2):(LuaVec2)
 
         --Returns a vector containing `e^self` (the exponential function) for each element of
         --
         --`self`.
 
-        exp : function(LuaVec2):(LuaVec2)
+        exp : function(self:LuaVec2):(LuaVec2)
 
         --Returns a vector containing each element of `self` raised to the power of `n`.
 
-        powf : function(LuaVec2,number):(LuaVec2)
+        powf : function(self:LuaVec2 , number):(LuaVec2)
 
         --Returns a vector containing the reciprocal `1.0/n` of each element of `self`.
 
-        recip : function(LuaVec2):(LuaVec2)
+        recip : function(self:LuaVec2):(LuaVec2)
 
         --Performs a linear interpolation between `self` and `rhs` based on the value `s`.
         --
@@ -3560,7 +4185,7 @@ global record BevyAPI
         --
         --extrapolated.
 
-        lerp : function(LuaVec2,(LuaVec2),(number)):(LuaVec2)
+        lerp : function(self:LuaVec2 , LuaVec2 , number):(LuaVec2)
 
         --Returns true if the absolute difference of all elements between `self` and `rhs` is
         --
@@ -3580,7 +4205,7 @@ global record BevyAPI
         --
         --[comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
 
-        abs_diff_eq : function(LuaVec2,(LuaVec2),(number)):(boolean)
+        abs_diff_eq : function(self:LuaVec2 , LuaVec2 , number):(boolean)
 
         --Returns a vector with a length no less than `min` and no more than `max`
         --
@@ -3592,15 +4217,15 @@ global record BevyAPI
         --
         --Will panic if `min` is greater than `max` when `glam_assert` is enabled.
 
-        clamp_length : function(LuaVec2,(number),(number)):(LuaVec2)
+        clamp_length : function(self:LuaVec2 , number , number):(LuaVec2)
 
         --Returns a vector with a length no more than `max`
 
-        clamp_length_max : function(LuaVec2,number):(LuaVec2)
+        clamp_length_max : function(self:LuaVec2 , number):(LuaVec2)
 
         --Returns a vector with a length no less than `min`
 
-        clamp_length_min : function(LuaVec2,number):(LuaVec2)
+        clamp_length_min : function(self:LuaVec2 , number):(LuaVec2)
 
         --Fused multiply-add. Computes `(self * a) + b` element-wise with only one rounding
         --
@@ -3616,25 +4241,25 @@ global record BevyAPI
         --
         --mind.
 
-        mul_add : function(LuaVec2,(LuaVec2),(LuaVec2)):(LuaVec2)
+        mul_add : function(self:LuaVec2 , LuaVec2 , LuaVec2):(LuaVec2)
 
-        --Returns the angle (in radians) between `self` and `rhs`.
+        --Returns the angle (in radians) between `self` and `rhs` in the range `[-π, +π]`.
         --
         --
         --
-        --The input vectors do not need to be unit length however they must be non-zero.
+        --The inputs do not need to be unit vectors however they must be non-zero.
 
-        angle_between : function(LuaVec2,LuaVec2):(number)
+        angle_between : function(self:LuaVec2 , LuaVec2):(number)
 
         --Returns a vector that is equal to `self` rotated by 90 degrees.
 
-        perp : function(LuaVec2):(LuaVec2)
+        perp : function(self:LuaVec2):(LuaVec2)
 
         --The perpendicular dot product of `self` and `rhs`.
         --
         --Also known as the wedge product, 2D cross product, and determinant.
 
-        perp_dot : function(LuaVec2,LuaVec2):(number)
+        perp_dot : function(self:LuaVec2 , LuaVec2):(number)
 
         --Returns `rhs` rotated by the angle of `self`. If `self` is normalized,
         --
@@ -3642,23 +4267,23 @@ global record BevyAPI
         --
         --it will be like a rotation with a multiplication by `self`'s length.
 
-        rotate : function(LuaVec2,LuaVec2):(LuaVec2)
+        rotate : function(self:LuaVec2 , LuaVec2):(LuaVec2)
 
         --Casts all elements of `self` to `f64`.
 
-        as_dvec2 : function(LuaVec2):(LuaDVec2)
+        as_dvec2 : function(self:LuaVec2):(LuaDVec2)
 
         --Casts all elements of `self` to `i32`.
 
-        as_ivec2 : function(LuaVec2):(LuaIVec2)
+        as_ivec2 : function(self:LuaVec2):(LuaIVec2)
 
         --Casts all elements of `self` to `u32`.
 
-        as_uvec2 : function(LuaVec2):(LuaUVec2)
+        as_uvec2 : function(self:LuaVec2):(LuaUVec2)
 
         --Creates a new vector.
 
-        new : function((number),(number)):(LuaVec2)
+        new : function(number , number):(LuaVec2)
 
         --Creates a vector with all elements set to `v`.
 
@@ -3674,46 +4299,48 @@ global record BevyAPI
         --
         --uses the element from `if_false`.
 
-        select : function((LuaBVec2),(LuaVec2),(LuaVec2)):(LuaVec2)
+        select : function(LuaBVec2 , LuaVec2 , LuaVec2):(LuaVec2)
 
         --Creates a 2D vector containing `[angle.cos(), angle.sin()]`. This can be used in
         --
-        --conjunction with the `rotate` method, e.g. `Vec2::from_angle(PI).rotate(Vec2::Y)` will
+        --conjunction with the [`rotate()`][Self::rotate()] method, e.g.
         --
-        --create the vector [-1, 0] and rotate `Vec2::Y` around it returning `-Vec2::Y`.
+        --`Vec2::from_angle(PI).rotate(Vec2::Y)` will create the vector `[-1, 0]`
+        --
+        --and rotate [`Vec2::Y`] around it returning `-Vec2::Y`.
 
         from_angle : function(number):(LuaVec2)
 
-        __tostring : function(LuaVec2):(string)
+        __tostring : function(self:LuaVec2):(string)
 
-        __unm : function(LuaVec2):(LuaVec2)
+        __unm : function(self:LuaVec2):(LuaVec2)
 
-        __index : function(LuaVec2,integer):(number)
+        __index : function(self:LuaVec2 , integer):(number)
 
-        __newindex : function(LuaVec2,(integer),(number)):()
+        __newindex : function(self:LuaVec2 , integer , number)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __div : function((any),(any)):(any)
+        __div : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
-        __mod : function((any),(any)):(any)
+        __mod : function(any , any):(any)
 
     end
     
     
-    record LuaVec2Class
+    record ClassLuaVec2
 
         userdata
     
-    --Collection of static methods for [`LuaVec2`].
+    --Collection of static methods for [``].
 
         --Creates a new vector.
 
-        new : function((number),(number)):(LuaVec2)
+        new : function(number , number):(LuaVec2)
 
         --Creates a vector with all elements set to `v`.
 
@@ -3729,25 +4356,27 @@ global record BevyAPI
         --
         --uses the element from `if_false`.
 
-        select : function((LuaBVec2),(LuaVec2),(LuaVec2)):(LuaVec2)
+        select : function(LuaBVec2 , LuaVec2 , LuaVec2):(LuaVec2)
 
         --Creates a 2D vector containing `[angle.cos(), angle.sin()]`. This can be used in
         --
-        --conjunction with the `rotate` method, e.g. `Vec2::from_angle(PI).rotate(Vec2::Y)` will
+        --conjunction with the [`rotate()`][Self::rotate()] method, e.g.
         --
-        --create the vector [-1, 0] and rotate `Vec2::Y` around it returning `-Vec2::Y`.
+        --`Vec2::from_angle(PI).rotate(Vec2::Y)` will create the vector `[-1, 0]`
+        --
+        --and rotate [`Vec2::Y`] around it returning `-Vec2::Y`.
 
         from_angle : function(number):(LuaVec2)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __div : function((any),(any)):(any)
+        __div : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
-        __mod : function((any),(any)):(any)
+        __mod : function(any , any):(any)
 
     end
     
@@ -3766,27 +4395,27 @@ global record BevyAPI
 
         --Creates a 4D vector from `self` and the given `w` value.
 
-        extend : function(LuaVec3,number):(LuaVec4)
+        extend : function(self:LuaVec3 , number):(LuaVec4)
 
         --Creates a 2D vector from the `x` and `y` elements of `self`, discarding `z`.
         --
         --
         --
-        --Truncation may also be performed by using `self.xy()` or `Vec2::from()`.
+        --Truncation may also be performed by using [`self.xy()`][crate::swizzles::Vec3Swizzles::xy()].
 
-        truncate : function(LuaVec3):(LuaVec2)
+        truncate : function(self:LuaVec3):(LuaVec2)
 
         --Computes the dot product of `self` and `rhs`.
 
-        dot : function(LuaVec3,LuaVec3):(number)
+        dot : function(self:LuaVec3 , LuaVec3):(number)
 
         --Returns a vector where every component is the dot product of `self` and `rhs`.
 
-        dot_into_vec : function(LuaVec3,LuaVec3):(LuaVec3)
+        dot_into_vec : function(self:LuaVec3 , LuaVec3):(LuaVec3)
 
         --Computes the cross product of `self` and `rhs`.
 
-        cross : function(LuaVec3,LuaVec3):(LuaVec3)
+        cross : function(self:LuaVec3 , LuaVec3):(LuaVec3)
 
         --Returns a vector containing the minimum values for each element of `self` and `rhs`.
         --
@@ -3794,7 +4423,7 @@ global record BevyAPI
         --
         --In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
 
-        min : function(LuaVec3,LuaVec3):(LuaVec3)
+        min : function(self:LuaVec3 , LuaVec3):(LuaVec3)
 
         --Returns a vector containing the maximum values for each element of `self` and `rhs`.
         --
@@ -3802,7 +4431,7 @@ global record BevyAPI
         --
         --In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
 
-        max : function(LuaVec3,LuaVec3):(LuaVec3)
+        max : function(self:LuaVec3 , LuaVec3):(LuaVec3)
 
         --Component-wise clamping of values, similar to [`f32::clamp`].
         --
@@ -3818,7 +4447,7 @@ global record BevyAPI
         --
         --Will panic if `min` is greater than `max` when `glam_assert` is enabled.
 
-        clamp : function(LuaVec3,(LuaVec3),(LuaVec3)):(LuaVec3)
+        clamp : function(self:LuaVec3 , LuaVec3 , LuaVec3):(LuaVec3)
 
         --Returns the horizontal minimum of `self`.
         --
@@ -3826,7 +4455,7 @@ global record BevyAPI
         --
         --In other words this computes `min(x, y, ..)`.
 
-        min_element : function(LuaVec3):(number)
+        min_element : function(self:LuaVec3):(number)
 
         --Returns the horizontal maximum of `self`.
         --
@@ -3834,7 +4463,7 @@ global record BevyAPI
         --
         --In other words this computes `max(x, y, ..)`.
 
-        max_element : function(LuaVec3):(number)
+        max_element : function(self:LuaVec3):(number)
 
         --Returns a vector mask containing the result of a `==` comparison for each element of
         --
@@ -3846,7 +4475,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpeq : function(LuaVec3,LuaVec3):(LuaBVec3)
+        cmpeq : function(self:LuaVec3 , LuaVec3):(LuaBVec3)
 
         --Returns a vector mask containing the result of a `!=` comparison for each element of
         --
@@ -3858,7 +4487,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpne : function(LuaVec3,LuaVec3):(LuaBVec3)
+        cmpne : function(self:LuaVec3 , LuaVec3):(LuaBVec3)
 
         --Returns a vector mask containing the result of a `>=` comparison for each element of
         --
@@ -3870,7 +4499,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpge : function(LuaVec3,LuaVec3):(LuaBVec3)
+        cmpge : function(self:LuaVec3 , LuaVec3):(LuaBVec3)
 
         --Returns a vector mask containing the result of a `>` comparison for each element of
         --
@@ -3882,7 +4511,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpgt : function(LuaVec3,LuaVec3):(LuaBVec3)
+        cmpgt : function(self:LuaVec3 , LuaVec3):(LuaBVec3)
 
         --Returns a vector mask containing the result of a `<=` comparison for each element of
         --
@@ -3894,7 +4523,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmple : function(LuaVec3,LuaVec3):(LuaBVec3)
+        cmple : function(self:LuaVec3 , LuaVec3):(LuaBVec3)
 
         --Returns a vector mask containing the result of a `<` comparison for each element of
         --
@@ -3906,11 +4535,11 @@ global record BevyAPI
         --
         --elements.
 
-        cmplt : function(LuaVec3,LuaVec3):(LuaBVec3)
+        cmplt : function(self:LuaVec3 , LuaVec3):(LuaBVec3)
 
         --Returns a vector containing the absolute value of each element of `self`.
 
-        abs : function(LuaVec3):(LuaVec3)
+        abs : function(self:LuaVec3):(LuaVec3)
 
         --Returns a vector with elements representing the sign of `self`.
         --
@@ -3922,11 +4551,11 @@ global record BevyAPI
         --
         --- `NAN` if the number is `NAN`
 
-        signum : function(LuaVec3):(LuaVec3)
+        signum : function(self:LuaVec3):(LuaVec3)
 
         --Returns a vector with signs of `rhs` and the magnitudes of `self`.
 
-        copysign : function(LuaVec3,LuaVec3):(LuaVec3)
+        copysign : function(self:LuaVec3 , LuaVec3):(LuaVec3)
 
         --Returns a bitmask with the lowest 3 bits set to the sign bits from the elements of `self`.
         --
@@ -3936,17 +4565,17 @@ global record BevyAPI
         --
         --into the first lowest bit, element `y` into the second, etc.
 
-        is_negative_bitmask : function(LuaVec3):(integer)
+        is_negative_bitmask : function(self:LuaVec3):(integer)
 
         --Returns `true` if, and only if, all elements are finite.  If any element is either
         --
         --`NaN`, positive or negative infinity, this will return `false`.
 
-        is_finite : function(LuaVec3):(boolean)
+        is_finite : function(self:LuaVec3):(boolean)
 
         --Returns `true` if any elements are `NaN`.
 
-        is_nan : function(LuaVec3):(boolean)
+        is_nan : function(self:LuaVec3):(boolean)
 
         --Performs `is_nan` on each element of self, returning a vector mask of the results.
         --
@@ -3954,11 +4583,11 @@ global record BevyAPI
         --
         --In other words, this computes `[x.is_nan(), y.is_nan(), z.is_nan(), w.is_nan()]`.
 
-        is_nan_mask : function(LuaVec3):(LuaBVec3)
+        is_nan_mask : function(self:LuaVec3):(LuaBVec3)
 
         --Computes the length of `self`.
 
-        length : function(LuaVec3):(number)
+        length : function(self:LuaVec3):(number)
 
         --Computes the squared length of `self`.
         --
@@ -3966,7 +4595,7 @@ global record BevyAPI
         --
         --This is faster than `length()` as it avoids a square root operation.
 
-        length_squared : function(LuaVec3):(number)
+        length_squared : function(self:LuaVec3):(number)
 
         --Computes `1.0 / length()`.
         --
@@ -3974,15 +4603,15 @@ global record BevyAPI
         --
         --For valid results, `self` must _not_ be of length zero.
 
-        length_recip : function(LuaVec3):(number)
+        length_recip : function(self:LuaVec3):(number)
 
         --Computes the Euclidean distance between two points in space.
 
-        distance : function(LuaVec3,LuaVec3):(number)
+        distance : function(self:LuaVec3 , LuaVec3):(number)
 
         --Compute the squared euclidean distance between two points in space.
 
-        distance_squared : function(LuaVec3,LuaVec3):(number)
+        distance_squared : function(self:LuaVec3 , LuaVec3):(number)
 
         --Returns `self` normalized to length 1.0.
         --
@@ -3992,7 +4621,7 @@ global record BevyAPI
         --
         --
         --
-        --See also [`Self::try_normalize`] and [`Self::normalize_or_zero`].
+        --See also [`Self::try_normalize()`] and [`Self::normalize_or_zero()`].
         --
         --
         --
@@ -4002,7 +4631,7 @@ global record BevyAPI
         --
         --Will panic if `self` is zero length when `glam_assert` is enabled.
 
-        normalize : function(LuaVec3):(LuaVec3)
+        normalize : function(self:LuaVec3):(LuaVec3)
 
         --Returns `self` normalized to length 1.0 if possible, else returns zero.
         --
@@ -4014,9 +4643,9 @@ global record BevyAPI
         --
         --
         --
-        --See also [`Self::try_normalize`].
+        --See also [`Self::try_normalize()`].
 
-        normalize_or_zero : function(LuaVec3):(LuaVec3)
+        normalize_or_zero : function(self:LuaVec3):(LuaVec3)
 
         --Returns whether `self` is length `1.0` or not.
         --
@@ -4024,7 +4653,7 @@ global record BevyAPI
         --
         --Uses a precision threshold of `1e-6`.
 
-        is_normalized : function(LuaVec3):(boolean)
+        is_normalized : function(self:LuaVec3):(boolean)
 
         --Returns the vector projection of `self` onto `rhs`.
         --
@@ -4040,7 +4669,7 @@ global record BevyAPI
         --
         --Will panic if `rhs` is zero length when `glam_assert` is enabled.
 
-        project_onto : function(LuaVec3,LuaVec3):(LuaVec3)
+        project_onto : function(self:LuaVec3 , LuaVec3):(LuaVec3)
 
         --Returns the vector rejection of `self` from `rhs`.
         --
@@ -4062,7 +4691,7 @@ global record BevyAPI
         --
         --Will panic if `rhs` has a length of zero when `glam_assert` is enabled.
 
-        reject_from : function(LuaVec3,LuaVec3):(LuaVec3)
+        reject_from : function(self:LuaVec3 , LuaVec3):(LuaVec3)
 
         --Returns the vector projection of `self` onto `rhs`.
         --
@@ -4078,7 +4707,7 @@ global record BevyAPI
         --
         --Will panic if `rhs` is not normalized when `glam_assert` is enabled.
 
-        project_onto_normalized : function(LuaVec3,LuaVec3):(LuaVec3)
+        project_onto_normalized : function(self:LuaVec3 , LuaVec3):(LuaVec3)
 
         --Returns the vector rejection of `self` from `rhs`.
         --
@@ -4100,25 +4729,31 @@ global record BevyAPI
         --
         --Will panic if `rhs` is not normalized when `glam_assert` is enabled.
 
-        reject_from_normalized : function(LuaVec3,LuaVec3):(LuaVec3)
+        reject_from_normalized : function(self:LuaVec3 , LuaVec3):(LuaVec3)
 
         --Returns a vector containing the nearest integer to a number for each element of `self`.
         --
         --Round half-way cases away from 0.0.
 
-        round : function(LuaVec3):(LuaVec3)
+        round : function(self:LuaVec3):(LuaVec3)
 
         --Returns a vector containing the largest integer less than or equal to a number for each
         --
         --element of `self`.
 
-        floor : function(LuaVec3):(LuaVec3)
+        floor : function(self:LuaVec3):(LuaVec3)
 
         --Returns a vector containing the smallest integer greater than or equal to a number for
         --
         --each element of `self`.
 
-        ceil : function(LuaVec3):(LuaVec3)
+        ceil : function(self:LuaVec3):(LuaVec3)
+
+        --Returns a vector containing the integer part each element of `self`. This means numbers are
+        --
+        --always truncated towards zero.
+
+        trunc : function(self:LuaVec3):(LuaVec3)
 
         --Returns a vector containing the fractional part of the vector, e.g. `self -
         --
@@ -4128,21 +4763,21 @@ global record BevyAPI
         --
         --Note that this is fast but not precise for large numbers.
 
-        fract : function(LuaVec3):(LuaVec3)
+        fract : function(self:LuaVec3):(LuaVec3)
 
         --Returns a vector containing `e^self` (the exponential function) for each element of
         --
         --`self`.
 
-        exp : function(LuaVec3):(LuaVec3)
+        exp : function(self:LuaVec3):(LuaVec3)
 
         --Returns a vector containing each element of `self` raised to the power of `n`.
 
-        powf : function(LuaVec3,number):(LuaVec3)
+        powf : function(self:LuaVec3 , number):(LuaVec3)
 
         --Returns a vector containing the reciprocal `1.0/n` of each element of `self`.
 
-        recip : function(LuaVec3):(LuaVec3)
+        recip : function(self:LuaVec3):(LuaVec3)
 
         --Performs a linear interpolation between `self` and `rhs` based on the value `s`.
         --
@@ -4154,7 +4789,7 @@ global record BevyAPI
         --
         --extrapolated.
 
-        lerp : function(LuaVec3,(LuaVec3),(number)):(LuaVec3)
+        lerp : function(self:LuaVec3 , LuaVec3 , number):(LuaVec3)
 
         --Returns true if the absolute difference of all elements between `self` and `rhs` is
         --
@@ -4174,7 +4809,7 @@ global record BevyAPI
         --
         --[comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
 
-        abs_diff_eq : function(LuaVec3,(LuaVec3),(number)):(boolean)
+        abs_diff_eq : function(self:LuaVec3 , LuaVec3 , number):(boolean)
 
         --Returns a vector with a length no less than `min` and no more than `max`
         --
@@ -4186,15 +4821,15 @@ global record BevyAPI
         --
         --Will panic if `min` is greater than `max` when `glam_assert` is enabled.
 
-        clamp_length : function(LuaVec3,(number),(number)):(LuaVec3)
+        clamp_length : function(self:LuaVec3 , number , number):(LuaVec3)
 
         --Returns a vector with a length no more than `max`
 
-        clamp_length_max : function(LuaVec3,number):(LuaVec3)
+        clamp_length_max : function(self:LuaVec3 , number):(LuaVec3)
 
         --Returns a vector with a length no less than `min`
 
-        clamp_length_min : function(LuaVec3,number):(LuaVec3)
+        clamp_length_min : function(self:LuaVec3 , number):(LuaVec3)
 
         --Fused multiply-add. Computes `(self * a) + b` element-wise with only one rounding
         --
@@ -4210,15 +4845,15 @@ global record BevyAPI
         --
         --mind.
 
-        mul_add : function(LuaVec3,(LuaVec3),(LuaVec3)):(LuaVec3)
+        mul_add : function(self:LuaVec3 , LuaVec3 , LuaVec3):(LuaVec3)
 
         --Returns the angle (in radians) between two vectors.
         --
         --
         --
-        --The input vectors do not need to be unit length however they must be non-zero.
+        --The inputs do not need to be unit vectors however they must be non-zero.
 
-        angle_between : function(LuaVec3,LuaVec3):(number)
+        angle_between : function(self:LuaVec3 , LuaVec3):(number)
 
         --Returns some vector that is orthogonal to the given one.
         --
@@ -4228,15 +4863,17 @@ global record BevyAPI
         --
         --
         --
-        --The output vector is not necessarily unit-length.
+        --The output vector is not necessarily unit length. For that use
         --
-        --For that use [`Self::any_orthonormal_vector`] instead.
+        --[`Self::any_orthonormal_vector()`] instead.
 
-        any_orthogonal_vector : function(LuaVec3):(LuaVec3)
+        any_orthogonal_vector : function(self:LuaVec3):(LuaVec3)
 
-        --Returns any unit-length vector that is orthogonal to the given one.
+        --Returns any unit vector that is orthogonal to the given one.
         --
-        --The input vector must be finite and non-zero.
+        --
+        --
+        --The input vector must be unit length.
         --
         --
         --
@@ -4246,23 +4883,23 @@ global record BevyAPI
         --
         --Will panic if `self` is not normalized when `glam_assert` is enabled.
 
-        any_orthonormal_vector : function(LuaVec3):(LuaVec3)
+        any_orthonormal_vector : function(self:LuaVec3):(LuaVec3)
 
         --Casts all elements of `self` to `f64`.
 
-        as_dvec3 : function(LuaVec3):(LuaDVec3)
+        as_dvec3 : function(self:LuaVec3):(LuaDVec3)
 
         --Casts all elements of `self` to `i32`.
 
-        as_ivec3 : function(LuaVec3):(LuaIVec3)
+        as_ivec3 : function(self:LuaVec3):(LuaIVec3)
 
         --Casts all elements of `self` to `u32`.
 
-        as_uvec3 : function(LuaVec3):(LuaUVec3)
+        as_uvec3 : function(self:LuaVec3):(LuaUVec3)
 
         --Creates a new vector.
 
-        new : function((number),(number),(number)):(LuaVec3)
+        new : function(number , number , number):(LuaVec3)
 
         --Creates a vector with all elements set to `v`.
 
@@ -4278,38 +4915,38 @@ global record BevyAPI
         --
         --uses the element from `if_false`.
 
-        select : function((LuaBVec3),(LuaVec3),(LuaVec3)):(LuaVec3)
+        select : function(LuaBVec3 , LuaVec3 , LuaVec3):(LuaVec3)
 
-        __tostring : function(LuaVec3):(string)
+        __tostring : function(self:LuaVec3):(string)
 
-        __unm : function(LuaVec3):(LuaVec3)
+        __unm : function(self:LuaVec3):(LuaVec3)
 
-        __index : function(LuaVec3,integer):(number)
+        __index : function(self:LuaVec3 , integer):(number)
 
-        __newindex : function(LuaVec3,(integer),(number)):()
+        __newindex : function(self:LuaVec3 , integer , number)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __div : function((any),(any)):(any)
+        __div : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
-        __mod : function((any),(any)):(any)
+        __mod : function(any , any):(any)
 
     end
     
     
-    record LuaVec3Class
+    record ClassLuaVec3
 
         userdata
     
-    --Collection of static methods for [`LuaVec3`].
+    --Collection of static methods for [``].
 
         --Creates a new vector.
 
-        new : function((number),(number),(number)):(LuaVec3)
+        new : function(number , number , number):(LuaVec3)
 
         --Creates a vector with all elements set to `v`.
 
@@ -4325,17 +4962,17 @@ global record BevyAPI
         --
         --uses the element from `if_false`.
 
-        select : function((LuaBVec3),(LuaVec3),(LuaVec3)):(LuaVec3)
+        select : function(LuaBVec3 , LuaVec3 , LuaVec3):(LuaVec3)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __div : function((any),(any)):(any)
+        __div : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
-        __mod : function((any),(any)):(any)
+        __mod : function(any , any):(any)
 
     end
     
@@ -4348,27 +4985,27 @@ global record BevyAPI
 
         --Creates a 4D vector from `self` and the given `w` value.
 
-        extend : function(LuaVec3A,number):(LuaVec4)
+        extend : function(self:LuaVec3A , number):(LuaVec4)
 
         --Creates a 2D vector from the `x` and `y` elements of `self`, discarding `z`.
         --
         --
         --
-        --Truncation may also be performed by using `self.xy()` or `Vec2::from()`.
+        --Truncation may also be performed by using [`self.xy()`][crate::swizzles::Vec3Swizzles::xy()].
 
-        truncate : function(LuaVec3A):(LuaVec2)
+        truncate : function(self:LuaVec3A):(LuaVec2)
 
         --Computes the dot product of `self` and `rhs`.
 
-        dot : function(LuaVec3A,LuaVec3A):(number)
+        dot : function(self:LuaVec3A , LuaVec3A):(number)
 
         --Returns a vector where every component is the dot product of `self` and `rhs`.
 
-        dot_into_vec : function(LuaVec3A,LuaVec3A):(LuaVec3A)
+        dot_into_vec : function(self:LuaVec3A , LuaVec3A):(LuaVec3A)
 
         --Computes the cross product of `self` and `rhs`.
 
-        cross : function(LuaVec3A,LuaVec3A):(LuaVec3A)
+        cross : function(self:LuaVec3A , LuaVec3A):(LuaVec3A)
 
         --Returns a vector containing the minimum values for each element of `self` and `rhs`.
         --
@@ -4376,7 +5013,7 @@ global record BevyAPI
         --
         --In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
 
-        min : function(LuaVec3A,LuaVec3A):(LuaVec3A)
+        min : function(self:LuaVec3A , LuaVec3A):(LuaVec3A)
 
         --Returns a vector containing the maximum values for each element of `self` and `rhs`.
         --
@@ -4384,7 +5021,7 @@ global record BevyAPI
         --
         --In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
 
-        max : function(LuaVec3A,LuaVec3A):(LuaVec3A)
+        max : function(self:LuaVec3A , LuaVec3A):(LuaVec3A)
 
         --Component-wise clamping of values, similar to [`f32::clamp`].
         --
@@ -4400,7 +5037,7 @@ global record BevyAPI
         --
         --Will panic if `min` is greater than `max` when `glam_assert` is enabled.
 
-        clamp : function(LuaVec3A,(LuaVec3A),(LuaVec3A)):(LuaVec3A)
+        clamp : function(self:LuaVec3A , LuaVec3A , LuaVec3A):(LuaVec3A)
 
         --Returns the horizontal minimum of `self`.
         --
@@ -4408,7 +5045,7 @@ global record BevyAPI
         --
         --In other words this computes `min(x, y, ..)`.
 
-        min_element : function(LuaVec3A):(number)
+        min_element : function(self:LuaVec3A):(number)
 
         --Returns the horizontal maximum of `self`.
         --
@@ -4416,7 +5053,7 @@ global record BevyAPI
         --
         --In other words this computes `max(x, y, ..)`.
 
-        max_element : function(LuaVec3A):(number)
+        max_element : function(self:LuaVec3A):(number)
 
         --Returns a vector mask containing the result of a `==` comparison for each element of
         --
@@ -4428,7 +5065,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpeq : function(LuaVec3A,LuaVec3A):(LuaBVec3A)
+        cmpeq : function(self:LuaVec3A , LuaVec3A):(LuaBVec3A)
 
         --Returns a vector mask containing the result of a `!=` comparison for each element of
         --
@@ -4440,7 +5077,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpne : function(LuaVec3A,LuaVec3A):(LuaBVec3A)
+        cmpne : function(self:LuaVec3A , LuaVec3A):(LuaBVec3A)
 
         --Returns a vector mask containing the result of a `>=` comparison for each element of
         --
@@ -4452,7 +5089,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpge : function(LuaVec3A,LuaVec3A):(LuaBVec3A)
+        cmpge : function(self:LuaVec3A , LuaVec3A):(LuaBVec3A)
 
         --Returns a vector mask containing the result of a `>` comparison for each element of
         --
@@ -4464,7 +5101,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpgt : function(LuaVec3A,LuaVec3A):(LuaBVec3A)
+        cmpgt : function(self:LuaVec3A , LuaVec3A):(LuaBVec3A)
 
         --Returns a vector mask containing the result of a `<=` comparison for each element of
         --
@@ -4476,7 +5113,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmple : function(LuaVec3A,LuaVec3A):(LuaBVec3A)
+        cmple : function(self:LuaVec3A , LuaVec3A):(LuaBVec3A)
 
         --Returns a vector mask containing the result of a `<` comparison for each element of
         --
@@ -4488,11 +5125,11 @@ global record BevyAPI
         --
         --elements.
 
-        cmplt : function(LuaVec3A,LuaVec3A):(LuaBVec3A)
+        cmplt : function(self:LuaVec3A , LuaVec3A):(LuaBVec3A)
 
         --Returns a vector containing the absolute value of each element of `self`.
 
-        abs : function(LuaVec3A):(LuaVec3A)
+        abs : function(self:LuaVec3A):(LuaVec3A)
 
         --Returns a vector with elements representing the sign of `self`.
         --
@@ -4504,11 +5141,11 @@ global record BevyAPI
         --
         --- `NAN` if the number is `NAN`
 
-        signum : function(LuaVec3A):(LuaVec3A)
+        signum : function(self:LuaVec3A):(LuaVec3A)
 
         --Returns a vector with signs of `rhs` and the magnitudes of `self`.
 
-        copysign : function(LuaVec3A,LuaVec3A):(LuaVec3A)
+        copysign : function(self:LuaVec3A , LuaVec3A):(LuaVec3A)
 
         --Returns a bitmask with the lowest 3 bits set to the sign bits from the elements of `self`.
         --
@@ -4518,17 +5155,17 @@ global record BevyAPI
         --
         --into the first lowest bit, element `y` into the second, etc.
 
-        is_negative_bitmask : function(LuaVec3A):(integer)
+        is_negative_bitmask : function(self:LuaVec3A):(integer)
 
         --Returns `true` if, and only if, all elements are finite.  If any element is either
         --
         --`NaN`, positive or negative infinity, this will return `false`.
 
-        is_finite : function(LuaVec3A):(boolean)
+        is_finite : function(self:LuaVec3A):(boolean)
 
         --Returns `true` if any elements are `NaN`.
 
-        is_nan : function(LuaVec3A):(boolean)
+        is_nan : function(self:LuaVec3A):(boolean)
 
         --Performs `is_nan` on each element of self, returning a vector mask of the results.
         --
@@ -4536,11 +5173,11 @@ global record BevyAPI
         --
         --In other words, this computes `[x.is_nan(), y.is_nan(), z.is_nan(), w.is_nan()]`.
 
-        is_nan_mask : function(LuaVec3A):(LuaBVec3A)
+        is_nan_mask : function(self:LuaVec3A):(LuaBVec3A)
 
         --Computes the length of `self`.
 
-        length : function(LuaVec3A):(number)
+        length : function(self:LuaVec3A):(number)
 
         --Computes the squared length of `self`.
         --
@@ -4548,7 +5185,7 @@ global record BevyAPI
         --
         --This is faster than `length()` as it avoids a square root operation.
 
-        length_squared : function(LuaVec3A):(number)
+        length_squared : function(self:LuaVec3A):(number)
 
         --Computes `1.0 / length()`.
         --
@@ -4556,15 +5193,15 @@ global record BevyAPI
         --
         --For valid results, `self` must _not_ be of length zero.
 
-        length_recip : function(LuaVec3A):(number)
+        length_recip : function(self:LuaVec3A):(number)
 
         --Computes the Euclidean distance between two points in space.
 
-        distance : function(LuaVec3A,LuaVec3A):(number)
+        distance : function(self:LuaVec3A , LuaVec3A):(number)
 
         --Compute the squared euclidean distance between two points in space.
 
-        distance_squared : function(LuaVec3A,LuaVec3A):(number)
+        distance_squared : function(self:LuaVec3A , LuaVec3A):(number)
 
         --Returns `self` normalized to length 1.0.
         --
@@ -4574,7 +5211,7 @@ global record BevyAPI
         --
         --
         --
-        --See also [`Self::try_normalize`] and [`Self::normalize_or_zero`].
+        --See also [`Self::try_normalize()`] and [`Self::normalize_or_zero()`].
         --
         --
         --
@@ -4584,7 +5221,7 @@ global record BevyAPI
         --
         --Will panic if `self` is zero length when `glam_assert` is enabled.
 
-        normalize : function(LuaVec3A):(LuaVec3A)
+        normalize : function(self:LuaVec3A):(LuaVec3A)
 
         --Returns `self` normalized to length 1.0 if possible, else returns zero.
         --
@@ -4596,9 +5233,9 @@ global record BevyAPI
         --
         --
         --
-        --See also [`Self::try_normalize`].
+        --See also [`Self::try_normalize()`].
 
-        normalize_or_zero : function(LuaVec3A):(LuaVec3A)
+        normalize_or_zero : function(self:LuaVec3A):(LuaVec3A)
 
         --Returns whether `self` is length `1.0` or not.
         --
@@ -4606,7 +5243,7 @@ global record BevyAPI
         --
         --Uses a precision threshold of `1e-6`.
 
-        is_normalized : function(LuaVec3A):(boolean)
+        is_normalized : function(self:LuaVec3A):(boolean)
 
         --Returns the vector projection of `self` onto `rhs`.
         --
@@ -4622,7 +5259,7 @@ global record BevyAPI
         --
         --Will panic if `rhs` is zero length when `glam_assert` is enabled.
 
-        project_onto : function(LuaVec3A,LuaVec3A):(LuaVec3A)
+        project_onto : function(self:LuaVec3A , LuaVec3A):(LuaVec3A)
 
         --Returns the vector rejection of `self` from `rhs`.
         --
@@ -4644,7 +5281,7 @@ global record BevyAPI
         --
         --Will panic if `rhs` has a length of zero when `glam_assert` is enabled.
 
-        reject_from : function(LuaVec3A,LuaVec3A):(LuaVec3A)
+        reject_from : function(self:LuaVec3A , LuaVec3A):(LuaVec3A)
 
         --Returns the vector projection of `self` onto `rhs`.
         --
@@ -4660,7 +5297,7 @@ global record BevyAPI
         --
         --Will panic if `rhs` is not normalized when `glam_assert` is enabled.
 
-        project_onto_normalized : function(LuaVec3A,LuaVec3A):(LuaVec3A)
+        project_onto_normalized : function(self:LuaVec3A , LuaVec3A):(LuaVec3A)
 
         --Returns the vector rejection of `self` from `rhs`.
         --
@@ -4682,25 +5319,31 @@ global record BevyAPI
         --
         --Will panic if `rhs` is not normalized when `glam_assert` is enabled.
 
-        reject_from_normalized : function(LuaVec3A,LuaVec3A):(LuaVec3A)
+        reject_from_normalized : function(self:LuaVec3A , LuaVec3A):(LuaVec3A)
 
         --Returns a vector containing the nearest integer to a number for each element of `self`.
         --
         --Round half-way cases away from 0.0.
 
-        round : function(LuaVec3A):(LuaVec3A)
+        round : function(self:LuaVec3A):(LuaVec3A)
 
         --Returns a vector containing the largest integer less than or equal to a number for each
         --
         --element of `self`.
 
-        floor : function(LuaVec3A):(LuaVec3A)
+        floor : function(self:LuaVec3A):(LuaVec3A)
 
         --Returns a vector containing the smallest integer greater than or equal to a number for
         --
         --each element of `self`.
 
-        ceil : function(LuaVec3A):(LuaVec3A)
+        ceil : function(self:LuaVec3A):(LuaVec3A)
+
+        --Returns a vector containing the integer part each element of `self`. This means numbers are
+        --
+        --always truncated towards zero.
+
+        trunc : function(self:LuaVec3A):(LuaVec3A)
 
         --Returns a vector containing the fractional part of the vector, e.g. `self -
         --
@@ -4710,21 +5353,21 @@ global record BevyAPI
         --
         --Note that this is fast but not precise for large numbers.
 
-        fract : function(LuaVec3A):(LuaVec3A)
+        fract : function(self:LuaVec3A):(LuaVec3A)
 
         --Returns a vector containing `e^self` (the exponential function) for each element of
         --
         --`self`.
 
-        exp : function(LuaVec3A):(LuaVec3A)
+        exp : function(self:LuaVec3A):(LuaVec3A)
 
         --Returns a vector containing each element of `self` raised to the power of `n`.
 
-        powf : function(LuaVec3A,number):(LuaVec3A)
+        powf : function(self:LuaVec3A , number):(LuaVec3A)
 
         --Returns a vector containing the reciprocal `1.0/n` of each element of `self`.
 
-        recip : function(LuaVec3A):(LuaVec3A)
+        recip : function(self:LuaVec3A):(LuaVec3A)
 
         --Performs a linear interpolation between `self` and `rhs` based on the value `s`.
         --
@@ -4736,7 +5379,7 @@ global record BevyAPI
         --
         --extrapolated.
 
-        lerp : function(LuaVec3A,(LuaVec3A),(number)):(LuaVec3A)
+        lerp : function(self:LuaVec3A , LuaVec3A , number):(LuaVec3A)
 
         --Returns true if the absolute difference of all elements between `self` and `rhs` is
         --
@@ -4756,7 +5399,7 @@ global record BevyAPI
         --
         --[comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
 
-        abs_diff_eq : function(LuaVec3A,(LuaVec3A),(number)):(boolean)
+        abs_diff_eq : function(self:LuaVec3A , LuaVec3A , number):(boolean)
 
         --Returns a vector with a length no less than `min` and no more than `max`
         --
@@ -4768,15 +5411,15 @@ global record BevyAPI
         --
         --Will panic if `min` is greater than `max` when `glam_assert` is enabled.
 
-        clamp_length : function(LuaVec3A,(number),(number)):(LuaVec3A)
+        clamp_length : function(self:LuaVec3A , number , number):(LuaVec3A)
 
         --Returns a vector with a length no more than `max`
 
-        clamp_length_max : function(LuaVec3A,number):(LuaVec3A)
+        clamp_length_max : function(self:LuaVec3A , number):(LuaVec3A)
 
         --Returns a vector with a length no less than `min`
 
-        clamp_length_min : function(LuaVec3A,number):(LuaVec3A)
+        clamp_length_min : function(self:LuaVec3A , number):(LuaVec3A)
 
         --Fused multiply-add. Computes `(self * a) + b` element-wise with only one rounding
         --
@@ -4792,15 +5435,15 @@ global record BevyAPI
         --
         --mind.
 
-        mul_add : function(LuaVec3A,(LuaVec3A),(LuaVec3A)):(LuaVec3A)
+        mul_add : function(self:LuaVec3A , LuaVec3A , LuaVec3A):(LuaVec3A)
 
         --Returns the angle (in radians) between two vectors.
         --
         --
         --
-        --The input vectors do not need to be unit length however they must be non-zero.
+        --The inputs do not need to be unit vectors however they must be non-zero.
 
-        angle_between : function(LuaVec3A,LuaVec3A):(number)
+        angle_between : function(self:LuaVec3A , LuaVec3A):(number)
 
         --Returns some vector that is orthogonal to the given one.
         --
@@ -4810,15 +5453,17 @@ global record BevyAPI
         --
         --
         --
-        --The output vector is not necessarily unit-length.
+        --The output vector is not necessarily unit length. For that use
         --
-        --For that use [`Self::any_orthonormal_vector`] instead.
+        --[`Self::any_orthonormal_vector()`] instead.
 
-        any_orthogonal_vector : function(LuaVec3A):(LuaVec3A)
+        any_orthogonal_vector : function(self:LuaVec3A):(LuaVec3A)
 
-        --Returns any unit-length vector that is orthogonal to the given one.
+        --Returns any unit vector that is orthogonal to the given one.
         --
-        --The input vector must be finite and non-zero.
+        --
+        --
+        --The input vector must be unit length.
         --
         --
         --
@@ -4828,23 +5473,23 @@ global record BevyAPI
         --
         --Will panic if `self` is not normalized when `glam_assert` is enabled.
 
-        any_orthonormal_vector : function(LuaVec3A):(LuaVec3A)
+        any_orthonormal_vector : function(self:LuaVec3A):(LuaVec3A)
 
         --Casts all elements of `self` to `f64`.
 
-        as_dvec3 : function(LuaVec3A):(LuaDVec3)
+        as_dvec3 : function(self:LuaVec3A):(LuaDVec3)
 
         --Casts all elements of `self` to `i32`.
 
-        as_ivec3 : function(LuaVec3A):(LuaIVec3)
+        as_ivec3 : function(self:LuaVec3A):(LuaIVec3)
 
         --Casts all elements of `self` to `u32`.
 
-        as_uvec3 : function(LuaVec3A):(LuaUVec3)
+        as_uvec3 : function(self:LuaVec3A):(LuaUVec3)
 
         --Creates a new vector.
 
-        new : function((number),(number),(number)):(LuaVec3A)
+        new : function(number , number , number):(LuaVec3A)
 
         --Creates a vector with all elements set to `v`.
 
@@ -4860,38 +5505,38 @@ global record BevyAPI
         --
         --uses the element from `if_false`.
 
-        select : function((LuaBVec3A),(LuaVec3A),(LuaVec3A)):(LuaVec3A)
+        select : function(LuaBVec3A , LuaVec3A , LuaVec3A):(LuaVec3A)
 
-        __tostring : function(LuaVec3A):(string)
+        __tostring : function(self:LuaVec3A):(string)
 
-        __unm : function(LuaVec3A):(LuaVec3A)
+        __unm : function(self:LuaVec3A):(LuaVec3A)
 
-        __index : function(LuaVec3A,integer):(number)
+        __index : function(self:LuaVec3A , integer):(number)
 
-        __newindex : function(LuaVec3A,(integer),(number)):()
+        __newindex : function(self:LuaVec3A , integer , number)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __div : function((any),(any)):(any)
+        __div : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
-        __mod : function((any),(any)):(any)
+        __mod : function(any , any):(any)
 
     end
     
     
-    record LuaVec3AClass
+    record ClassLuaVec3A
 
         userdata
     
-    --Collection of static methods for [`LuaVec3A`].
+    --Collection of static methods for [``].
 
         --Creates a new vector.
 
-        new : function((number),(number),(number)):(LuaVec3A)
+        new : function(number , number , number):(LuaVec3A)
 
         --Creates a vector with all elements set to `v`.
 
@@ -4907,17 +5552,17 @@ global record BevyAPI
         --
         --uses the element from `if_false`.
 
-        select : function((LuaBVec3A),(LuaVec3A),(LuaVec3A)):(LuaVec3A)
+        select : function(LuaBVec3A , LuaVec3A , LuaVec3A):(LuaVec3A)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __div : function((any),(any)):(any)
+        __div : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
-        __mod : function((any),(any)):(any)
+        __mod : function(any , any):(any)
 
     end
     
@@ -4932,21 +5577,21 @@ global record BevyAPI
         --
         --
         --
-        --Truncation to `Vec3` may also be performed by using `self.xyz()` or `Vec3::from()`.
+        --Truncation to [`Vec3`] may also be performed by using [`self.xyz()`][crate::swizzles::Vec4Swizzles::xyz()].
         --
         --
         --
-        --To truncate to `Vec3A` use `Vec3A::from()`.
+        --To truncate to [`Vec3A`] use [`Vec3A::from()`].
 
-        truncate : function(LuaVec4):(LuaVec3)
+        truncate : function(self:LuaVec4):(LuaVec3)
 
         --Computes the dot product of `self` and `rhs`.
 
-        dot : function(LuaVec4,LuaVec4):(number)
+        dot : function(self:LuaVec4 , LuaVec4):(number)
 
         --Returns a vector where every component is the dot product of `self` and `rhs`.
 
-        dot_into_vec : function(LuaVec4,LuaVec4):(LuaVec4)
+        dot_into_vec : function(self:LuaVec4 , LuaVec4):(LuaVec4)
 
         --Returns a vector containing the minimum values for each element of `self` and `rhs`.
         --
@@ -4954,7 +5599,7 @@ global record BevyAPI
         --
         --In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
 
-        min : function(LuaVec4,LuaVec4):(LuaVec4)
+        min : function(self:LuaVec4 , LuaVec4):(LuaVec4)
 
         --Returns a vector containing the maximum values for each element of `self` and `rhs`.
         --
@@ -4962,7 +5607,7 @@ global record BevyAPI
         --
         --In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
 
-        max : function(LuaVec4,LuaVec4):(LuaVec4)
+        max : function(self:LuaVec4 , LuaVec4):(LuaVec4)
 
         --Component-wise clamping of values, similar to [`f32::clamp`].
         --
@@ -4978,7 +5623,7 @@ global record BevyAPI
         --
         --Will panic if `min` is greater than `max` when `glam_assert` is enabled.
 
-        clamp : function(LuaVec4,(LuaVec4),(LuaVec4)):(LuaVec4)
+        clamp : function(self:LuaVec4 , LuaVec4 , LuaVec4):(LuaVec4)
 
         --Returns the horizontal minimum of `self`.
         --
@@ -4986,7 +5631,7 @@ global record BevyAPI
         --
         --In other words this computes `min(x, y, ..)`.
 
-        min_element : function(LuaVec4):(number)
+        min_element : function(self:LuaVec4):(number)
 
         --Returns the horizontal maximum of `self`.
         --
@@ -4994,7 +5639,7 @@ global record BevyAPI
         --
         --In other words this computes `max(x, y, ..)`.
 
-        max_element : function(LuaVec4):(number)
+        max_element : function(self:LuaVec4):(number)
 
         --Returns a vector mask containing the result of a `==` comparison for each element of
         --
@@ -5006,7 +5651,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpeq : function(LuaVec4,LuaVec4):(LuaBVec4A)
+        cmpeq : function(self:LuaVec4 , LuaVec4):(LuaBVec4A)
 
         --Returns a vector mask containing the result of a `!=` comparison for each element of
         --
@@ -5018,7 +5663,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpne : function(LuaVec4,LuaVec4):(LuaBVec4A)
+        cmpne : function(self:LuaVec4 , LuaVec4):(LuaBVec4A)
 
         --Returns a vector mask containing the result of a `>=` comparison for each element of
         --
@@ -5030,7 +5675,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpge : function(LuaVec4,LuaVec4):(LuaBVec4A)
+        cmpge : function(self:LuaVec4 , LuaVec4):(LuaBVec4A)
 
         --Returns a vector mask containing the result of a `>` comparison for each element of
         --
@@ -5042,7 +5687,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpgt : function(LuaVec4,LuaVec4):(LuaBVec4A)
+        cmpgt : function(self:LuaVec4 , LuaVec4):(LuaBVec4A)
 
         --Returns a vector mask containing the result of a `<=` comparison for each element of
         --
@@ -5054,7 +5699,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmple : function(LuaVec4,LuaVec4):(LuaBVec4A)
+        cmple : function(self:LuaVec4 , LuaVec4):(LuaBVec4A)
 
         --Returns a vector mask containing the result of a `<` comparison for each element of
         --
@@ -5066,11 +5711,11 @@ global record BevyAPI
         --
         --elements.
 
-        cmplt : function(LuaVec4,LuaVec4):(LuaBVec4A)
+        cmplt : function(self:LuaVec4 , LuaVec4):(LuaBVec4A)
 
         --Returns a vector containing the absolute value of each element of `self`.
 
-        abs : function(LuaVec4):(LuaVec4)
+        abs : function(self:LuaVec4):(LuaVec4)
 
         --Returns a vector with elements representing the sign of `self`.
         --
@@ -5082,11 +5727,11 @@ global record BevyAPI
         --
         --- `NAN` if the number is `NAN`
 
-        signum : function(LuaVec4):(LuaVec4)
+        signum : function(self:LuaVec4):(LuaVec4)
 
         --Returns a vector with signs of `rhs` and the magnitudes of `self`.
 
-        copysign : function(LuaVec4,LuaVec4):(LuaVec4)
+        copysign : function(self:LuaVec4 , LuaVec4):(LuaVec4)
 
         --Returns a bitmask with the lowest 4 bits set to the sign bits from the elements of `self`.
         --
@@ -5096,17 +5741,17 @@ global record BevyAPI
         --
         --into the first lowest bit, element `y` into the second, etc.
 
-        is_negative_bitmask : function(LuaVec4):(integer)
+        is_negative_bitmask : function(self:LuaVec4):(integer)
 
         --Returns `true` if, and only if, all elements are finite.  If any element is either
         --
         --`NaN`, positive or negative infinity, this will return `false`.
 
-        is_finite : function(LuaVec4):(boolean)
+        is_finite : function(self:LuaVec4):(boolean)
 
         --Returns `true` if any elements are `NaN`.
 
-        is_nan : function(LuaVec4):(boolean)
+        is_nan : function(self:LuaVec4):(boolean)
 
         --Performs `is_nan` on each element of self, returning a vector mask of the results.
         --
@@ -5114,11 +5759,11 @@ global record BevyAPI
         --
         --In other words, this computes `[x.is_nan(), y.is_nan(), z.is_nan(), w.is_nan()]`.
 
-        is_nan_mask : function(LuaVec4):(LuaBVec4A)
+        is_nan_mask : function(self:LuaVec4):(LuaBVec4A)
 
         --Computes the length of `self`.
 
-        length : function(LuaVec4):(number)
+        length : function(self:LuaVec4):(number)
 
         --Computes the squared length of `self`.
         --
@@ -5126,7 +5771,7 @@ global record BevyAPI
         --
         --This is faster than `length()` as it avoids a square root operation.
 
-        length_squared : function(LuaVec4):(number)
+        length_squared : function(self:LuaVec4):(number)
 
         --Computes `1.0 / length()`.
         --
@@ -5134,15 +5779,15 @@ global record BevyAPI
         --
         --For valid results, `self` must _not_ be of length zero.
 
-        length_recip : function(LuaVec4):(number)
+        length_recip : function(self:LuaVec4):(number)
 
         --Computes the Euclidean distance between two points in space.
 
-        distance : function(LuaVec4,LuaVec4):(number)
+        distance : function(self:LuaVec4 , LuaVec4):(number)
 
         --Compute the squared euclidean distance between two points in space.
 
-        distance_squared : function(LuaVec4,LuaVec4):(number)
+        distance_squared : function(self:LuaVec4 , LuaVec4):(number)
 
         --Returns `self` normalized to length 1.0.
         --
@@ -5152,7 +5797,7 @@ global record BevyAPI
         --
         --
         --
-        --See also [`Self::try_normalize`] and [`Self::normalize_or_zero`].
+        --See also [`Self::try_normalize()`] and [`Self::normalize_or_zero()`].
         --
         --
         --
@@ -5162,7 +5807,7 @@ global record BevyAPI
         --
         --Will panic if `self` is zero length when `glam_assert` is enabled.
 
-        normalize : function(LuaVec4):(LuaVec4)
+        normalize : function(self:LuaVec4):(LuaVec4)
 
         --Returns `self` normalized to length 1.0 if possible, else returns zero.
         --
@@ -5174,9 +5819,9 @@ global record BevyAPI
         --
         --
         --
-        --See also [`Self::try_normalize`].
+        --See also [`Self::try_normalize()`].
 
-        normalize_or_zero : function(LuaVec4):(LuaVec4)
+        normalize_or_zero : function(self:LuaVec4):(LuaVec4)
 
         --Returns whether `self` is length `1.0` or not.
         --
@@ -5184,7 +5829,7 @@ global record BevyAPI
         --
         --Uses a precision threshold of `1e-6`.
 
-        is_normalized : function(LuaVec4):(boolean)
+        is_normalized : function(self:LuaVec4):(boolean)
 
         --Returns the vector projection of `self` onto `rhs`.
         --
@@ -5200,7 +5845,7 @@ global record BevyAPI
         --
         --Will panic if `rhs` is zero length when `glam_assert` is enabled.
 
-        project_onto : function(LuaVec4,LuaVec4):(LuaVec4)
+        project_onto : function(self:LuaVec4 , LuaVec4):(LuaVec4)
 
         --Returns the vector rejection of `self` from `rhs`.
         --
@@ -5222,7 +5867,7 @@ global record BevyAPI
         --
         --Will panic if `rhs` has a length of zero when `glam_assert` is enabled.
 
-        reject_from : function(LuaVec4,LuaVec4):(LuaVec4)
+        reject_from : function(self:LuaVec4 , LuaVec4):(LuaVec4)
 
         --Returns the vector projection of `self` onto `rhs`.
         --
@@ -5238,7 +5883,7 @@ global record BevyAPI
         --
         --Will panic if `rhs` is not normalized when `glam_assert` is enabled.
 
-        project_onto_normalized : function(LuaVec4,LuaVec4):(LuaVec4)
+        project_onto_normalized : function(self:LuaVec4 , LuaVec4):(LuaVec4)
 
         --Returns the vector rejection of `self` from `rhs`.
         --
@@ -5260,25 +5905,31 @@ global record BevyAPI
         --
         --Will panic if `rhs` is not normalized when `glam_assert` is enabled.
 
-        reject_from_normalized : function(LuaVec4,LuaVec4):(LuaVec4)
+        reject_from_normalized : function(self:LuaVec4 , LuaVec4):(LuaVec4)
 
         --Returns a vector containing the nearest integer to a number for each element of `self`.
         --
         --Round half-way cases away from 0.0.
 
-        round : function(LuaVec4):(LuaVec4)
+        round : function(self:LuaVec4):(LuaVec4)
 
         --Returns a vector containing the largest integer less than or equal to a number for each
         --
         --element of `self`.
 
-        floor : function(LuaVec4):(LuaVec4)
+        floor : function(self:LuaVec4):(LuaVec4)
 
         --Returns a vector containing the smallest integer greater than or equal to a number for
         --
         --each element of `self`.
 
-        ceil : function(LuaVec4):(LuaVec4)
+        ceil : function(self:LuaVec4):(LuaVec4)
+
+        --Returns a vector containing the integer part each element of `self`. This means numbers are
+        --
+        --always truncated towards zero.
+
+        trunc : function(self:LuaVec4):(LuaVec4)
 
         --Returns a vector containing the fractional part of the vector, e.g. `self -
         --
@@ -5288,21 +5939,21 @@ global record BevyAPI
         --
         --Note that this is fast but not precise for large numbers.
 
-        fract : function(LuaVec4):(LuaVec4)
+        fract : function(self:LuaVec4):(LuaVec4)
 
         --Returns a vector containing `e^self` (the exponential function) for each element of
         --
         --`self`.
 
-        exp : function(LuaVec4):(LuaVec4)
+        exp : function(self:LuaVec4):(LuaVec4)
 
         --Returns a vector containing each element of `self` raised to the power of `n`.
 
-        powf : function(LuaVec4,number):(LuaVec4)
+        powf : function(self:LuaVec4 , number):(LuaVec4)
 
         --Returns a vector containing the reciprocal `1.0/n` of each element of `self`.
 
-        recip : function(LuaVec4):(LuaVec4)
+        recip : function(self:LuaVec4):(LuaVec4)
 
         --Performs a linear interpolation between `self` and `rhs` based on the value `s`.
         --
@@ -5314,7 +5965,7 @@ global record BevyAPI
         --
         --extrapolated.
 
-        lerp : function(LuaVec4,(LuaVec4),(number)):(LuaVec4)
+        lerp : function(self:LuaVec4 , LuaVec4 , number):(LuaVec4)
 
         --Returns true if the absolute difference of all elements between `self` and `rhs` is
         --
@@ -5334,7 +5985,7 @@ global record BevyAPI
         --
         --[comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
 
-        abs_diff_eq : function(LuaVec4,(LuaVec4),(number)):(boolean)
+        abs_diff_eq : function(self:LuaVec4 , LuaVec4 , number):(boolean)
 
         --Returns a vector with a length no less than `min` and no more than `max`
         --
@@ -5346,15 +5997,15 @@ global record BevyAPI
         --
         --Will panic if `min` is greater than `max` when `glam_assert` is enabled.
 
-        clamp_length : function(LuaVec4,(number),(number)):(LuaVec4)
+        clamp_length : function(self:LuaVec4 , number , number):(LuaVec4)
 
         --Returns a vector with a length no more than `max`
 
-        clamp_length_max : function(LuaVec4,number):(LuaVec4)
+        clamp_length_max : function(self:LuaVec4 , number):(LuaVec4)
 
         --Returns a vector with a length no less than `min`
 
-        clamp_length_min : function(LuaVec4,number):(LuaVec4)
+        clamp_length_min : function(self:LuaVec4 , number):(LuaVec4)
 
         --Fused multiply-add. Computes `(self * a) + b` element-wise with only one rounding
         --
@@ -5370,23 +6021,23 @@ global record BevyAPI
         --
         --mind.
 
-        mul_add : function(LuaVec4,(LuaVec4),(LuaVec4)):(LuaVec4)
+        mul_add : function(self:LuaVec4 , LuaVec4 , LuaVec4):(LuaVec4)
 
         --Casts all elements of `self` to `f64`.
 
-        as_dvec4 : function(LuaVec4):(LuaDVec4)
+        as_dvec4 : function(self:LuaVec4):(LuaDVec4)
 
         --Casts all elements of `self` to `i32`.
 
-        as_ivec4 : function(LuaVec4):(LuaIVec4)
+        as_ivec4 : function(self:LuaVec4):(LuaIVec4)
 
         --Casts all elements of `self` to `u32`.
 
-        as_uvec4 : function(LuaVec4):(LuaUVec4)
+        as_uvec4 : function(self:LuaVec4):(LuaUVec4)
 
         --Creates a new vector.
 
-        new : function((number),(number),(number),(number)):(LuaVec4)
+        new : function(number , number , number , number):(LuaVec4)
 
         --Creates a vector with all elements set to `v`.
 
@@ -5402,38 +6053,38 @@ global record BevyAPI
         --
         --uses the element from `if_false`.
 
-        select : function((LuaBVec4A),(LuaVec4),(LuaVec4)):(LuaVec4)
+        select : function(LuaBVec4A , LuaVec4 , LuaVec4):(LuaVec4)
 
-        __tostring : function(LuaVec4):(string)
+        __tostring : function(self:LuaVec4):(string)
 
-        __unm : function(LuaVec4):(LuaVec4)
+        __unm : function(self:LuaVec4):(LuaVec4)
 
-        __index : function(LuaVec4,integer):(number)
+        __index : function(self:LuaVec4 , integer):(number)
 
-        __newindex : function(LuaVec4,(integer),(number)):()
+        __newindex : function(self:LuaVec4 , integer , number)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __div : function((any),(any)):(any)
+        __div : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
-        __mod : function((any),(any)):(any)
+        __mod : function(any , any):(any)
 
     end
     
     
-    record LuaVec4Class
+    record ClassLuaVec4
 
         userdata
     
-    --Collection of static methods for [`LuaVec4`].
+    --Collection of static methods for [``].
 
         --Creates a new vector.
 
-        new : function((number),(number),(number),(number)):(LuaVec4)
+        new : function(number , number , number , number):(LuaVec4)
 
         --Creates a vector with all elements set to `v`.
 
@@ -5449,17 +6100,17 @@ global record BevyAPI
         --
         --uses the element from `if_false`.
 
-        select : function((LuaBVec4A),(LuaVec4),(LuaVec4)):(LuaVec4)
+        select : function(LuaBVec4A , LuaVec4 , LuaVec4):(LuaVec4)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __div : function((any),(any)):(any)
+        __div : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
-        __mod : function((any),(any)):(any)
+        __mod : function(any , any):(any)
 
     end
     
@@ -5482,38 +6133,54 @@ global record BevyAPI
         --
         --into the first lowest bit, element `y` into the second, etc.
 
-        bitmask : function(LuaBVec2):(integer)
+        bitmask : function(self:LuaBVec2):(integer)
 
         --Returns true if any of the elements are true, false otherwise.
 
-        any : function(LuaBVec2):(boolean)
+        any : function(self:LuaBVec2):(boolean)
 
         --Returns true if all the elements are true, false otherwise.
 
-        all : function(LuaBVec2):(boolean)
+        all : function(self:LuaBVec2):(boolean)
+
+        --Tests the value at `index`.
+        --
+        --
+        --
+        --Panics if `index` is greater than 1.
+
+        test : function(self:LuaBVec2 , integer):(boolean)
+
+        --Sets the element at `index`.
+        --
+        --
+        --
+        --Panics if `index` is greater than 1.
+
+        set : function(self:LuaBVec2 , integer , boolean)
 
         --Creates a new vector mask.
 
-        new : function((boolean),(boolean)):(LuaBVec2)
+        new : function(boolean , boolean):(LuaBVec2)
 
         --Creates a vector with all elements set to `v`.
 
         splat : function(boolean):(LuaBVec2)
 
-        __tostring : function(LuaBVec2):(string)
+        __tostring : function(self:LuaBVec2):(string)
 
     end
     
     
-    record LuaBVec2Class
+    record ClassLuaBVec2
 
         userdata
     
-    --Collection of static methods for [`LuaBVec2`].
+    --Collection of static methods for [``].
 
         --Creates a new vector mask.
 
-        new : function((boolean),(boolean)):(LuaBVec2)
+        new : function(boolean , boolean):(LuaBVec2)
 
         --Creates a vector with all elements set to `v`.
 
@@ -5542,38 +6209,54 @@ global record BevyAPI
         --
         --into the first lowest bit, element `y` into the second, etc.
 
-        bitmask : function(LuaBVec3):(integer)
+        bitmask : function(self:LuaBVec3):(integer)
 
         --Returns true if any of the elements are true, false otherwise.
 
-        any : function(LuaBVec3):(boolean)
+        any : function(self:LuaBVec3):(boolean)
 
         --Returns true if all the elements are true, false otherwise.
 
-        all : function(LuaBVec3):(boolean)
+        all : function(self:LuaBVec3):(boolean)
+
+        --Tests the value at `index`.
+        --
+        --
+        --
+        --Panics if `index` is greater than 2.
+
+        test : function(self:LuaBVec3 , integer):(boolean)
+
+        --Sets the element at `index`.
+        --
+        --
+        --
+        --Panics if `index` is greater than 2.
+
+        set : function(self:LuaBVec3 , integer , boolean)
 
         --Creates a new vector mask.
 
-        new : function((boolean),(boolean),(boolean)):(LuaBVec3)
+        new : function(boolean , boolean , boolean):(LuaBVec3)
 
         --Creates a vector with all elements set to `v`.
 
         splat : function(boolean):(LuaBVec3)
 
-        __tostring : function(LuaBVec3):(string)
+        __tostring : function(self:LuaBVec3):(string)
 
     end
     
     
-    record LuaBVec3Class
+    record ClassLuaBVec3
 
         userdata
     
-    --Collection of static methods for [`LuaBVec3`].
+    --Collection of static methods for [``].
 
         --Creates a new vector mask.
 
-        new : function((boolean),(boolean),(boolean)):(LuaBVec3)
+        new : function(boolean , boolean , boolean):(LuaBVec3)
 
         --Creates a vector with all elements set to `v`.
 
@@ -5604,38 +6287,54 @@ global record BevyAPI
         --
         --into the first lowest bit, element `y` into the second, etc.
 
-        bitmask : function(LuaBVec4):(integer)
+        bitmask : function(self:LuaBVec4):(integer)
 
         --Returns true if any of the elements are true, false otherwise.
 
-        any : function(LuaBVec4):(boolean)
+        any : function(self:LuaBVec4):(boolean)
 
         --Returns true if all the elements are true, false otherwise.
 
-        all : function(LuaBVec4):(boolean)
+        all : function(self:LuaBVec4):(boolean)
+
+        --Tests the value at `index`.
+        --
+        --
+        --
+        --Panics if `index` is greater than 3.
+
+        test : function(self:LuaBVec4 , integer):(boolean)
+
+        --Sets the element at `index`.
+        --
+        --
+        --
+        --Panics if `index` is greater than 3.
+
+        set : function(self:LuaBVec4 , integer , boolean)
 
         --Creates a new vector mask.
 
-        new : function((boolean),(boolean),(boolean),(boolean)):(LuaBVec4)
+        new : function(boolean , boolean , boolean , boolean):(LuaBVec4)
 
         --Creates a vector with all elements set to `v`.
 
         splat : function(boolean):(LuaBVec4)
 
-        __tostring : function(LuaBVec4):(string)
+        __tostring : function(self:LuaBVec4):(string)
 
     end
     
     
-    record LuaBVec4Class
+    record ClassLuaBVec4
 
         userdata
     
-    --Collection of static methods for [`LuaBVec4`].
+    --Collection of static methods for [``].
 
         --Creates a new vector mask.
 
-        new : function((boolean),(boolean),(boolean),(boolean)):(LuaBVec4)
+        new : function(boolean , boolean , boolean , boolean):(LuaBVec4)
 
         --Creates a vector with all elements set to `v`.
 
@@ -5658,38 +6357,54 @@ global record BevyAPI
         --
         --into the first lowest bit, element `y` into the second, etc.
 
-        bitmask : function(LuaBVec3A):(integer)
+        bitmask : function(self:LuaBVec3A):(integer)
 
         --Returns true if any of the elements are true, false otherwise.
 
-        any : function(LuaBVec3A):(boolean)
+        any : function(self:LuaBVec3A):(boolean)
 
         --Returns true if all the elements are true, false otherwise.
 
-        all : function(LuaBVec3A):(boolean)
+        all : function(self:LuaBVec3A):(boolean)
+
+        --Tests the value at `index`.
+        --
+        --
+        --
+        --Panics if `index` is greater than 2.
+
+        test : function(self:LuaBVec3A , integer):(boolean)
+
+        --Sets the element at `index`.
+        --
+        --
+        --
+        --Panics if `index` is greater than 2.
+
+        set : function(self:LuaBVec3A , integer , boolean)
 
         --Creates a new vector mask.
 
-        new : function((boolean),(boolean),(boolean)):(LuaBVec3A)
+        new : function(boolean , boolean , boolean):(LuaBVec3A)
 
         --Creates a vector with all elements set to `v`.
 
         splat : function(boolean):(LuaBVec3A)
 
-        __tostring : function(LuaBVec3A):(string)
+        __tostring : function(self:LuaBVec3A):(string)
 
     end
     
     
-    record LuaBVec3AClass
+    record ClassLuaBVec3A
 
         userdata
     
-    --Collection of static methods for [`LuaBVec3A`].
+    --Collection of static methods for [``].
 
         --Creates a new vector mask.
 
-        new : function((boolean),(boolean),(boolean)):(LuaBVec3A)
+        new : function(boolean , boolean , boolean):(LuaBVec3A)
 
         --Creates a vector with all elements set to `v`.
 
@@ -5712,38 +6427,54 @@ global record BevyAPI
         --
         --into the first lowest bit, element `y` into the second, etc.
 
-        bitmask : function(LuaBVec4A):(integer)
+        bitmask : function(self:LuaBVec4A):(integer)
 
         --Returns true if any of the elements are true, false otherwise.
 
-        any : function(LuaBVec4A):(boolean)
+        any : function(self:LuaBVec4A):(boolean)
 
         --Returns true if all the elements are true, false otherwise.
 
-        all : function(LuaBVec4A):(boolean)
+        all : function(self:LuaBVec4A):(boolean)
+
+        --Tests the value at `index`.
+        --
+        --
+        --
+        --Panics if `index` is greater than 3.
+
+        test : function(self:LuaBVec4A , integer):(boolean)
+
+        --Sets the element at `index`.
+        --
+        --
+        --
+        --Panics if `index` is greater than 3.
+
+        set : function(self:LuaBVec4A , integer , boolean)
 
         --Creates a new vector mask.
 
-        new : function((boolean),(boolean),(boolean),(boolean)):(LuaBVec4A)
+        new : function(boolean , boolean , boolean , boolean):(LuaBVec4A)
 
         --Creates a vector with all elements set to `v`.
 
         splat : function(boolean):(LuaBVec4A)
 
-        __tostring : function(LuaBVec4A):(string)
+        __tostring : function(self:LuaBVec4A):(string)
 
     end
     
     
-    record LuaBVec4AClass
+    record ClassLuaBVec4A
 
         userdata
     
-    --Collection of static methods for [`LuaBVec4A`].
+    --Collection of static methods for [``].
 
         --Creates a new vector mask.
 
-        new : function((boolean),(boolean),(boolean),(boolean)):(LuaBVec4A)
+        new : function(boolean , boolean , boolean , boolean):(LuaBVec4A)
 
         --Creates a vector with all elements set to `v`.
 
@@ -5764,15 +6495,15 @@ global record BevyAPI
 
         --Creates a 3D vector from `self` and the given `z` value.
 
-        extend : function(LuaDVec2,number):(LuaDVec3)
+        extend : function(self:LuaDVec2 , number):(LuaDVec3)
 
         --Computes the dot product of `self` and `rhs`.
 
-        dot : function(LuaDVec2,LuaDVec2):(number)
+        dot : function(self:LuaDVec2 , LuaDVec2):(number)
 
         --Returns a vector where every component is the dot product of `self` and `rhs`.
 
-        dot_into_vec : function(LuaDVec2,LuaDVec2):(LuaDVec2)
+        dot_into_vec : function(self:LuaDVec2 , LuaDVec2):(LuaDVec2)
 
         --Returns a vector containing the minimum values for each element of `self` and `rhs`.
         --
@@ -5780,7 +6511,7 @@ global record BevyAPI
         --
         --In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
 
-        min : function(LuaDVec2,LuaDVec2):(LuaDVec2)
+        min : function(self:LuaDVec2 , LuaDVec2):(LuaDVec2)
 
         --Returns a vector containing the maximum values for each element of `self` and `rhs`.
         --
@@ -5788,7 +6519,7 @@ global record BevyAPI
         --
         --In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
 
-        max : function(LuaDVec2,LuaDVec2):(LuaDVec2)
+        max : function(self:LuaDVec2 , LuaDVec2):(LuaDVec2)
 
         --Component-wise clamping of values, similar to [`f64::clamp`].
         --
@@ -5804,7 +6535,7 @@ global record BevyAPI
         --
         --Will panic if `min` is greater than `max` when `glam_assert` is enabled.
 
-        clamp : function(LuaDVec2,(LuaDVec2),(LuaDVec2)):(LuaDVec2)
+        clamp : function(self:LuaDVec2 , LuaDVec2 , LuaDVec2):(LuaDVec2)
 
         --Returns the horizontal minimum of `self`.
         --
@@ -5812,7 +6543,7 @@ global record BevyAPI
         --
         --In other words this computes `min(x, y, ..)`.
 
-        min_element : function(LuaDVec2):(number)
+        min_element : function(self:LuaDVec2):(number)
 
         --Returns the horizontal maximum of `self`.
         --
@@ -5820,7 +6551,7 @@ global record BevyAPI
         --
         --In other words this computes `max(x, y, ..)`.
 
-        max_element : function(LuaDVec2):(number)
+        max_element : function(self:LuaDVec2):(number)
 
         --Returns a vector mask containing the result of a `==` comparison for each element of
         --
@@ -5832,7 +6563,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpeq : function(LuaDVec2,LuaDVec2):(LuaBVec2)
+        cmpeq : function(self:LuaDVec2 , LuaDVec2):(LuaBVec2)
 
         --Returns a vector mask containing the result of a `!=` comparison for each element of
         --
@@ -5844,7 +6575,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpne : function(LuaDVec2,LuaDVec2):(LuaBVec2)
+        cmpne : function(self:LuaDVec2 , LuaDVec2):(LuaBVec2)
 
         --Returns a vector mask containing the result of a `>=` comparison for each element of
         --
@@ -5856,7 +6587,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpge : function(LuaDVec2,LuaDVec2):(LuaBVec2)
+        cmpge : function(self:LuaDVec2 , LuaDVec2):(LuaBVec2)
 
         --Returns a vector mask containing the result of a `>` comparison for each element of
         --
@@ -5868,7 +6599,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpgt : function(LuaDVec2,LuaDVec2):(LuaBVec2)
+        cmpgt : function(self:LuaDVec2 , LuaDVec2):(LuaBVec2)
 
         --Returns a vector mask containing the result of a `<=` comparison for each element of
         --
@@ -5880,7 +6611,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmple : function(LuaDVec2,LuaDVec2):(LuaBVec2)
+        cmple : function(self:LuaDVec2 , LuaDVec2):(LuaBVec2)
 
         --Returns a vector mask containing the result of a `<` comparison for each element of
         --
@@ -5892,11 +6623,11 @@ global record BevyAPI
         --
         --elements.
 
-        cmplt : function(LuaDVec2,LuaDVec2):(LuaBVec2)
+        cmplt : function(self:LuaDVec2 , LuaDVec2):(LuaBVec2)
 
         --Returns a vector containing the absolute value of each element of `self`.
 
-        abs : function(LuaDVec2):(LuaDVec2)
+        abs : function(self:LuaDVec2):(LuaDVec2)
 
         --Returns a vector with elements representing the sign of `self`.
         --
@@ -5908,11 +6639,11 @@ global record BevyAPI
         --
         --- `NAN` if the number is `NAN`
 
-        signum : function(LuaDVec2):(LuaDVec2)
+        signum : function(self:LuaDVec2):(LuaDVec2)
 
         --Returns a vector with signs of `rhs` and the magnitudes of `self`.
 
-        copysign : function(LuaDVec2,LuaDVec2):(LuaDVec2)
+        copysign : function(self:LuaDVec2 , LuaDVec2):(LuaDVec2)
 
         --Returns a bitmask with the lowest 2 bits set to the sign bits from the elements of `self`.
         --
@@ -5922,17 +6653,17 @@ global record BevyAPI
         --
         --into the first lowest bit, element `y` into the second, etc.
 
-        is_negative_bitmask : function(LuaDVec2):(integer)
+        is_negative_bitmask : function(self:LuaDVec2):(integer)
 
         --Returns `true` if, and only if, all elements are finite.  If any element is either
         --
         --`NaN`, positive or negative infinity, this will return `false`.
 
-        is_finite : function(LuaDVec2):(boolean)
+        is_finite : function(self:LuaDVec2):(boolean)
 
         --Returns `true` if any elements are `NaN`.
 
-        is_nan : function(LuaDVec2):(boolean)
+        is_nan : function(self:LuaDVec2):(boolean)
 
         --Performs `is_nan` on each element of self, returning a vector mask of the results.
         --
@@ -5940,11 +6671,11 @@ global record BevyAPI
         --
         --In other words, this computes `[x.is_nan(), y.is_nan(), z.is_nan(), w.is_nan()]`.
 
-        is_nan_mask : function(LuaDVec2):(LuaBVec2)
+        is_nan_mask : function(self:LuaDVec2):(LuaBVec2)
 
         --Computes the length of `self`.
 
-        length : function(LuaDVec2):(number)
+        length : function(self:LuaDVec2):(number)
 
         --Computes the squared length of `self`.
         --
@@ -5952,7 +6683,7 @@ global record BevyAPI
         --
         --This is faster than `length()` as it avoids a square root operation.
 
-        length_squared : function(LuaDVec2):(number)
+        length_squared : function(self:LuaDVec2):(number)
 
         --Computes `1.0 / length()`.
         --
@@ -5960,15 +6691,15 @@ global record BevyAPI
         --
         --For valid results, `self` must _not_ be of length zero.
 
-        length_recip : function(LuaDVec2):(number)
+        length_recip : function(self:LuaDVec2):(number)
 
         --Computes the Euclidean distance between two points in space.
 
-        distance : function(LuaDVec2,LuaDVec2):(number)
+        distance : function(self:LuaDVec2 , LuaDVec2):(number)
 
         --Compute the squared euclidean distance between two points in space.
 
-        distance_squared : function(LuaDVec2,LuaDVec2):(number)
+        distance_squared : function(self:LuaDVec2 , LuaDVec2):(number)
 
         --Returns `self` normalized to length 1.0.
         --
@@ -5978,7 +6709,7 @@ global record BevyAPI
         --
         --
         --
-        --See also [`Self::try_normalize`] and [`Self::normalize_or_zero`].
+        --See also [`Self::try_normalize()`] and [`Self::normalize_or_zero()`].
         --
         --
         --
@@ -5988,7 +6719,7 @@ global record BevyAPI
         --
         --Will panic if `self` is zero length when `glam_assert` is enabled.
 
-        normalize : function(LuaDVec2):(LuaDVec2)
+        normalize : function(self:LuaDVec2):(LuaDVec2)
 
         --Returns `self` normalized to length 1.0 if possible, else returns zero.
         --
@@ -6000,9 +6731,9 @@ global record BevyAPI
         --
         --
         --
-        --See also [`Self::try_normalize`].
+        --See also [`Self::try_normalize()`].
 
-        normalize_or_zero : function(LuaDVec2):(LuaDVec2)
+        normalize_or_zero : function(self:LuaDVec2):(LuaDVec2)
 
         --Returns whether `self` is length `1.0` or not.
         --
@@ -6010,7 +6741,7 @@ global record BevyAPI
         --
         --Uses a precision threshold of `1e-6`.
 
-        is_normalized : function(LuaDVec2):(boolean)
+        is_normalized : function(self:LuaDVec2):(boolean)
 
         --Returns the vector projection of `self` onto `rhs`.
         --
@@ -6026,7 +6757,7 @@ global record BevyAPI
         --
         --Will panic if `rhs` is zero length when `glam_assert` is enabled.
 
-        project_onto : function(LuaDVec2,LuaDVec2):(LuaDVec2)
+        project_onto : function(self:LuaDVec2 , LuaDVec2):(LuaDVec2)
 
         --Returns the vector rejection of `self` from `rhs`.
         --
@@ -6048,7 +6779,7 @@ global record BevyAPI
         --
         --Will panic if `rhs` has a length of zero when `glam_assert` is enabled.
 
-        reject_from : function(LuaDVec2,LuaDVec2):(LuaDVec2)
+        reject_from : function(self:LuaDVec2 , LuaDVec2):(LuaDVec2)
 
         --Returns the vector projection of `self` onto `rhs`.
         --
@@ -6064,7 +6795,7 @@ global record BevyAPI
         --
         --Will panic if `rhs` is not normalized when `glam_assert` is enabled.
 
-        project_onto_normalized : function(LuaDVec2,LuaDVec2):(LuaDVec2)
+        project_onto_normalized : function(self:LuaDVec2 , LuaDVec2):(LuaDVec2)
 
         --Returns the vector rejection of `self` from `rhs`.
         --
@@ -6086,25 +6817,31 @@ global record BevyAPI
         --
         --Will panic if `rhs` is not normalized when `glam_assert` is enabled.
 
-        reject_from_normalized : function(LuaDVec2,LuaDVec2):(LuaDVec2)
+        reject_from_normalized : function(self:LuaDVec2 , LuaDVec2):(LuaDVec2)
 
         --Returns a vector containing the nearest integer to a number for each element of `self`.
         --
         --Round half-way cases away from 0.0.
 
-        round : function(LuaDVec2):(LuaDVec2)
+        round : function(self:LuaDVec2):(LuaDVec2)
 
         --Returns a vector containing the largest integer less than or equal to a number for each
         --
         --element of `self`.
 
-        floor : function(LuaDVec2):(LuaDVec2)
+        floor : function(self:LuaDVec2):(LuaDVec2)
 
         --Returns a vector containing the smallest integer greater than or equal to a number for
         --
         --each element of `self`.
 
-        ceil : function(LuaDVec2):(LuaDVec2)
+        ceil : function(self:LuaDVec2):(LuaDVec2)
+
+        --Returns a vector containing the integer part each element of `self`. This means numbers are
+        --
+        --always truncated towards zero.
+
+        trunc : function(self:LuaDVec2):(LuaDVec2)
 
         --Returns a vector containing the fractional part of the vector, e.g. `self -
         --
@@ -6114,21 +6851,21 @@ global record BevyAPI
         --
         --Note that this is fast but not precise for large numbers.
 
-        fract : function(LuaDVec2):(LuaDVec2)
+        fract : function(self:LuaDVec2):(LuaDVec2)
 
         --Returns a vector containing `e^self` (the exponential function) for each element of
         --
         --`self`.
 
-        exp : function(LuaDVec2):(LuaDVec2)
+        exp : function(self:LuaDVec2):(LuaDVec2)
 
         --Returns a vector containing each element of `self` raised to the power of `n`.
 
-        powf : function(LuaDVec2,number):(LuaDVec2)
+        powf : function(self:LuaDVec2 , number):(LuaDVec2)
 
         --Returns a vector containing the reciprocal `1.0/n` of each element of `self`.
 
-        recip : function(LuaDVec2):(LuaDVec2)
+        recip : function(self:LuaDVec2):(LuaDVec2)
 
         --Performs a linear interpolation between `self` and `rhs` based on the value `s`.
         --
@@ -6140,7 +6877,7 @@ global record BevyAPI
         --
         --extrapolated.
 
-        lerp : function(LuaDVec2,(LuaDVec2),(number)):(LuaDVec2)
+        lerp : function(self:LuaDVec2 , LuaDVec2 , number):(LuaDVec2)
 
         --Returns true if the absolute difference of all elements between `self` and `rhs` is
         --
@@ -6160,7 +6897,7 @@ global record BevyAPI
         --
         --[comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
 
-        abs_diff_eq : function(LuaDVec2,(LuaDVec2),(number)):(boolean)
+        abs_diff_eq : function(self:LuaDVec2 , LuaDVec2 , number):(boolean)
 
         --Returns a vector with a length no less than `min` and no more than `max`
         --
@@ -6172,15 +6909,15 @@ global record BevyAPI
         --
         --Will panic if `min` is greater than `max` when `glam_assert` is enabled.
 
-        clamp_length : function(LuaDVec2,(number),(number)):(LuaDVec2)
+        clamp_length : function(self:LuaDVec2 , number , number):(LuaDVec2)
 
         --Returns a vector with a length no more than `max`
 
-        clamp_length_max : function(LuaDVec2,number):(LuaDVec2)
+        clamp_length_max : function(self:LuaDVec2 , number):(LuaDVec2)
 
         --Returns a vector with a length no less than `min`
 
-        clamp_length_min : function(LuaDVec2,number):(LuaDVec2)
+        clamp_length_min : function(self:LuaDVec2 , number):(LuaDVec2)
 
         --Fused multiply-add. Computes `(self * a) + b` element-wise with only one rounding
         --
@@ -6196,25 +6933,25 @@ global record BevyAPI
         --
         --mind.
 
-        mul_add : function(LuaDVec2,(LuaDVec2),(LuaDVec2)):(LuaDVec2)
+        mul_add : function(self:LuaDVec2 , LuaDVec2 , LuaDVec2):(LuaDVec2)
 
-        --Returns the angle (in radians) between `self` and `rhs`.
+        --Returns the angle (in radians) between `self` and `rhs` in the range `[-π, +π]`.
         --
         --
         --
-        --The input vectors do not need to be unit length however they must be non-zero.
+        --The inputs do not need to be unit vectors however they must be non-zero.
 
-        angle_between : function(LuaDVec2,LuaDVec2):(number)
+        angle_between : function(self:LuaDVec2 , LuaDVec2):(number)
 
         --Returns a vector that is equal to `self` rotated by 90 degrees.
 
-        perp : function(LuaDVec2):(LuaDVec2)
+        perp : function(self:LuaDVec2):(LuaDVec2)
 
         --The perpendicular dot product of `self` and `rhs`.
         --
         --Also known as the wedge product, 2D cross product, and determinant.
 
-        perp_dot : function(LuaDVec2,LuaDVec2):(number)
+        perp_dot : function(self:LuaDVec2 , LuaDVec2):(number)
 
         --Returns `rhs` rotated by the angle of `self`. If `self` is normalized,
         --
@@ -6222,23 +6959,23 @@ global record BevyAPI
         --
         --it will be like a rotation with a multiplication by `self`'s length.
 
-        rotate : function(LuaDVec2,LuaDVec2):(LuaDVec2)
+        rotate : function(self:LuaDVec2 , LuaDVec2):(LuaDVec2)
 
         --Casts all elements of `self` to `f32`.
 
-        as_vec2 : function(LuaDVec2):(LuaVec2)
+        as_vec2 : function(self:LuaDVec2):(LuaVec2)
 
         --Casts all elements of `self` to `i32`.
 
-        as_ivec2 : function(LuaDVec2):(LuaIVec2)
+        as_ivec2 : function(self:LuaDVec2):(LuaIVec2)
 
         --Casts all elements of `self` to `u32`.
 
-        as_uvec2 : function(LuaDVec2):(LuaUVec2)
+        as_uvec2 : function(self:LuaDVec2):(LuaUVec2)
 
         --Creates a new vector.
 
-        new : function((number),(number)):(LuaDVec2)
+        new : function(number , number):(LuaDVec2)
 
         --Creates a vector with all elements set to `v`.
 
@@ -6254,46 +6991,48 @@ global record BevyAPI
         --
         --uses the element from `if_false`.
 
-        select : function((LuaBVec2),(LuaDVec2),(LuaDVec2)):(LuaDVec2)
+        select : function(LuaBVec2 , LuaDVec2 , LuaDVec2):(LuaDVec2)
 
         --Creates a 2D vector containing `[angle.cos(), angle.sin()]`. This can be used in
         --
-        --conjunction with the `rotate` method, e.g. `Vec2::from_angle(PI).rotate(Vec2::Y)` will
+        --conjunction with the [`rotate()`][Self::rotate()] method, e.g.
         --
-        --create the vector [-1, 0] and rotate `Vec2::Y` around it returning `-Vec2::Y`.
+        --`DVec2::from_angle(PI).rotate(DVec2::Y)` will create the vector `[-1, 0]`
+        --
+        --and rotate [`DVec2::Y`] around it returning `-DVec2::Y`.
 
         from_angle : function(number):(LuaDVec2)
 
-        __tostring : function(LuaDVec2):(string)
+        __tostring : function(self:LuaDVec2):(string)
 
-        __unm : function(LuaDVec2):(LuaDVec2)
+        __unm : function(self:LuaDVec2):(LuaDVec2)
 
-        __index : function(LuaDVec2,integer):(number)
+        __index : function(self:LuaDVec2 , integer):(number)
 
-        __newindex : function(LuaDVec2,(integer),(number)):()
+        __newindex : function(self:LuaDVec2 , integer , number)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __div : function((any),(any)):(any)
+        __div : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
-        __mod : function((any),(any)):(any)
+        __mod : function(any , any):(any)
 
     end
     
     
-    record LuaDVec2Class
+    record ClassLuaDVec2
 
         userdata
     
-    --Collection of static methods for [`LuaDVec2`].
+    --Collection of static methods for [``].
 
         --Creates a new vector.
 
-        new : function((number),(number)):(LuaDVec2)
+        new : function(number , number):(LuaDVec2)
 
         --Creates a vector with all elements set to `v`.
 
@@ -6309,25 +7048,27 @@ global record BevyAPI
         --
         --uses the element from `if_false`.
 
-        select : function((LuaBVec2),(LuaDVec2),(LuaDVec2)):(LuaDVec2)
+        select : function(LuaBVec2 , LuaDVec2 , LuaDVec2):(LuaDVec2)
 
         --Creates a 2D vector containing `[angle.cos(), angle.sin()]`. This can be used in
         --
-        --conjunction with the `rotate` method, e.g. `Vec2::from_angle(PI).rotate(Vec2::Y)` will
+        --conjunction with the [`rotate()`][Self::rotate()] method, e.g.
         --
-        --create the vector [-1, 0] and rotate `Vec2::Y` around it returning `-Vec2::Y`.
+        --`DVec2::from_angle(PI).rotate(DVec2::Y)` will create the vector `[-1, 0]`
+        --
+        --and rotate [`DVec2::Y`] around it returning `-DVec2::Y`.
 
         from_angle : function(number):(LuaDVec2)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __div : function((any),(any)):(any)
+        __div : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
-        __mod : function((any),(any)):(any)
+        __mod : function(any , any):(any)
 
     end
     
@@ -6346,27 +7087,27 @@ global record BevyAPI
 
         --Creates a 4D vector from `self` and the given `w` value.
 
-        extend : function(LuaDVec3,number):(LuaDVec4)
+        extend : function(self:LuaDVec3 , number):(LuaDVec4)
 
         --Creates a 2D vector from the `x` and `y` elements of `self`, discarding `z`.
         --
         --
         --
-        --Truncation may also be performed by using `self.xy()` or `DVec2::from()`.
+        --Truncation may also be performed by using [`self.xy()`][crate::swizzles::Vec3Swizzles::xy()].
 
-        truncate : function(LuaDVec3):(LuaDVec2)
+        truncate : function(self:LuaDVec3):(LuaDVec2)
 
         --Computes the dot product of `self` and `rhs`.
 
-        dot : function(LuaDVec3,LuaDVec3):(number)
+        dot : function(self:LuaDVec3 , LuaDVec3):(number)
 
         --Returns a vector where every component is the dot product of `self` and `rhs`.
 
-        dot_into_vec : function(LuaDVec3,LuaDVec3):(LuaDVec3)
+        dot_into_vec : function(self:LuaDVec3 , LuaDVec3):(LuaDVec3)
 
         --Computes the cross product of `self` and `rhs`.
 
-        cross : function(LuaDVec3,LuaDVec3):(LuaDVec3)
+        cross : function(self:LuaDVec3 , LuaDVec3):(LuaDVec3)
 
         --Returns a vector containing the minimum values for each element of `self` and `rhs`.
         --
@@ -6374,7 +7115,7 @@ global record BevyAPI
         --
         --In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
 
-        min : function(LuaDVec3,LuaDVec3):(LuaDVec3)
+        min : function(self:LuaDVec3 , LuaDVec3):(LuaDVec3)
 
         --Returns a vector containing the maximum values for each element of `self` and `rhs`.
         --
@@ -6382,7 +7123,7 @@ global record BevyAPI
         --
         --In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
 
-        max : function(LuaDVec3,LuaDVec3):(LuaDVec3)
+        max : function(self:LuaDVec3 , LuaDVec3):(LuaDVec3)
 
         --Component-wise clamping of values, similar to [`f64::clamp`].
         --
@@ -6398,7 +7139,7 @@ global record BevyAPI
         --
         --Will panic if `min` is greater than `max` when `glam_assert` is enabled.
 
-        clamp : function(LuaDVec3,(LuaDVec3),(LuaDVec3)):(LuaDVec3)
+        clamp : function(self:LuaDVec3 , LuaDVec3 , LuaDVec3):(LuaDVec3)
 
         --Returns the horizontal minimum of `self`.
         --
@@ -6406,7 +7147,7 @@ global record BevyAPI
         --
         --In other words this computes `min(x, y, ..)`.
 
-        min_element : function(LuaDVec3):(number)
+        min_element : function(self:LuaDVec3):(number)
 
         --Returns the horizontal maximum of `self`.
         --
@@ -6414,7 +7155,7 @@ global record BevyAPI
         --
         --In other words this computes `max(x, y, ..)`.
 
-        max_element : function(LuaDVec3):(number)
+        max_element : function(self:LuaDVec3):(number)
 
         --Returns a vector mask containing the result of a `==` comparison for each element of
         --
@@ -6426,7 +7167,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpeq : function(LuaDVec3,LuaDVec3):(LuaBVec3)
+        cmpeq : function(self:LuaDVec3 , LuaDVec3):(LuaBVec3)
 
         --Returns a vector mask containing the result of a `!=` comparison for each element of
         --
@@ -6438,7 +7179,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpne : function(LuaDVec3,LuaDVec3):(LuaBVec3)
+        cmpne : function(self:LuaDVec3 , LuaDVec3):(LuaBVec3)
 
         --Returns a vector mask containing the result of a `>=` comparison for each element of
         --
@@ -6450,7 +7191,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpge : function(LuaDVec3,LuaDVec3):(LuaBVec3)
+        cmpge : function(self:LuaDVec3 , LuaDVec3):(LuaBVec3)
 
         --Returns a vector mask containing the result of a `>` comparison for each element of
         --
@@ -6462,7 +7203,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpgt : function(LuaDVec3,LuaDVec3):(LuaBVec3)
+        cmpgt : function(self:LuaDVec3 , LuaDVec3):(LuaBVec3)
 
         --Returns a vector mask containing the result of a `<=` comparison for each element of
         --
@@ -6474,7 +7215,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmple : function(LuaDVec3,LuaDVec3):(LuaBVec3)
+        cmple : function(self:LuaDVec3 , LuaDVec3):(LuaBVec3)
 
         --Returns a vector mask containing the result of a `<` comparison for each element of
         --
@@ -6486,11 +7227,11 @@ global record BevyAPI
         --
         --elements.
 
-        cmplt : function(LuaDVec3,LuaDVec3):(LuaBVec3)
+        cmplt : function(self:LuaDVec3 , LuaDVec3):(LuaBVec3)
 
         --Returns a vector containing the absolute value of each element of `self`.
 
-        abs : function(LuaDVec3):(LuaDVec3)
+        abs : function(self:LuaDVec3):(LuaDVec3)
 
         --Returns a vector with elements representing the sign of `self`.
         --
@@ -6502,11 +7243,11 @@ global record BevyAPI
         --
         --- `NAN` if the number is `NAN`
 
-        signum : function(LuaDVec3):(LuaDVec3)
+        signum : function(self:LuaDVec3):(LuaDVec3)
 
         --Returns a vector with signs of `rhs` and the magnitudes of `self`.
 
-        copysign : function(LuaDVec3,LuaDVec3):(LuaDVec3)
+        copysign : function(self:LuaDVec3 , LuaDVec3):(LuaDVec3)
 
         --Returns a bitmask with the lowest 3 bits set to the sign bits from the elements of `self`.
         --
@@ -6516,17 +7257,17 @@ global record BevyAPI
         --
         --into the first lowest bit, element `y` into the second, etc.
 
-        is_negative_bitmask : function(LuaDVec3):(integer)
+        is_negative_bitmask : function(self:LuaDVec3):(integer)
 
         --Returns `true` if, and only if, all elements are finite.  If any element is either
         --
         --`NaN`, positive or negative infinity, this will return `false`.
 
-        is_finite : function(LuaDVec3):(boolean)
+        is_finite : function(self:LuaDVec3):(boolean)
 
         --Returns `true` if any elements are `NaN`.
 
-        is_nan : function(LuaDVec3):(boolean)
+        is_nan : function(self:LuaDVec3):(boolean)
 
         --Performs `is_nan` on each element of self, returning a vector mask of the results.
         --
@@ -6534,11 +7275,11 @@ global record BevyAPI
         --
         --In other words, this computes `[x.is_nan(), y.is_nan(), z.is_nan(), w.is_nan()]`.
 
-        is_nan_mask : function(LuaDVec3):(LuaBVec3)
+        is_nan_mask : function(self:LuaDVec3):(LuaBVec3)
 
         --Computes the length of `self`.
 
-        length : function(LuaDVec3):(number)
+        length : function(self:LuaDVec3):(number)
 
         --Computes the squared length of `self`.
         --
@@ -6546,7 +7287,7 @@ global record BevyAPI
         --
         --This is faster than `length()` as it avoids a square root operation.
 
-        length_squared : function(LuaDVec3):(number)
+        length_squared : function(self:LuaDVec3):(number)
 
         --Computes `1.0 / length()`.
         --
@@ -6554,15 +7295,15 @@ global record BevyAPI
         --
         --For valid results, `self` must _not_ be of length zero.
 
-        length_recip : function(LuaDVec3):(number)
+        length_recip : function(self:LuaDVec3):(number)
 
         --Computes the Euclidean distance between two points in space.
 
-        distance : function(LuaDVec3,LuaDVec3):(number)
+        distance : function(self:LuaDVec3 , LuaDVec3):(number)
 
         --Compute the squared euclidean distance between two points in space.
 
-        distance_squared : function(LuaDVec3,LuaDVec3):(number)
+        distance_squared : function(self:LuaDVec3 , LuaDVec3):(number)
 
         --Returns `self` normalized to length 1.0.
         --
@@ -6572,7 +7313,7 @@ global record BevyAPI
         --
         --
         --
-        --See also [`Self::try_normalize`] and [`Self::normalize_or_zero`].
+        --See also [`Self::try_normalize()`] and [`Self::normalize_or_zero()`].
         --
         --
         --
@@ -6582,7 +7323,7 @@ global record BevyAPI
         --
         --Will panic if `self` is zero length when `glam_assert` is enabled.
 
-        normalize : function(LuaDVec3):(LuaDVec3)
+        normalize : function(self:LuaDVec3):(LuaDVec3)
 
         --Returns `self` normalized to length 1.0 if possible, else returns zero.
         --
@@ -6594,9 +7335,9 @@ global record BevyAPI
         --
         --
         --
-        --See also [`Self::try_normalize`].
+        --See also [`Self::try_normalize()`].
 
-        normalize_or_zero : function(LuaDVec3):(LuaDVec3)
+        normalize_or_zero : function(self:LuaDVec3):(LuaDVec3)
 
         --Returns whether `self` is length `1.0` or not.
         --
@@ -6604,7 +7345,7 @@ global record BevyAPI
         --
         --Uses a precision threshold of `1e-6`.
 
-        is_normalized : function(LuaDVec3):(boolean)
+        is_normalized : function(self:LuaDVec3):(boolean)
 
         --Returns the vector projection of `self` onto `rhs`.
         --
@@ -6620,7 +7361,7 @@ global record BevyAPI
         --
         --Will panic if `rhs` is zero length when `glam_assert` is enabled.
 
-        project_onto : function(LuaDVec3,LuaDVec3):(LuaDVec3)
+        project_onto : function(self:LuaDVec3 , LuaDVec3):(LuaDVec3)
 
         --Returns the vector rejection of `self` from `rhs`.
         --
@@ -6642,7 +7383,7 @@ global record BevyAPI
         --
         --Will panic if `rhs` has a length of zero when `glam_assert` is enabled.
 
-        reject_from : function(LuaDVec3,LuaDVec3):(LuaDVec3)
+        reject_from : function(self:LuaDVec3 , LuaDVec3):(LuaDVec3)
 
         --Returns the vector projection of `self` onto `rhs`.
         --
@@ -6658,7 +7399,7 @@ global record BevyAPI
         --
         --Will panic if `rhs` is not normalized when `glam_assert` is enabled.
 
-        project_onto_normalized : function(LuaDVec3,LuaDVec3):(LuaDVec3)
+        project_onto_normalized : function(self:LuaDVec3 , LuaDVec3):(LuaDVec3)
 
         --Returns the vector rejection of `self` from `rhs`.
         --
@@ -6680,25 +7421,31 @@ global record BevyAPI
         --
         --Will panic if `rhs` is not normalized when `glam_assert` is enabled.
 
-        reject_from_normalized : function(LuaDVec3,LuaDVec3):(LuaDVec3)
+        reject_from_normalized : function(self:LuaDVec3 , LuaDVec3):(LuaDVec3)
 
         --Returns a vector containing the nearest integer to a number for each element of `self`.
         --
         --Round half-way cases away from 0.0.
 
-        round : function(LuaDVec3):(LuaDVec3)
+        round : function(self:LuaDVec3):(LuaDVec3)
 
         --Returns a vector containing the largest integer less than or equal to a number for each
         --
         --element of `self`.
 
-        floor : function(LuaDVec3):(LuaDVec3)
+        floor : function(self:LuaDVec3):(LuaDVec3)
 
         --Returns a vector containing the smallest integer greater than or equal to a number for
         --
         --each element of `self`.
 
-        ceil : function(LuaDVec3):(LuaDVec3)
+        ceil : function(self:LuaDVec3):(LuaDVec3)
+
+        --Returns a vector containing the integer part each element of `self`. This means numbers are
+        --
+        --always truncated towards zero.
+
+        trunc : function(self:LuaDVec3):(LuaDVec3)
 
         --Returns a vector containing the fractional part of the vector, e.g. `self -
         --
@@ -6708,21 +7455,21 @@ global record BevyAPI
         --
         --Note that this is fast but not precise for large numbers.
 
-        fract : function(LuaDVec3):(LuaDVec3)
+        fract : function(self:LuaDVec3):(LuaDVec3)
 
         --Returns a vector containing `e^self` (the exponential function) for each element of
         --
         --`self`.
 
-        exp : function(LuaDVec3):(LuaDVec3)
+        exp : function(self:LuaDVec3):(LuaDVec3)
 
         --Returns a vector containing each element of `self` raised to the power of `n`.
 
-        powf : function(LuaDVec3,number):(LuaDVec3)
+        powf : function(self:LuaDVec3 , number):(LuaDVec3)
 
         --Returns a vector containing the reciprocal `1.0/n` of each element of `self`.
 
-        recip : function(LuaDVec3):(LuaDVec3)
+        recip : function(self:LuaDVec3):(LuaDVec3)
 
         --Performs a linear interpolation between `self` and `rhs` based on the value `s`.
         --
@@ -6734,7 +7481,7 @@ global record BevyAPI
         --
         --extrapolated.
 
-        lerp : function(LuaDVec3,(LuaDVec3),(number)):(LuaDVec3)
+        lerp : function(self:LuaDVec3 , LuaDVec3 , number):(LuaDVec3)
 
         --Returns true if the absolute difference of all elements between `self` and `rhs` is
         --
@@ -6754,7 +7501,7 @@ global record BevyAPI
         --
         --[comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
 
-        abs_diff_eq : function(LuaDVec3,(LuaDVec3),(number)):(boolean)
+        abs_diff_eq : function(self:LuaDVec3 , LuaDVec3 , number):(boolean)
 
         --Returns a vector with a length no less than `min` and no more than `max`
         --
@@ -6766,15 +7513,15 @@ global record BevyAPI
         --
         --Will panic if `min` is greater than `max` when `glam_assert` is enabled.
 
-        clamp_length : function(LuaDVec3,(number),(number)):(LuaDVec3)
+        clamp_length : function(self:LuaDVec3 , number , number):(LuaDVec3)
 
         --Returns a vector with a length no more than `max`
 
-        clamp_length_max : function(LuaDVec3,number):(LuaDVec3)
+        clamp_length_max : function(self:LuaDVec3 , number):(LuaDVec3)
 
         --Returns a vector with a length no less than `min`
 
-        clamp_length_min : function(LuaDVec3,number):(LuaDVec3)
+        clamp_length_min : function(self:LuaDVec3 , number):(LuaDVec3)
 
         --Fused multiply-add. Computes `(self * a) + b` element-wise with only one rounding
         --
@@ -6790,15 +7537,15 @@ global record BevyAPI
         --
         --mind.
 
-        mul_add : function(LuaDVec3,(LuaDVec3),(LuaDVec3)):(LuaDVec3)
+        mul_add : function(self:LuaDVec3 , LuaDVec3 , LuaDVec3):(LuaDVec3)
 
         --Returns the angle (in radians) between two vectors.
         --
         --
         --
-        --The input vectors do not need to be unit length however they must be non-zero.
+        --The inputs do not need to be unit vectors however they must be non-zero.
 
-        angle_between : function(LuaDVec3,LuaDVec3):(number)
+        angle_between : function(self:LuaDVec3 , LuaDVec3):(number)
 
         --Returns some vector that is orthogonal to the given one.
         --
@@ -6808,15 +7555,17 @@ global record BevyAPI
         --
         --
         --
-        --The output vector is not necessarily unit-length.
+        --The output vector is not necessarily unit length. For that use
         --
-        --For that use [`Self::any_orthonormal_vector`] instead.
+        --[`Self::any_orthonormal_vector()`] instead.
 
-        any_orthogonal_vector : function(LuaDVec3):(LuaDVec3)
+        any_orthogonal_vector : function(self:LuaDVec3):(LuaDVec3)
 
-        --Returns any unit-length vector that is orthogonal to the given one.
+        --Returns any unit vector that is orthogonal to the given one.
         --
-        --The input vector must be finite and non-zero.
+        --
+        --
+        --The input vector must be unit length.
         --
         --
         --
@@ -6826,27 +7575,27 @@ global record BevyAPI
         --
         --Will panic if `self` is not normalized when `glam_assert` is enabled.
 
-        any_orthonormal_vector : function(LuaDVec3):(LuaDVec3)
+        any_orthonormal_vector : function(self:LuaDVec3):(LuaDVec3)
 
         --Casts all elements of `self` to `f32`.
 
-        as_vec3 : function(LuaDVec3):(LuaVec3)
+        as_vec3 : function(self:LuaDVec3):(LuaVec3)
 
         --Casts all elements of `self` to `f32`.
 
-        as_vec3a : function(LuaDVec3):(LuaVec3A)
+        as_vec3a : function(self:LuaDVec3):(LuaVec3A)
 
         --Casts all elements of `self` to `i32`.
 
-        as_ivec3 : function(LuaDVec3):(LuaIVec3)
+        as_ivec3 : function(self:LuaDVec3):(LuaIVec3)
 
         --Casts all elements of `self` to `u32`.
 
-        as_uvec3 : function(LuaDVec3):(LuaUVec3)
+        as_uvec3 : function(self:LuaDVec3):(LuaUVec3)
 
         --Creates a new vector.
 
-        new : function((number),(number),(number)):(LuaDVec3)
+        new : function(number , number , number):(LuaDVec3)
 
         --Creates a vector with all elements set to `v`.
 
@@ -6862,38 +7611,38 @@ global record BevyAPI
         --
         --uses the element from `if_false`.
 
-        select : function((LuaBVec3),(LuaDVec3),(LuaDVec3)):(LuaDVec3)
+        select : function(LuaBVec3 , LuaDVec3 , LuaDVec3):(LuaDVec3)
 
-        __tostring : function(LuaDVec3):(string)
+        __tostring : function(self:LuaDVec3):(string)
 
-        __unm : function(LuaDVec3):(LuaDVec3)
+        __unm : function(self:LuaDVec3):(LuaDVec3)
 
-        __index : function(LuaDVec3,integer):(number)
+        __index : function(self:LuaDVec3 , integer):(number)
 
-        __newindex : function(LuaDVec3,(integer),(number)):()
+        __newindex : function(self:LuaDVec3 , integer , number)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __div : function((any),(any)):(any)
+        __div : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
-        __mod : function((any),(any)):(any)
+        __mod : function(any , any):(any)
 
     end
     
     
-    record LuaDVec3Class
+    record ClassLuaDVec3
 
         userdata
     
-    --Collection of static methods for [`LuaDVec3`].
+    --Collection of static methods for [``].
 
         --Creates a new vector.
 
-        new : function((number),(number),(number)):(LuaDVec3)
+        new : function(number , number , number):(LuaDVec3)
 
         --Creates a vector with all elements set to `v`.
 
@@ -6909,17 +7658,17 @@ global record BevyAPI
         --
         --uses the element from `if_false`.
 
-        select : function((LuaBVec3),(LuaDVec3),(LuaDVec3)):(LuaDVec3)
+        select : function(LuaBVec3 , LuaDVec3 , LuaDVec3):(LuaDVec3)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __div : function((any),(any)):(any)
+        __div : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
-        __mod : function((any),(any)):(any)
+        __mod : function(any , any):(any)
 
     end
     
@@ -6942,17 +7691,17 @@ global record BevyAPI
         --
         --
         --
-        --Truncation to `DVec3` may also be performed by using `self.xyz()` or `DVec3::from()`.
+        --Truncation to [`DVec3`] may also be performed by using [`self.xyz()`][crate::swizzles::Vec4Swizzles::xyz()].
 
-        truncate : function(LuaDVec4):(LuaDVec3)
+        truncate : function(self:LuaDVec4):(LuaDVec3)
 
         --Computes the dot product of `self` and `rhs`.
 
-        dot : function(LuaDVec4,LuaDVec4):(number)
+        dot : function(self:LuaDVec4 , LuaDVec4):(number)
 
         --Returns a vector where every component is the dot product of `self` and `rhs`.
 
-        dot_into_vec : function(LuaDVec4,LuaDVec4):(LuaDVec4)
+        dot_into_vec : function(self:LuaDVec4 , LuaDVec4):(LuaDVec4)
 
         --Returns a vector containing the minimum values for each element of `self` and `rhs`.
         --
@@ -6960,7 +7709,7 @@ global record BevyAPI
         --
         --In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
 
-        min : function(LuaDVec4,LuaDVec4):(LuaDVec4)
+        min : function(self:LuaDVec4 , LuaDVec4):(LuaDVec4)
 
         --Returns a vector containing the maximum values for each element of `self` and `rhs`.
         --
@@ -6968,7 +7717,7 @@ global record BevyAPI
         --
         --In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
 
-        max : function(LuaDVec4,LuaDVec4):(LuaDVec4)
+        max : function(self:LuaDVec4 , LuaDVec4):(LuaDVec4)
 
         --Component-wise clamping of values, similar to [`f64::clamp`].
         --
@@ -6984,7 +7733,7 @@ global record BevyAPI
         --
         --Will panic if `min` is greater than `max` when `glam_assert` is enabled.
 
-        clamp : function(LuaDVec4,(LuaDVec4),(LuaDVec4)):(LuaDVec4)
+        clamp : function(self:LuaDVec4 , LuaDVec4 , LuaDVec4):(LuaDVec4)
 
         --Returns the horizontal minimum of `self`.
         --
@@ -6992,7 +7741,7 @@ global record BevyAPI
         --
         --In other words this computes `min(x, y, ..)`.
 
-        min_element : function(LuaDVec4):(number)
+        min_element : function(self:LuaDVec4):(number)
 
         --Returns the horizontal maximum of `self`.
         --
@@ -7000,7 +7749,7 @@ global record BevyAPI
         --
         --In other words this computes `max(x, y, ..)`.
 
-        max_element : function(LuaDVec4):(number)
+        max_element : function(self:LuaDVec4):(number)
 
         --Returns a vector mask containing the result of a `==` comparison for each element of
         --
@@ -7012,7 +7761,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpeq : function(LuaDVec4,LuaDVec4):(LuaBVec4)
+        cmpeq : function(self:LuaDVec4 , LuaDVec4):(LuaBVec4)
 
         --Returns a vector mask containing the result of a `!=` comparison for each element of
         --
@@ -7024,7 +7773,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpne : function(LuaDVec4,LuaDVec4):(LuaBVec4)
+        cmpne : function(self:LuaDVec4 , LuaDVec4):(LuaBVec4)
 
         --Returns a vector mask containing the result of a `>=` comparison for each element of
         --
@@ -7036,7 +7785,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpge : function(LuaDVec4,LuaDVec4):(LuaBVec4)
+        cmpge : function(self:LuaDVec4 , LuaDVec4):(LuaBVec4)
 
         --Returns a vector mask containing the result of a `>` comparison for each element of
         --
@@ -7048,7 +7797,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpgt : function(LuaDVec4,LuaDVec4):(LuaBVec4)
+        cmpgt : function(self:LuaDVec4 , LuaDVec4):(LuaBVec4)
 
         --Returns a vector mask containing the result of a `<=` comparison for each element of
         --
@@ -7060,7 +7809,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmple : function(LuaDVec4,LuaDVec4):(LuaBVec4)
+        cmple : function(self:LuaDVec4 , LuaDVec4):(LuaBVec4)
 
         --Returns a vector mask containing the result of a `<` comparison for each element of
         --
@@ -7072,11 +7821,11 @@ global record BevyAPI
         --
         --elements.
 
-        cmplt : function(LuaDVec4,LuaDVec4):(LuaBVec4)
+        cmplt : function(self:LuaDVec4 , LuaDVec4):(LuaBVec4)
 
         --Returns a vector containing the absolute value of each element of `self`.
 
-        abs : function(LuaDVec4):(LuaDVec4)
+        abs : function(self:LuaDVec4):(LuaDVec4)
 
         --Returns a vector with elements representing the sign of `self`.
         --
@@ -7088,11 +7837,11 @@ global record BevyAPI
         --
         --- `NAN` if the number is `NAN`
 
-        signum : function(LuaDVec4):(LuaDVec4)
+        signum : function(self:LuaDVec4):(LuaDVec4)
 
         --Returns a vector with signs of `rhs` and the magnitudes of `self`.
 
-        copysign : function(LuaDVec4,LuaDVec4):(LuaDVec4)
+        copysign : function(self:LuaDVec4 , LuaDVec4):(LuaDVec4)
 
         --Returns a bitmask with the lowest 4 bits set to the sign bits from the elements of `self`.
         --
@@ -7102,17 +7851,17 @@ global record BevyAPI
         --
         --into the first lowest bit, element `y` into the second, etc.
 
-        is_negative_bitmask : function(LuaDVec4):(integer)
+        is_negative_bitmask : function(self:LuaDVec4):(integer)
 
         --Returns `true` if, and only if, all elements are finite.  If any element is either
         --
         --`NaN`, positive or negative infinity, this will return `false`.
 
-        is_finite : function(LuaDVec4):(boolean)
+        is_finite : function(self:LuaDVec4):(boolean)
 
         --Returns `true` if any elements are `NaN`.
 
-        is_nan : function(LuaDVec4):(boolean)
+        is_nan : function(self:LuaDVec4):(boolean)
 
         --Performs `is_nan` on each element of self, returning a vector mask of the results.
         --
@@ -7120,11 +7869,11 @@ global record BevyAPI
         --
         --In other words, this computes `[x.is_nan(), y.is_nan(), z.is_nan(), w.is_nan()]`.
 
-        is_nan_mask : function(LuaDVec4):(LuaBVec4)
+        is_nan_mask : function(self:LuaDVec4):(LuaBVec4)
 
         --Computes the length of `self`.
 
-        length : function(LuaDVec4):(number)
+        length : function(self:LuaDVec4):(number)
 
         --Computes the squared length of `self`.
         --
@@ -7132,7 +7881,7 @@ global record BevyAPI
         --
         --This is faster than `length()` as it avoids a square root operation.
 
-        length_squared : function(LuaDVec4):(number)
+        length_squared : function(self:LuaDVec4):(number)
 
         --Computes `1.0 / length()`.
         --
@@ -7140,15 +7889,15 @@ global record BevyAPI
         --
         --For valid results, `self` must _not_ be of length zero.
 
-        length_recip : function(LuaDVec4):(number)
+        length_recip : function(self:LuaDVec4):(number)
 
         --Computes the Euclidean distance between two points in space.
 
-        distance : function(LuaDVec4,LuaDVec4):(number)
+        distance : function(self:LuaDVec4 , LuaDVec4):(number)
 
         --Compute the squared euclidean distance between two points in space.
 
-        distance_squared : function(LuaDVec4,LuaDVec4):(number)
+        distance_squared : function(self:LuaDVec4 , LuaDVec4):(number)
 
         --Returns `self` normalized to length 1.0.
         --
@@ -7158,7 +7907,7 @@ global record BevyAPI
         --
         --
         --
-        --See also [`Self::try_normalize`] and [`Self::normalize_or_zero`].
+        --See also [`Self::try_normalize()`] and [`Self::normalize_or_zero()`].
         --
         --
         --
@@ -7168,7 +7917,7 @@ global record BevyAPI
         --
         --Will panic if `self` is zero length when `glam_assert` is enabled.
 
-        normalize : function(LuaDVec4):(LuaDVec4)
+        normalize : function(self:LuaDVec4):(LuaDVec4)
 
         --Returns `self` normalized to length 1.0 if possible, else returns zero.
         --
@@ -7180,9 +7929,9 @@ global record BevyAPI
         --
         --
         --
-        --See also [`Self::try_normalize`].
+        --See also [`Self::try_normalize()`].
 
-        normalize_or_zero : function(LuaDVec4):(LuaDVec4)
+        normalize_or_zero : function(self:LuaDVec4):(LuaDVec4)
 
         --Returns whether `self` is length `1.0` or not.
         --
@@ -7190,7 +7939,7 @@ global record BevyAPI
         --
         --Uses a precision threshold of `1e-6`.
 
-        is_normalized : function(LuaDVec4):(boolean)
+        is_normalized : function(self:LuaDVec4):(boolean)
 
         --Returns the vector projection of `self` onto `rhs`.
         --
@@ -7206,7 +7955,7 @@ global record BevyAPI
         --
         --Will panic if `rhs` is zero length when `glam_assert` is enabled.
 
-        project_onto : function(LuaDVec4,LuaDVec4):(LuaDVec4)
+        project_onto : function(self:LuaDVec4 , LuaDVec4):(LuaDVec4)
 
         --Returns the vector rejection of `self` from `rhs`.
         --
@@ -7228,7 +7977,7 @@ global record BevyAPI
         --
         --Will panic if `rhs` has a length of zero when `glam_assert` is enabled.
 
-        reject_from : function(LuaDVec4,LuaDVec4):(LuaDVec4)
+        reject_from : function(self:LuaDVec4 , LuaDVec4):(LuaDVec4)
 
         --Returns the vector projection of `self` onto `rhs`.
         --
@@ -7244,7 +7993,7 @@ global record BevyAPI
         --
         --Will panic if `rhs` is not normalized when `glam_assert` is enabled.
 
-        project_onto_normalized : function(LuaDVec4,LuaDVec4):(LuaDVec4)
+        project_onto_normalized : function(self:LuaDVec4 , LuaDVec4):(LuaDVec4)
 
         --Returns the vector rejection of `self` from `rhs`.
         --
@@ -7266,25 +8015,31 @@ global record BevyAPI
         --
         --Will panic if `rhs` is not normalized when `glam_assert` is enabled.
 
-        reject_from_normalized : function(LuaDVec4,LuaDVec4):(LuaDVec4)
+        reject_from_normalized : function(self:LuaDVec4 , LuaDVec4):(LuaDVec4)
 
         --Returns a vector containing the nearest integer to a number for each element of `self`.
         --
         --Round half-way cases away from 0.0.
 
-        round : function(LuaDVec4):(LuaDVec4)
+        round : function(self:LuaDVec4):(LuaDVec4)
 
         --Returns a vector containing the largest integer less than or equal to a number for each
         --
         --element of `self`.
 
-        floor : function(LuaDVec4):(LuaDVec4)
+        floor : function(self:LuaDVec4):(LuaDVec4)
 
         --Returns a vector containing the smallest integer greater than or equal to a number for
         --
         --each element of `self`.
 
-        ceil : function(LuaDVec4):(LuaDVec4)
+        ceil : function(self:LuaDVec4):(LuaDVec4)
+
+        --Returns a vector containing the integer part each element of `self`. This means numbers are
+        --
+        --always truncated towards zero.
+
+        trunc : function(self:LuaDVec4):(LuaDVec4)
 
         --Returns a vector containing the fractional part of the vector, e.g. `self -
         --
@@ -7294,21 +8049,21 @@ global record BevyAPI
         --
         --Note that this is fast but not precise for large numbers.
 
-        fract : function(LuaDVec4):(LuaDVec4)
+        fract : function(self:LuaDVec4):(LuaDVec4)
 
         --Returns a vector containing `e^self` (the exponential function) for each element of
         --
         --`self`.
 
-        exp : function(LuaDVec4):(LuaDVec4)
+        exp : function(self:LuaDVec4):(LuaDVec4)
 
         --Returns a vector containing each element of `self` raised to the power of `n`.
 
-        powf : function(LuaDVec4,number):(LuaDVec4)
+        powf : function(self:LuaDVec4 , number):(LuaDVec4)
 
         --Returns a vector containing the reciprocal `1.0/n` of each element of `self`.
 
-        recip : function(LuaDVec4):(LuaDVec4)
+        recip : function(self:LuaDVec4):(LuaDVec4)
 
         --Performs a linear interpolation between `self` and `rhs` based on the value `s`.
         --
@@ -7320,7 +8075,7 @@ global record BevyAPI
         --
         --extrapolated.
 
-        lerp : function(LuaDVec4,(LuaDVec4),(number)):(LuaDVec4)
+        lerp : function(self:LuaDVec4 , LuaDVec4 , number):(LuaDVec4)
 
         --Returns true if the absolute difference of all elements between `self` and `rhs` is
         --
@@ -7340,7 +8095,7 @@ global record BevyAPI
         --
         --[comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
 
-        abs_diff_eq : function(LuaDVec4,(LuaDVec4),(number)):(boolean)
+        abs_diff_eq : function(self:LuaDVec4 , LuaDVec4 , number):(boolean)
 
         --Returns a vector with a length no less than `min` and no more than `max`
         --
@@ -7352,15 +8107,15 @@ global record BevyAPI
         --
         --Will panic if `min` is greater than `max` when `glam_assert` is enabled.
 
-        clamp_length : function(LuaDVec4,(number),(number)):(LuaDVec4)
+        clamp_length : function(self:LuaDVec4 , number , number):(LuaDVec4)
 
         --Returns a vector with a length no more than `max`
 
-        clamp_length_max : function(LuaDVec4,number):(LuaDVec4)
+        clamp_length_max : function(self:LuaDVec4 , number):(LuaDVec4)
 
         --Returns a vector with a length no less than `min`
 
-        clamp_length_min : function(LuaDVec4,number):(LuaDVec4)
+        clamp_length_min : function(self:LuaDVec4 , number):(LuaDVec4)
 
         --Fused multiply-add. Computes `(self * a) + b` element-wise with only one rounding
         --
@@ -7376,23 +8131,23 @@ global record BevyAPI
         --
         --mind.
 
-        mul_add : function(LuaDVec4,(LuaDVec4),(LuaDVec4)):(LuaDVec4)
+        mul_add : function(self:LuaDVec4 , LuaDVec4 , LuaDVec4):(LuaDVec4)
 
         --Casts all elements of `self` to `f32`.
 
-        as_vec4 : function(LuaDVec4):(LuaVec4)
+        as_vec4 : function(self:LuaDVec4):(LuaVec4)
 
         --Casts all elements of `self` to `i32`.
 
-        as_ivec4 : function(LuaDVec4):(LuaIVec4)
+        as_ivec4 : function(self:LuaDVec4):(LuaIVec4)
 
         --Casts all elements of `self` to `u32`.
 
-        as_uvec4 : function(LuaDVec4):(LuaUVec4)
+        as_uvec4 : function(self:LuaDVec4):(LuaUVec4)
 
         --Creates a new vector.
 
-        new : function((number),(number),(number),(number)):(LuaDVec4)
+        new : function(number , number , number , number):(LuaDVec4)
 
         --Creates a vector with all elements set to `v`.
 
@@ -7408,38 +8163,38 @@ global record BevyAPI
         --
         --uses the element from `if_false`.
 
-        select : function((LuaBVec4),(LuaDVec4),(LuaDVec4)):(LuaDVec4)
+        select : function(LuaBVec4 , LuaDVec4 , LuaDVec4):(LuaDVec4)
 
-        __tostring : function(LuaDVec4):(string)
+        __tostring : function(self:LuaDVec4):(string)
 
-        __unm : function(LuaDVec4):(LuaDVec4)
+        __unm : function(self:LuaDVec4):(LuaDVec4)
 
-        __index : function(LuaDVec4,integer):(number)
+        __index : function(self:LuaDVec4 , integer):(number)
 
-        __newindex : function(LuaDVec4,(integer),(number)):()
+        __newindex : function(self:LuaDVec4 , integer , number)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __div : function((any),(any)):(any)
+        __div : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
-        __mod : function((any),(any)):(any)
+        __mod : function(any , any):(any)
 
     end
     
     
-    record LuaDVec4Class
+    record ClassLuaDVec4
 
         userdata
     
-    --Collection of static methods for [`LuaDVec4`].
+    --Collection of static methods for [``].
 
         --Creates a new vector.
 
-        new : function((number),(number),(number),(number)):(LuaDVec4)
+        new : function(number , number , number , number):(LuaDVec4)
 
         --Creates a vector with all elements set to `v`.
 
@@ -7455,17 +8210,17 @@ global record BevyAPI
         --
         --uses the element from `if_false`.
 
-        select : function((LuaBVec4),(LuaDVec4),(LuaDVec4)):(LuaDVec4)
+        select : function(LuaBVec4 , LuaDVec4 , LuaDVec4):(LuaDVec4)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __div : function((any),(any)):(any)
+        __div : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
-        __mod : function((any),(any)):(any)
+        __mod : function(any , any):(any)
 
     end
     
@@ -7482,15 +8237,15 @@ global record BevyAPI
 
         --Creates a 3D vector from `self` and the given `z` value.
 
-        extend : function(LuaIVec2,integer):(LuaIVec3)
+        extend : function(self:LuaIVec2 , integer):(LuaIVec3)
 
         --Computes the dot product of `self` and `rhs`.
 
-        dot : function(LuaIVec2,LuaIVec2):(integer)
+        dot : function(self:LuaIVec2 , LuaIVec2):(integer)
 
         --Returns a vector where every component is the dot product of `self` and `rhs`.
 
-        dot_into_vec : function(LuaIVec2,LuaIVec2):(LuaIVec2)
+        dot_into_vec : function(self:LuaIVec2 , LuaIVec2):(LuaIVec2)
 
         --Returns a vector containing the minimum values for each element of `self` and `rhs`.
         --
@@ -7498,7 +8253,7 @@ global record BevyAPI
         --
         --In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
 
-        min : function(LuaIVec2,LuaIVec2):(LuaIVec2)
+        min : function(self:LuaIVec2 , LuaIVec2):(LuaIVec2)
 
         --Returns a vector containing the maximum values for each element of `self` and `rhs`.
         --
@@ -7506,7 +8261,7 @@ global record BevyAPI
         --
         --In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
 
-        max : function(LuaIVec2,LuaIVec2):(LuaIVec2)
+        max : function(self:LuaIVec2 , LuaIVec2):(LuaIVec2)
 
         --Component-wise clamping of values, similar to [`i32::clamp`].
         --
@@ -7522,7 +8277,7 @@ global record BevyAPI
         --
         --Will panic if `min` is greater than `max` when `glam_assert` is enabled.
 
-        clamp : function(LuaIVec2,(LuaIVec2),(LuaIVec2)):(LuaIVec2)
+        clamp : function(self:LuaIVec2 , LuaIVec2 , LuaIVec2):(LuaIVec2)
 
         --Returns the horizontal minimum of `self`.
         --
@@ -7530,7 +8285,7 @@ global record BevyAPI
         --
         --In other words this computes `min(x, y, ..)`.
 
-        min_element : function(LuaIVec2):(integer)
+        min_element : function(self:LuaIVec2):(integer)
 
         --Returns the horizontal maximum of `self`.
         --
@@ -7538,7 +8293,7 @@ global record BevyAPI
         --
         --In other words this computes `max(x, y, ..)`.
 
-        max_element : function(LuaIVec2):(integer)
+        max_element : function(self:LuaIVec2):(integer)
 
         --Returns a vector mask containing the result of a `==` comparison for each element of
         --
@@ -7550,7 +8305,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpeq : function(LuaIVec2,LuaIVec2):(LuaBVec2)
+        cmpeq : function(self:LuaIVec2 , LuaIVec2):(LuaBVec2)
 
         --Returns a vector mask containing the result of a `!=` comparison for each element of
         --
@@ -7562,7 +8317,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpne : function(LuaIVec2,LuaIVec2):(LuaBVec2)
+        cmpne : function(self:LuaIVec2 , LuaIVec2):(LuaBVec2)
 
         --Returns a vector mask containing the result of a `>=` comparison for each element of
         --
@@ -7574,7 +8329,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpge : function(LuaIVec2,LuaIVec2):(LuaBVec2)
+        cmpge : function(self:LuaIVec2 , LuaIVec2):(LuaBVec2)
 
         --Returns a vector mask containing the result of a `>` comparison for each element of
         --
@@ -7586,7 +8341,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpgt : function(LuaIVec2,LuaIVec2):(LuaBVec2)
+        cmpgt : function(self:LuaIVec2 , LuaIVec2):(LuaBVec2)
 
         --Returns a vector mask containing the result of a `<=` comparison for each element of
         --
@@ -7598,7 +8353,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmple : function(LuaIVec2,LuaIVec2):(LuaBVec2)
+        cmple : function(self:LuaIVec2 , LuaIVec2):(LuaBVec2)
 
         --Returns a vector mask containing the result of a `<` comparison for each element of
         --
@@ -7610,11 +8365,11 @@ global record BevyAPI
         --
         --elements.
 
-        cmplt : function(LuaIVec2,LuaIVec2):(LuaBVec2)
+        cmplt : function(self:LuaIVec2 , LuaIVec2):(LuaBVec2)
 
         --Returns a vector containing the absolute value of each element of `self`.
 
-        abs : function(LuaIVec2):(LuaIVec2)
+        abs : function(self:LuaIVec2):(LuaIVec2)
 
         --Returns a vector with elements representing the sign of `self`.
         --
@@ -7626,11 +8381,7 @@ global record BevyAPI
         --
         -- - `-1` if the number is negative
 
-        signum : function(LuaIVec2):(LuaIVec2)
-
-        --Returns a vector with signs of `rhs` and the magnitudes of `self`.
-
-        copysign : function(LuaIVec2,LuaIVec2):(LuaIVec2)
+        signum : function(self:LuaIVec2):(LuaIVec2)
 
         --Returns a bitmask with the lowest 2 bits set to the sign bits from the elements of `self`.
         --
@@ -7640,17 +8391,25 @@ global record BevyAPI
         --
         --into the first lowest bit, element `y` into the second, etc.
 
-        is_negative_bitmask : function(LuaIVec2):(integer)
+        is_negative_bitmask : function(self:LuaIVec2):(integer)
+
+        --Computes the squared length of `self`.
+
+        length_squared : function(self:LuaIVec2):(integer)
+
+        --Compute the squared euclidean distance between two points in space.
+
+        distance_squared : function(self:LuaIVec2 , LuaIVec2):(integer)
 
         --Returns a vector that is equal to `self` rotated by 90 degrees.
 
-        perp : function(LuaIVec2):(LuaIVec2)
+        perp : function(self:LuaIVec2):(LuaIVec2)
 
         --The perpendicular dot product of `self` and `rhs`.
         --
         --Also known as the wedge product, 2D cross product, and determinant.
 
-        perp_dot : function(LuaIVec2,LuaIVec2):(integer)
+        perp_dot : function(self:LuaIVec2 , LuaIVec2):(integer)
 
         --Returns `rhs` rotated by the angle of `self`. If `self` is normalized,
         --
@@ -7658,23 +8417,23 @@ global record BevyAPI
         --
         --it will be like a rotation with a multiplication by `self`'s length.
 
-        rotate : function(LuaIVec2,LuaIVec2):(LuaIVec2)
+        rotate : function(self:LuaIVec2 , LuaIVec2):(LuaIVec2)
 
         --Casts all elements of `self` to `f32`.
 
-        as_vec2 : function(LuaIVec2):(LuaVec2)
+        as_vec2 : function(self:LuaIVec2):(LuaVec2)
 
         --Casts all elements of `self` to `f64`.
 
-        as_dvec2 : function(LuaIVec2):(LuaDVec2)
+        as_dvec2 : function(self:LuaIVec2):(LuaDVec2)
 
         --Casts all elements of `self` to `u32`.
 
-        as_uvec2 : function(LuaIVec2):(LuaUVec2)
+        as_uvec2 : function(self:LuaIVec2):(LuaUVec2)
 
         --Creates a new vector.
 
-        new : function((integer),(integer)):(LuaIVec2)
+        new : function(integer , integer):(LuaIVec2)
 
         --Creates a vector with all elements set to `v`.
 
@@ -7690,38 +8449,38 @@ global record BevyAPI
         --
         --uses the element from `if_false`.
 
-        select : function((LuaBVec2),(LuaIVec2),(LuaIVec2)):(LuaIVec2)
+        select : function(LuaBVec2 , LuaIVec2 , LuaIVec2):(LuaIVec2)
 
-        __tostring : function(LuaIVec2):(string)
+        __tostring : function(self:LuaIVec2):(string)
 
-        __unm : function(LuaIVec2):(LuaIVec2)
+        __unm : function(self:LuaIVec2):(LuaIVec2)
 
-        __index : function(LuaIVec2,integer):(integer)
+        __index : function(self:LuaIVec2 , integer):(integer)
 
-        __newindex : function(LuaIVec2,(integer),(integer)):()
+        __newindex : function(self:LuaIVec2 , integer , integer)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __div : function((any),(any)):(any)
+        __div : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
-        __mod : function((any),(any)):(any)
+        __mod : function(any , any):(any)
 
     end
     
     
-    record LuaIVec2Class
+    record ClassLuaIVec2
 
         userdata
     
-    --Collection of static methods for [`LuaIVec2`].
+    --Collection of static methods for [``].
 
         --Creates a new vector.
 
-        new : function((integer),(integer)):(LuaIVec2)
+        new : function(integer , integer):(LuaIVec2)
 
         --Creates a vector with all elements set to `v`.
 
@@ -7737,17 +8496,17 @@ global record BevyAPI
         --
         --uses the element from `if_false`.
 
-        select : function((LuaBVec2),(LuaIVec2),(LuaIVec2)):(LuaIVec2)
+        select : function(LuaBVec2 , LuaIVec2 , LuaIVec2):(LuaIVec2)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __div : function((any),(any)):(any)
+        __div : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
-        __mod : function((any),(any)):(any)
+        __mod : function(any , any):(any)
 
     end
     
@@ -7766,27 +8525,27 @@ global record BevyAPI
 
         --Creates a 4D vector from `self` and the given `w` value.
 
-        extend : function(LuaIVec3,integer):(LuaIVec4)
+        extend : function(self:LuaIVec3 , integer):(LuaIVec4)
 
         --Creates a 2D vector from the `x` and `y` elements of `self`, discarding `z`.
         --
         --
         --
-        --Truncation may also be performed by using `self.xy()` or `IVec2::from()`.
+        --Truncation may also be performed by using [`self.xy()`][crate::swizzles::Vec3Swizzles::xy()].
 
-        truncate : function(LuaIVec3):(LuaIVec2)
+        truncate : function(self:LuaIVec3):(LuaIVec2)
 
         --Computes the dot product of `self` and `rhs`.
 
-        dot : function(LuaIVec3,LuaIVec3):(integer)
+        dot : function(self:LuaIVec3 , LuaIVec3):(integer)
 
         --Returns a vector where every component is the dot product of `self` and `rhs`.
 
-        dot_into_vec : function(LuaIVec3,LuaIVec3):(LuaIVec3)
+        dot_into_vec : function(self:LuaIVec3 , LuaIVec3):(LuaIVec3)
 
         --Computes the cross product of `self` and `rhs`.
 
-        cross : function(LuaIVec3,LuaIVec3):(LuaIVec3)
+        cross : function(self:LuaIVec3 , LuaIVec3):(LuaIVec3)
 
         --Returns a vector containing the minimum values for each element of `self` and `rhs`.
         --
@@ -7794,7 +8553,7 @@ global record BevyAPI
         --
         --In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
 
-        min : function(LuaIVec3,LuaIVec3):(LuaIVec3)
+        min : function(self:LuaIVec3 , LuaIVec3):(LuaIVec3)
 
         --Returns a vector containing the maximum values for each element of `self` and `rhs`.
         --
@@ -7802,7 +8561,7 @@ global record BevyAPI
         --
         --In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
 
-        max : function(LuaIVec3,LuaIVec3):(LuaIVec3)
+        max : function(self:LuaIVec3 , LuaIVec3):(LuaIVec3)
 
         --Component-wise clamping of values, similar to [`i32::clamp`].
         --
@@ -7818,7 +8577,7 @@ global record BevyAPI
         --
         --Will panic if `min` is greater than `max` when `glam_assert` is enabled.
 
-        clamp : function(LuaIVec3,(LuaIVec3),(LuaIVec3)):(LuaIVec3)
+        clamp : function(self:LuaIVec3 , LuaIVec3 , LuaIVec3):(LuaIVec3)
 
         --Returns the horizontal minimum of `self`.
         --
@@ -7826,7 +8585,7 @@ global record BevyAPI
         --
         --In other words this computes `min(x, y, ..)`.
 
-        min_element : function(LuaIVec3):(integer)
+        min_element : function(self:LuaIVec3):(integer)
 
         --Returns the horizontal maximum of `self`.
         --
@@ -7834,7 +8593,7 @@ global record BevyAPI
         --
         --In other words this computes `max(x, y, ..)`.
 
-        max_element : function(LuaIVec3):(integer)
+        max_element : function(self:LuaIVec3):(integer)
 
         --Returns a vector mask containing the result of a `==` comparison for each element of
         --
@@ -7846,7 +8605,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpeq : function(LuaIVec3,LuaIVec3):(LuaBVec3)
+        cmpeq : function(self:LuaIVec3 , LuaIVec3):(LuaBVec3)
 
         --Returns a vector mask containing the result of a `!=` comparison for each element of
         --
@@ -7858,7 +8617,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpne : function(LuaIVec3,LuaIVec3):(LuaBVec3)
+        cmpne : function(self:LuaIVec3 , LuaIVec3):(LuaBVec3)
 
         --Returns a vector mask containing the result of a `>=` comparison for each element of
         --
@@ -7870,7 +8629,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpge : function(LuaIVec3,LuaIVec3):(LuaBVec3)
+        cmpge : function(self:LuaIVec3 , LuaIVec3):(LuaBVec3)
 
         --Returns a vector mask containing the result of a `>` comparison for each element of
         --
@@ -7882,7 +8641,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpgt : function(LuaIVec3,LuaIVec3):(LuaBVec3)
+        cmpgt : function(self:LuaIVec3 , LuaIVec3):(LuaBVec3)
 
         --Returns a vector mask containing the result of a `<=` comparison for each element of
         --
@@ -7894,7 +8653,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmple : function(LuaIVec3,LuaIVec3):(LuaBVec3)
+        cmple : function(self:LuaIVec3 , LuaIVec3):(LuaBVec3)
 
         --Returns a vector mask containing the result of a `<` comparison for each element of
         --
@@ -7906,11 +8665,11 @@ global record BevyAPI
         --
         --elements.
 
-        cmplt : function(LuaIVec3,LuaIVec3):(LuaBVec3)
+        cmplt : function(self:LuaIVec3 , LuaIVec3):(LuaBVec3)
 
         --Returns a vector containing the absolute value of each element of `self`.
 
-        abs : function(LuaIVec3):(LuaIVec3)
+        abs : function(self:LuaIVec3):(LuaIVec3)
 
         --Returns a vector with elements representing the sign of `self`.
         --
@@ -7922,11 +8681,7 @@ global record BevyAPI
         --
         -- - `-1` if the number is negative
 
-        signum : function(LuaIVec3):(LuaIVec3)
-
-        --Returns a vector with signs of `rhs` and the magnitudes of `self`.
-
-        copysign : function(LuaIVec3,LuaIVec3):(LuaIVec3)
+        signum : function(self:LuaIVec3):(LuaIVec3)
 
         --Returns a bitmask with the lowest 3 bits set to the sign bits from the elements of `self`.
         --
@@ -7936,27 +8691,35 @@ global record BevyAPI
         --
         --into the first lowest bit, element `y` into the second, etc.
 
-        is_negative_bitmask : function(LuaIVec3):(integer)
+        is_negative_bitmask : function(self:LuaIVec3):(integer)
+
+        --Computes the squared length of `self`.
+
+        length_squared : function(self:LuaIVec3):(integer)
+
+        --Compute the squared euclidean distance between two points in space.
+
+        distance_squared : function(self:LuaIVec3 , LuaIVec3):(integer)
 
         --Casts all elements of `self` to `f32`.
 
-        as_vec3 : function(LuaIVec3):(LuaVec3)
+        as_vec3 : function(self:LuaIVec3):(LuaVec3)
 
         --Casts all elements of `self` to `f32`.
 
-        as_vec3a : function(LuaIVec3):(LuaVec3A)
+        as_vec3a : function(self:LuaIVec3):(LuaVec3A)
 
         --Casts all elements of `self` to `f64`.
 
-        as_dvec3 : function(LuaIVec3):(LuaDVec3)
+        as_dvec3 : function(self:LuaIVec3):(LuaDVec3)
 
         --Casts all elements of `self` to `u32`.
 
-        as_uvec3 : function(LuaIVec3):(LuaUVec3)
+        as_uvec3 : function(self:LuaIVec3):(LuaUVec3)
 
         --Creates a new vector.
 
-        new : function((integer),(integer),(integer)):(LuaIVec3)
+        new : function(integer , integer , integer):(LuaIVec3)
 
         --Creates a vector with all elements set to `v`.
 
@@ -7972,38 +8735,38 @@ global record BevyAPI
         --
         --uses the element from `if_false`.
 
-        select : function((LuaBVec3),(LuaIVec3),(LuaIVec3)):(LuaIVec3)
+        select : function(LuaBVec3 , LuaIVec3 , LuaIVec3):(LuaIVec3)
 
-        __tostring : function(LuaIVec3):(string)
+        __tostring : function(self:LuaIVec3):(string)
 
-        __unm : function(LuaIVec3):(LuaIVec3)
+        __unm : function(self:LuaIVec3):(LuaIVec3)
 
-        __index : function(LuaIVec3,integer):(integer)
+        __index : function(self:LuaIVec3 , integer):(integer)
 
-        __newindex : function(LuaIVec3,(integer),(integer)):()
+        __newindex : function(self:LuaIVec3 , integer , integer)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __div : function((any),(any)):(any)
+        __div : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
-        __mod : function((any),(any)):(any)
+        __mod : function(any , any):(any)
 
     end
     
     
-    record LuaIVec3Class
+    record ClassLuaIVec3
 
         userdata
     
-    --Collection of static methods for [`LuaIVec3`].
+    --Collection of static methods for [``].
 
         --Creates a new vector.
 
-        new : function((integer),(integer),(integer)):(LuaIVec3)
+        new : function(integer , integer , integer):(LuaIVec3)
 
         --Creates a vector with all elements set to `v`.
 
@@ -8019,17 +8782,17 @@ global record BevyAPI
         --
         --uses the element from `if_false`.
 
-        select : function((LuaBVec3),(LuaIVec3),(LuaIVec3)):(LuaIVec3)
+        select : function(LuaBVec3 , LuaIVec3 , LuaIVec3):(LuaIVec3)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __div : function((any),(any)):(any)
+        __div : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
-        __mod : function((any),(any)):(any)
+        __mod : function(any , any):(any)
 
     end
     
@@ -8052,17 +8815,17 @@ global record BevyAPI
         --
         --
         --
-        --Truncation to `IVec3` may also be performed by using `self.xyz()` or `IVec3::from()`.
+        --Truncation to [`IVec3`] may also be performed by using [`self.xyz()`][crate::swizzles::Vec4Swizzles::xyz()].
 
-        truncate : function(LuaIVec4):(LuaIVec3)
+        truncate : function(self:LuaIVec4):(LuaIVec3)
 
         --Computes the dot product of `self` and `rhs`.
 
-        dot : function(LuaIVec4,LuaIVec4):(integer)
+        dot : function(self:LuaIVec4 , LuaIVec4):(integer)
 
         --Returns a vector where every component is the dot product of `self` and `rhs`.
 
-        dot_into_vec : function(LuaIVec4,LuaIVec4):(LuaIVec4)
+        dot_into_vec : function(self:LuaIVec4 , LuaIVec4):(LuaIVec4)
 
         --Returns a vector containing the minimum values for each element of `self` and `rhs`.
         --
@@ -8070,7 +8833,7 @@ global record BevyAPI
         --
         --In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
 
-        min : function(LuaIVec4,LuaIVec4):(LuaIVec4)
+        min : function(self:LuaIVec4 , LuaIVec4):(LuaIVec4)
 
         --Returns a vector containing the maximum values for each element of `self` and `rhs`.
         --
@@ -8078,7 +8841,7 @@ global record BevyAPI
         --
         --In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
 
-        max : function(LuaIVec4,LuaIVec4):(LuaIVec4)
+        max : function(self:LuaIVec4 , LuaIVec4):(LuaIVec4)
 
         --Component-wise clamping of values, similar to [`i32::clamp`].
         --
@@ -8094,7 +8857,7 @@ global record BevyAPI
         --
         --Will panic if `min` is greater than `max` when `glam_assert` is enabled.
 
-        clamp : function(LuaIVec4,(LuaIVec4),(LuaIVec4)):(LuaIVec4)
+        clamp : function(self:LuaIVec4 , LuaIVec4 , LuaIVec4):(LuaIVec4)
 
         --Returns the horizontal minimum of `self`.
         --
@@ -8102,7 +8865,7 @@ global record BevyAPI
         --
         --In other words this computes `min(x, y, ..)`.
 
-        min_element : function(LuaIVec4):(integer)
+        min_element : function(self:LuaIVec4):(integer)
 
         --Returns the horizontal maximum of `self`.
         --
@@ -8110,7 +8873,7 @@ global record BevyAPI
         --
         --In other words this computes `max(x, y, ..)`.
 
-        max_element : function(LuaIVec4):(integer)
+        max_element : function(self:LuaIVec4):(integer)
 
         --Returns a vector mask containing the result of a `==` comparison for each element of
         --
@@ -8122,7 +8885,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpeq : function(LuaIVec4,LuaIVec4):(LuaBVec4)
+        cmpeq : function(self:LuaIVec4 , LuaIVec4):(LuaBVec4)
 
         --Returns a vector mask containing the result of a `!=` comparison for each element of
         --
@@ -8134,7 +8897,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpne : function(LuaIVec4,LuaIVec4):(LuaBVec4)
+        cmpne : function(self:LuaIVec4 , LuaIVec4):(LuaBVec4)
 
         --Returns a vector mask containing the result of a `>=` comparison for each element of
         --
@@ -8146,7 +8909,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpge : function(LuaIVec4,LuaIVec4):(LuaBVec4)
+        cmpge : function(self:LuaIVec4 , LuaIVec4):(LuaBVec4)
 
         --Returns a vector mask containing the result of a `>` comparison for each element of
         --
@@ -8158,7 +8921,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpgt : function(LuaIVec4,LuaIVec4):(LuaBVec4)
+        cmpgt : function(self:LuaIVec4 , LuaIVec4):(LuaBVec4)
 
         --Returns a vector mask containing the result of a `<=` comparison for each element of
         --
@@ -8170,7 +8933,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmple : function(LuaIVec4,LuaIVec4):(LuaBVec4)
+        cmple : function(self:LuaIVec4 , LuaIVec4):(LuaBVec4)
 
         --Returns a vector mask containing the result of a `<` comparison for each element of
         --
@@ -8182,11 +8945,11 @@ global record BevyAPI
         --
         --elements.
 
-        cmplt : function(LuaIVec4,LuaIVec4):(LuaBVec4)
+        cmplt : function(self:LuaIVec4 , LuaIVec4):(LuaBVec4)
 
         --Returns a vector containing the absolute value of each element of `self`.
 
-        abs : function(LuaIVec4):(LuaIVec4)
+        abs : function(self:LuaIVec4):(LuaIVec4)
 
         --Returns a vector with elements representing the sign of `self`.
         --
@@ -8198,11 +8961,7 @@ global record BevyAPI
         --
         -- - `-1` if the number is negative
 
-        signum : function(LuaIVec4):(LuaIVec4)
-
-        --Returns a vector with signs of `rhs` and the magnitudes of `self`.
-
-        copysign : function(LuaIVec4,LuaIVec4):(LuaIVec4)
+        signum : function(self:LuaIVec4):(LuaIVec4)
 
         --Returns a bitmask with the lowest 4 bits set to the sign bits from the elements of `self`.
         --
@@ -8212,23 +8971,31 @@ global record BevyAPI
         --
         --into the first lowest bit, element `y` into the second, etc.
 
-        is_negative_bitmask : function(LuaIVec4):(integer)
+        is_negative_bitmask : function(self:LuaIVec4):(integer)
+
+        --Computes the squared length of `self`.
+
+        length_squared : function(self:LuaIVec4):(integer)
+
+        --Compute the squared euclidean distance between two points in space.
+
+        distance_squared : function(self:LuaIVec4 , LuaIVec4):(integer)
 
         --Casts all elements of `self` to `f32`.
 
-        as_vec4 : function(LuaIVec4):(LuaVec4)
+        as_vec4 : function(self:LuaIVec4):(LuaVec4)
 
         --Casts all elements of `self` to `f64`.
 
-        as_dvec4 : function(LuaIVec4):(LuaDVec4)
+        as_dvec4 : function(self:LuaIVec4):(LuaDVec4)
 
         --Casts all elements of `self` to `u32`.
 
-        as_uvec4 : function(LuaIVec4):(LuaUVec4)
+        as_uvec4 : function(self:LuaIVec4):(LuaUVec4)
 
         --Creates a new vector.
 
-        new : function((integer),(integer),(integer),(integer)):(LuaIVec4)
+        new : function(integer , integer , integer , integer):(LuaIVec4)
 
         --Creates a vector with all elements set to `v`.
 
@@ -8244,38 +9011,38 @@ global record BevyAPI
         --
         --uses the element from `if_false`.
 
-        select : function((LuaBVec4),(LuaIVec4),(LuaIVec4)):(LuaIVec4)
+        select : function(LuaBVec4 , LuaIVec4 , LuaIVec4):(LuaIVec4)
 
-        __tostring : function(LuaIVec4):(string)
+        __tostring : function(self:LuaIVec4):(string)
 
-        __unm : function(LuaIVec4):(LuaIVec4)
+        __unm : function(self:LuaIVec4):(LuaIVec4)
 
-        __index : function(LuaIVec4,integer):(integer)
+        __index : function(self:LuaIVec4 , integer):(integer)
 
-        __newindex : function(LuaIVec4,(integer),(integer)):()
+        __newindex : function(self:LuaIVec4 , integer , integer)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __div : function((any),(any)):(any)
+        __div : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
-        __mod : function((any),(any)):(any)
+        __mod : function(any , any):(any)
 
     end
     
     
-    record LuaIVec4Class
+    record ClassLuaIVec4
 
         userdata
     
-    --Collection of static methods for [`LuaIVec4`].
+    --Collection of static methods for [``].
 
         --Creates a new vector.
 
-        new : function((integer),(integer),(integer),(integer)):(LuaIVec4)
+        new : function(integer , integer , integer , integer):(LuaIVec4)
 
         --Creates a vector with all elements set to `v`.
 
@@ -8291,17 +9058,17 @@ global record BevyAPI
         --
         --uses the element from `if_false`.
 
-        select : function((LuaBVec4),(LuaIVec4),(LuaIVec4)):(LuaIVec4)
+        select : function(LuaBVec4 , LuaIVec4 , LuaIVec4):(LuaIVec4)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __div : function((any),(any)):(any)
+        __div : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
-        __mod : function((any),(any)):(any)
+        __mod : function(any , any):(any)
 
     end
     
@@ -8318,15 +9085,15 @@ global record BevyAPI
 
         --Creates a 3D vector from `self` and the given `z` value.
 
-        extend : function(LuaUVec2,integer):(LuaUVec3)
+        extend : function(self:LuaUVec2 , integer):(LuaUVec3)
 
         --Computes the dot product of `self` and `rhs`.
 
-        dot : function(LuaUVec2,LuaUVec2):(integer)
+        dot : function(self:LuaUVec2 , LuaUVec2):(integer)
 
         --Returns a vector where every component is the dot product of `self` and `rhs`.
 
-        dot_into_vec : function(LuaUVec2,LuaUVec2):(LuaUVec2)
+        dot_into_vec : function(self:LuaUVec2 , LuaUVec2):(LuaUVec2)
 
         --Returns a vector containing the minimum values for each element of `self` and `rhs`.
         --
@@ -8334,7 +9101,7 @@ global record BevyAPI
         --
         --In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
 
-        min : function(LuaUVec2,LuaUVec2):(LuaUVec2)
+        min : function(self:LuaUVec2 , LuaUVec2):(LuaUVec2)
 
         --Returns a vector containing the maximum values for each element of `self` and `rhs`.
         --
@@ -8342,7 +9109,7 @@ global record BevyAPI
         --
         --In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
 
-        max : function(LuaUVec2,LuaUVec2):(LuaUVec2)
+        max : function(self:LuaUVec2 , LuaUVec2):(LuaUVec2)
 
         --Component-wise clamping of values, similar to [`u32::clamp`].
         --
@@ -8358,7 +9125,7 @@ global record BevyAPI
         --
         --Will panic if `min` is greater than `max` when `glam_assert` is enabled.
 
-        clamp : function(LuaUVec2,(LuaUVec2),(LuaUVec2)):(LuaUVec2)
+        clamp : function(self:LuaUVec2 , LuaUVec2 , LuaUVec2):(LuaUVec2)
 
         --Returns the horizontal minimum of `self`.
         --
@@ -8366,7 +9133,7 @@ global record BevyAPI
         --
         --In other words this computes `min(x, y, ..)`.
 
-        min_element : function(LuaUVec2):(integer)
+        min_element : function(self:LuaUVec2):(integer)
 
         --Returns the horizontal maximum of `self`.
         --
@@ -8374,7 +9141,7 @@ global record BevyAPI
         --
         --In other words this computes `max(x, y, ..)`.
 
-        max_element : function(LuaUVec2):(integer)
+        max_element : function(self:LuaUVec2):(integer)
 
         --Returns a vector mask containing the result of a `==` comparison for each element of
         --
@@ -8386,7 +9153,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpeq : function(LuaUVec2,LuaUVec2):(LuaBVec2)
+        cmpeq : function(self:LuaUVec2 , LuaUVec2):(LuaBVec2)
 
         --Returns a vector mask containing the result of a `!=` comparison for each element of
         --
@@ -8398,7 +9165,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpne : function(LuaUVec2,LuaUVec2):(LuaBVec2)
+        cmpne : function(self:LuaUVec2 , LuaUVec2):(LuaBVec2)
 
         --Returns a vector mask containing the result of a `>=` comparison for each element of
         --
@@ -8410,7 +9177,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpge : function(LuaUVec2,LuaUVec2):(LuaBVec2)
+        cmpge : function(self:LuaUVec2 , LuaUVec2):(LuaBVec2)
 
         --Returns a vector mask containing the result of a `>` comparison for each element of
         --
@@ -8422,7 +9189,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpgt : function(LuaUVec2,LuaUVec2):(LuaBVec2)
+        cmpgt : function(self:LuaUVec2 , LuaUVec2):(LuaBVec2)
 
         --Returns a vector mask containing the result of a `<=` comparison for each element of
         --
@@ -8434,7 +9201,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmple : function(LuaUVec2,LuaUVec2):(LuaBVec2)
+        cmple : function(self:LuaUVec2 , LuaUVec2):(LuaBVec2)
 
         --Returns a vector mask containing the result of a `<` comparison for each element of
         --
@@ -8446,23 +9213,27 @@ global record BevyAPI
         --
         --elements.
 
-        cmplt : function(LuaUVec2,LuaUVec2):(LuaBVec2)
+        cmplt : function(self:LuaUVec2 , LuaUVec2):(LuaBVec2)
+
+        --Computes the squared length of `self`.
+
+        length_squared : function(self:LuaUVec2):(integer)
 
         --Casts all elements of `self` to `f32`.
 
-        as_vec2 : function(LuaUVec2):(LuaVec2)
+        as_vec2 : function(self:LuaUVec2):(LuaVec2)
 
         --Casts all elements of `self` to `f64`.
 
-        as_dvec2 : function(LuaUVec2):(LuaDVec2)
+        as_dvec2 : function(self:LuaUVec2):(LuaDVec2)
 
         --Casts all elements of `self` to `i32`.
 
-        as_ivec2 : function(LuaUVec2):(LuaIVec2)
+        as_ivec2 : function(self:LuaUVec2):(LuaIVec2)
 
         --Creates a new vector.
 
-        new : function((integer),(integer)):(LuaUVec2)
+        new : function(integer , integer):(LuaUVec2)
 
         --Creates a vector with all elements set to `v`.
 
@@ -8478,36 +9249,36 @@ global record BevyAPI
         --
         --uses the element from `if_false`.
 
-        select : function((LuaBVec2),(LuaUVec2),(LuaUVec2)):(LuaUVec2)
+        select : function(LuaBVec2 , LuaUVec2 , LuaUVec2):(LuaUVec2)
 
-        __tostring : function(LuaUVec2):(string)
+        __tostring : function(self:LuaUVec2):(string)
 
-        __index : function(LuaUVec2,integer):(integer)
+        __index : function(self:LuaUVec2 , integer):(integer)
 
-        __newindex : function(LuaUVec2,(integer),(integer)):()
+        __newindex : function(self:LuaUVec2 , integer , integer)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __div : function((any),(any)):(any)
+        __div : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
-        __mod : function((any),(any)):(any)
+        __mod : function(any , any):(any)
 
     end
     
     
-    record LuaUVec2Class
+    record ClassLuaUVec2
 
         userdata
     
-    --Collection of static methods for [`LuaUVec2`].
+    --Collection of static methods for [``].
 
         --Creates a new vector.
 
-        new : function((integer),(integer)):(LuaUVec2)
+        new : function(integer , integer):(LuaUVec2)
 
         --Creates a vector with all elements set to `v`.
 
@@ -8523,17 +9294,17 @@ global record BevyAPI
         --
         --uses the element from `if_false`.
 
-        select : function((LuaBVec2),(LuaUVec2),(LuaUVec2)):(LuaUVec2)
+        select : function(LuaBVec2 , LuaUVec2 , LuaUVec2):(LuaUVec2)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __div : function((any),(any)):(any)
+        __div : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
-        __mod : function((any),(any)):(any)
+        __mod : function(any , any):(any)
 
     end
     
@@ -8552,27 +9323,27 @@ global record BevyAPI
 
         --Creates a 4D vector from `self` and the given `w` value.
 
-        extend : function(LuaUVec3,integer):(LuaUVec4)
+        extend : function(self:LuaUVec3 , integer):(LuaUVec4)
 
         --Creates a 2D vector from the `x` and `y` elements of `self`, discarding `z`.
         --
         --
         --
-        --Truncation may also be performed by using `self.xy()` or `UVec2::from()`.
+        --Truncation may also be performed by using [`self.xy()`][crate::swizzles::Vec3Swizzles::xy()].
 
-        truncate : function(LuaUVec3):(LuaUVec2)
+        truncate : function(self:LuaUVec3):(LuaUVec2)
 
         --Computes the dot product of `self` and `rhs`.
 
-        dot : function(LuaUVec3,LuaUVec3):(integer)
+        dot : function(self:LuaUVec3 , LuaUVec3):(integer)
 
         --Returns a vector where every component is the dot product of `self` and `rhs`.
 
-        dot_into_vec : function(LuaUVec3,LuaUVec3):(LuaUVec3)
+        dot_into_vec : function(self:LuaUVec3 , LuaUVec3):(LuaUVec3)
 
         --Computes the cross product of `self` and `rhs`.
 
-        cross : function(LuaUVec3,LuaUVec3):(LuaUVec3)
+        cross : function(self:LuaUVec3 , LuaUVec3):(LuaUVec3)
 
         --Returns a vector containing the minimum values for each element of `self` and `rhs`.
         --
@@ -8580,7 +9351,7 @@ global record BevyAPI
         --
         --In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
 
-        min : function(LuaUVec3,LuaUVec3):(LuaUVec3)
+        min : function(self:LuaUVec3 , LuaUVec3):(LuaUVec3)
 
         --Returns a vector containing the maximum values for each element of `self` and `rhs`.
         --
@@ -8588,7 +9359,7 @@ global record BevyAPI
         --
         --In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
 
-        max : function(LuaUVec3,LuaUVec3):(LuaUVec3)
+        max : function(self:LuaUVec3 , LuaUVec3):(LuaUVec3)
 
         --Component-wise clamping of values, similar to [`u32::clamp`].
         --
@@ -8604,7 +9375,7 @@ global record BevyAPI
         --
         --Will panic if `min` is greater than `max` when `glam_assert` is enabled.
 
-        clamp : function(LuaUVec3,(LuaUVec3),(LuaUVec3)):(LuaUVec3)
+        clamp : function(self:LuaUVec3 , LuaUVec3 , LuaUVec3):(LuaUVec3)
 
         --Returns the horizontal minimum of `self`.
         --
@@ -8612,7 +9383,7 @@ global record BevyAPI
         --
         --In other words this computes `min(x, y, ..)`.
 
-        min_element : function(LuaUVec3):(integer)
+        min_element : function(self:LuaUVec3):(integer)
 
         --Returns the horizontal maximum of `self`.
         --
@@ -8620,7 +9391,7 @@ global record BevyAPI
         --
         --In other words this computes `max(x, y, ..)`.
 
-        max_element : function(LuaUVec3):(integer)
+        max_element : function(self:LuaUVec3):(integer)
 
         --Returns a vector mask containing the result of a `==` comparison for each element of
         --
@@ -8632,7 +9403,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpeq : function(LuaUVec3,LuaUVec3):(LuaBVec3)
+        cmpeq : function(self:LuaUVec3 , LuaUVec3):(LuaBVec3)
 
         --Returns a vector mask containing the result of a `!=` comparison for each element of
         --
@@ -8644,7 +9415,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpne : function(LuaUVec3,LuaUVec3):(LuaBVec3)
+        cmpne : function(self:LuaUVec3 , LuaUVec3):(LuaBVec3)
 
         --Returns a vector mask containing the result of a `>=` comparison for each element of
         --
@@ -8656,7 +9427,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpge : function(LuaUVec3,LuaUVec3):(LuaBVec3)
+        cmpge : function(self:LuaUVec3 , LuaUVec3):(LuaBVec3)
 
         --Returns a vector mask containing the result of a `>` comparison for each element of
         --
@@ -8668,7 +9439,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpgt : function(LuaUVec3,LuaUVec3):(LuaBVec3)
+        cmpgt : function(self:LuaUVec3 , LuaUVec3):(LuaBVec3)
 
         --Returns a vector mask containing the result of a `<=` comparison for each element of
         --
@@ -8680,7 +9451,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmple : function(LuaUVec3,LuaUVec3):(LuaBVec3)
+        cmple : function(self:LuaUVec3 , LuaUVec3):(LuaBVec3)
 
         --Returns a vector mask containing the result of a `<` comparison for each element of
         --
@@ -8692,27 +9463,31 @@ global record BevyAPI
         --
         --elements.
 
-        cmplt : function(LuaUVec3,LuaUVec3):(LuaBVec3)
+        cmplt : function(self:LuaUVec3 , LuaUVec3):(LuaBVec3)
+
+        --Computes the squared length of `self`.
+
+        length_squared : function(self:LuaUVec3):(integer)
 
         --Casts all elements of `self` to `f32`.
 
-        as_vec3 : function(LuaUVec3):(LuaVec3)
+        as_vec3 : function(self:LuaUVec3):(LuaVec3)
 
         --Casts all elements of `self` to `f32`.
 
-        as_vec3a : function(LuaUVec3):(LuaVec3A)
+        as_vec3a : function(self:LuaUVec3):(LuaVec3A)
 
         --Casts all elements of `self` to `f64`.
 
-        as_dvec3 : function(LuaUVec3):(LuaDVec3)
+        as_dvec3 : function(self:LuaUVec3):(LuaDVec3)
 
         --Casts all elements of `self` to `i32`.
 
-        as_ivec3 : function(LuaUVec3):(LuaIVec3)
+        as_ivec3 : function(self:LuaUVec3):(LuaIVec3)
 
         --Creates a new vector.
 
-        new : function((integer),(integer),(integer)):(LuaUVec3)
+        new : function(integer , integer , integer):(LuaUVec3)
 
         --Creates a vector with all elements set to `v`.
 
@@ -8728,36 +9503,36 @@ global record BevyAPI
         --
         --uses the element from `if_false`.
 
-        select : function((LuaBVec3),(LuaUVec3),(LuaUVec3)):(LuaUVec3)
+        select : function(LuaBVec3 , LuaUVec3 , LuaUVec3):(LuaUVec3)
 
-        __tostring : function(LuaUVec3):(string)
+        __tostring : function(self:LuaUVec3):(string)
 
-        __index : function(LuaUVec3,integer):(integer)
+        __index : function(self:LuaUVec3 , integer):(integer)
 
-        __newindex : function(LuaUVec3,(integer),(integer)):()
+        __newindex : function(self:LuaUVec3 , integer , integer)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __div : function((any),(any)):(any)
+        __div : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
-        __mod : function((any),(any)):(any)
+        __mod : function(any , any):(any)
 
     end
     
     
-    record LuaUVec3Class
+    record ClassLuaUVec3
 
         userdata
     
-    --Collection of static methods for [`LuaUVec3`].
+    --Collection of static methods for [``].
 
         --Creates a new vector.
 
-        new : function((integer),(integer),(integer)):(LuaUVec3)
+        new : function(integer , integer , integer):(LuaUVec3)
 
         --Creates a vector with all elements set to `v`.
 
@@ -8773,17 +9548,17 @@ global record BevyAPI
         --
         --uses the element from `if_false`.
 
-        select : function((LuaBVec3),(LuaUVec3),(LuaUVec3)):(LuaUVec3)
+        select : function(LuaBVec3 , LuaUVec3 , LuaUVec3):(LuaUVec3)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __div : function((any),(any)):(any)
+        __div : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
-        __mod : function((any),(any)):(any)
+        __mod : function(any , any):(any)
 
     end
     
@@ -8806,17 +9581,17 @@ global record BevyAPI
         --
         --
         --
-        --Truncation to `UVec3` may also be performed by using `self.xyz()` or `UVec3::from()`.
+        --Truncation to [`UVec3`] may also be performed by using [`self.xyz()`][crate::swizzles::Vec4Swizzles::xyz()].
 
-        truncate : function(LuaUVec4):(LuaUVec3)
+        truncate : function(self:LuaUVec4):(LuaUVec3)
 
         --Computes the dot product of `self` and `rhs`.
 
-        dot : function(LuaUVec4,LuaUVec4):(integer)
+        dot : function(self:LuaUVec4 , LuaUVec4):(integer)
 
         --Returns a vector where every component is the dot product of `self` and `rhs`.
 
-        dot_into_vec : function(LuaUVec4,LuaUVec4):(LuaUVec4)
+        dot_into_vec : function(self:LuaUVec4 , LuaUVec4):(LuaUVec4)
 
         --Returns a vector containing the minimum values for each element of `self` and `rhs`.
         --
@@ -8824,7 +9599,7 @@ global record BevyAPI
         --
         --In other words this computes `[self.x.min(rhs.x), self.y.min(rhs.y), ..]`.
 
-        min : function(LuaUVec4,LuaUVec4):(LuaUVec4)
+        min : function(self:LuaUVec4 , LuaUVec4):(LuaUVec4)
 
         --Returns a vector containing the maximum values for each element of `self` and `rhs`.
         --
@@ -8832,7 +9607,7 @@ global record BevyAPI
         --
         --In other words this computes `[self.x.max(rhs.x), self.y.max(rhs.y), ..]`.
 
-        max : function(LuaUVec4,LuaUVec4):(LuaUVec4)
+        max : function(self:LuaUVec4 , LuaUVec4):(LuaUVec4)
 
         --Component-wise clamping of values, similar to [`u32::clamp`].
         --
@@ -8848,7 +9623,7 @@ global record BevyAPI
         --
         --Will panic if `min` is greater than `max` when `glam_assert` is enabled.
 
-        clamp : function(LuaUVec4,(LuaUVec4),(LuaUVec4)):(LuaUVec4)
+        clamp : function(self:LuaUVec4 , LuaUVec4 , LuaUVec4):(LuaUVec4)
 
         --Returns the horizontal minimum of `self`.
         --
@@ -8856,7 +9631,7 @@ global record BevyAPI
         --
         --In other words this computes `min(x, y, ..)`.
 
-        min_element : function(LuaUVec4):(integer)
+        min_element : function(self:LuaUVec4):(integer)
 
         --Returns the horizontal maximum of `self`.
         --
@@ -8864,7 +9639,7 @@ global record BevyAPI
         --
         --In other words this computes `max(x, y, ..)`.
 
-        max_element : function(LuaUVec4):(integer)
+        max_element : function(self:LuaUVec4):(integer)
 
         --Returns a vector mask containing the result of a `==` comparison for each element of
         --
@@ -8876,7 +9651,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpeq : function(LuaUVec4,LuaUVec4):(LuaBVec4)
+        cmpeq : function(self:LuaUVec4 , LuaUVec4):(LuaBVec4)
 
         --Returns a vector mask containing the result of a `!=` comparison for each element of
         --
@@ -8888,7 +9663,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpne : function(LuaUVec4,LuaUVec4):(LuaBVec4)
+        cmpne : function(self:LuaUVec4 , LuaUVec4):(LuaBVec4)
 
         --Returns a vector mask containing the result of a `>=` comparison for each element of
         --
@@ -8900,7 +9675,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpge : function(LuaUVec4,LuaUVec4):(LuaBVec4)
+        cmpge : function(self:LuaUVec4 , LuaUVec4):(LuaBVec4)
 
         --Returns a vector mask containing the result of a `>` comparison for each element of
         --
@@ -8912,7 +9687,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmpgt : function(LuaUVec4,LuaUVec4):(LuaBVec4)
+        cmpgt : function(self:LuaUVec4 , LuaUVec4):(LuaBVec4)
 
         --Returns a vector mask containing the result of a `<=` comparison for each element of
         --
@@ -8924,7 +9699,7 @@ global record BevyAPI
         --
         --elements.
 
-        cmple : function(LuaUVec4,LuaUVec4):(LuaBVec4)
+        cmple : function(self:LuaUVec4 , LuaUVec4):(LuaBVec4)
 
         --Returns a vector mask containing the result of a `<` comparison for each element of
         --
@@ -8936,23 +9711,27 @@ global record BevyAPI
         --
         --elements.
 
-        cmplt : function(LuaUVec4,LuaUVec4):(LuaBVec4)
+        cmplt : function(self:LuaUVec4 , LuaUVec4):(LuaBVec4)
+
+        --Computes the squared length of `self`.
+
+        length_squared : function(self:LuaUVec4):(integer)
 
         --Casts all elements of `self` to `f32`.
 
-        as_vec4 : function(LuaUVec4):(LuaVec4)
+        as_vec4 : function(self:LuaUVec4):(LuaVec4)
 
         --Casts all elements of `self` to `f64`.
 
-        as_dvec4 : function(LuaUVec4):(LuaDVec4)
+        as_dvec4 : function(self:LuaUVec4):(LuaDVec4)
 
         --Casts all elements of `self` to `i32`.
 
-        as_ivec4 : function(LuaUVec4):(LuaIVec4)
+        as_ivec4 : function(self:LuaUVec4):(LuaIVec4)
 
         --Creates a new vector.
 
-        new : function((integer),(integer),(integer),(integer)):(LuaUVec4)
+        new : function(integer , integer , integer , integer):(LuaUVec4)
 
         --Creates a vector with all elements set to `v`.
 
@@ -8968,36 +9747,36 @@ global record BevyAPI
         --
         --uses the element from `if_false`.
 
-        select : function((LuaBVec4),(LuaUVec4),(LuaUVec4)):(LuaUVec4)
+        select : function(LuaBVec4 , LuaUVec4 , LuaUVec4):(LuaUVec4)
 
-        __tostring : function(LuaUVec4):(string)
+        __tostring : function(self:LuaUVec4):(string)
 
-        __index : function(LuaUVec4,integer):(integer)
+        __index : function(self:LuaUVec4 , integer):(integer)
 
-        __newindex : function(LuaUVec4,(integer),(integer)):()
+        __newindex : function(self:LuaUVec4 , integer , integer)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __div : function((any),(any)):(any)
+        __div : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
-        __mod : function((any),(any)):(any)
+        __mod : function(any , any):(any)
 
     end
     
     
-    record LuaUVec4Class
+    record ClassLuaUVec4
 
         userdata
     
-    --Collection of static methods for [`LuaUVec4`].
+    --Collection of static methods for [``].
 
         --Creates a new vector.
 
-        new : function((integer),(integer),(integer),(integer)):(LuaUVec4)
+        new : function(integer , integer , integer , integer):(LuaUVec4)
 
         --Creates a vector with all elements set to `v`.
 
@@ -9013,17 +9792,17 @@ global record BevyAPI
         --
         --uses the element from `if_false`.
 
-        select : function((LuaBVec4),(LuaUVec4),(LuaUVec4)):(LuaUVec4)
+        select : function(LuaBVec4 , LuaUVec4 , LuaUVec4):(LuaUVec4)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __div : function((any),(any)):(any)
+        __div : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
-        __mod : function((any),(any)):(any)
+        __mod : function(any , any):(any)
 
     end
     
@@ -9050,7 +9829,7 @@ global record BevyAPI
         --
         --Panics if `index` is greater than 2.
 
-        col : function(LuaMat3,integer):(LuaVec3)
+        col : function(self:LuaMat3 , integer):(LuaVec3)
 
         --Returns the matrix row for the given `index`.
         --
@@ -9062,25 +9841,25 @@ global record BevyAPI
         --
         --Panics if `index` is greater than 2.
 
-        row : function(LuaMat3,integer):(LuaVec3)
+        row : function(self:LuaMat3 , integer):(LuaVec3)
 
         --Returns `true` if, and only if, all elements are finite.
         --
         --If any element is either `NaN`, positive or negative infinity, this will return `false`.
 
-        is_finite : function(LuaMat3):(boolean)
+        is_finite : function(self:LuaMat3):(boolean)
 
         --Returns `true` if any elements are `NaN`.
 
-        is_nan : function(LuaMat3):(boolean)
+        is_nan : function(self:LuaMat3):(boolean)
 
         --Returns the transpose of `self`.
 
-        transpose : function(LuaMat3):(LuaMat3)
+        transpose : function(self:LuaMat3):(LuaMat3)
 
         --Returns the determinant of `self`.
 
-        determinant : function(LuaMat3):(number)
+        determinant : function(self:LuaMat3):(number)
 
         --Returns the inverse of `self`.
         --
@@ -9096,7 +9875,7 @@ global record BevyAPI
         --
         --Will panic if the determinant of `self` is zero when `glam_assert` is enabled.
 
-        inverse : function(LuaMat3):(LuaMat3)
+        inverse : function(self:LuaMat3):(LuaMat3)
 
         --Transforms the given 2D vector as a point.
         --
@@ -9116,7 +9895,7 @@ global record BevyAPI
         --
         --Will panic if the 2nd row of `self` is not `(0, 0, 1)` when `glam_assert` is enabled.
 
-        transform_point2 : function(LuaMat3,LuaVec2):(LuaVec2)
+        transform_point2 : function(self:LuaMat3 , LuaVec2):(LuaVec2)
 
         --Rotates the given 2D vector.
         --
@@ -9136,31 +9915,31 @@ global record BevyAPI
         --
         --Will panic if the 2nd row of `self` is not `(0, 0, 1)` when `glam_assert` is enabled.
 
-        transform_vector2 : function(LuaMat3,LuaVec2):(LuaVec2)
+        transform_vector2 : function(self:LuaMat3 , LuaVec2):(LuaVec2)
 
         --Transforms a 3D vector.
 
-        mul_vec3 : function(LuaMat3,LuaVec3):(LuaVec3)
+        mul_vec3 : function(self:LuaMat3 , LuaVec3):(LuaVec3)
 
-        --Transforms a `Vec3A`.
+        --Transforms a [`Vec3A`].
 
-        mul_vec3a : function(LuaMat3,LuaVec3A):(LuaVec3A)
+        mul_vec3a : function(self:LuaMat3 , LuaVec3A):(LuaVec3A)
 
         --Multiplies two 3x3 matrices.
 
-        mul_mat3 : function(LuaMat3,LuaMat3):(LuaMat3)
+        mul_mat3 : function(self:LuaMat3 , LuaMat3):(LuaMat3)
 
         --Adds two 3x3 matrices.
 
-        add_mat3 : function(LuaMat3,LuaMat3):(LuaMat3)
+        add_mat3 : function(self:LuaMat3 , LuaMat3):(LuaMat3)
 
         --Subtracts two 3x3 matrices.
 
-        sub_mat3 : function(LuaMat3,LuaMat3):(LuaMat3)
+        sub_mat3 : function(self:LuaMat3 , LuaMat3):(LuaMat3)
 
         --Multiplies a 3x3 matrix by a scalar.
 
-        mul_scalar : function(LuaMat3,number):(LuaMat3)
+        mul_scalar : function(self:LuaMat3 , number):(LuaMat3)
 
         --Returns true if the absolute difference of all elements between `self` and `rhs`
         --
@@ -9180,13 +9959,13 @@ global record BevyAPI
         --
         --[comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
 
-        abs_diff_eq : function(LuaMat3,(LuaMat3),(number)):(boolean)
+        abs_diff_eq : function(self:LuaMat3 , LuaMat3 , number):(boolean)
 
-        as_dmat3 : function(LuaMat3):(LuaDMat3)
+        as_dmat3 : function(self:LuaMat3):(LuaDMat3)
 
-        --Creates a 3x3 matrix from two column vectors.
+        --Creates a 3x3 matrix from three column vectors.
 
-        from_cols : function((LuaVec3),(LuaVec3),(LuaVec3)):(LuaMat3)
+        from_cols : function(LuaVec3 , LuaVec3 , LuaVec3):(LuaMat3)
 
         --Creates a 3x3 matrix with its diagonal set to `diagonal` and all other entries set to 0.
 
@@ -9220,13 +9999,13 @@ global record BevyAPI
         --
         --Will panic if `axis` is not normalized when `glam_assert` is enabled.
 
-        from_axis_angle : function((LuaVec3),(number)):(LuaMat3)
+        from_axis_angle : function(LuaVec3 , number):(LuaMat3)
 
         --Creates a 3D rotation matrix from the given euler rotation sequence and the angles (in
         --
         --radians).
 
-        from_euler : function((LuaEulerRot),(number),(number),(number)):(LuaMat3)
+        from_euler : function(LuaEulerRot , number , number , number):(LuaMat3)
 
         --Creates a 3D rotation matrix from `angle` (in radians) around the x axis.
 
@@ -9272,7 +10051,7 @@ global record BevyAPI
         --
         --[`Self::transform_point2()`] and [`Self::transform_vector2()`].
 
-        from_scale_angle_translation : function((LuaVec2),(number),(LuaVec2)):(LuaMat3)
+        from_scale_angle_translation : function(LuaVec2 , number , LuaVec2):(LuaMat3)
 
         --Creates an affine transformation matrix from the given non-uniform 2D `scale`.
         --
@@ -9302,30 +10081,30 @@ global record BevyAPI
 
         from_mat2 : function(LuaMat2):(LuaMat3)
 
-        __tostring : function(LuaMat3):(string)
+        __tostring : function(self:LuaMat3):(string)
 
-        __unm : function(LuaMat3):(LuaMat3)
+        __unm : function(self:LuaMat3):(LuaMat3)
 
-        __index : function(LuaMat3,integer):(LuaVec3)
+        __index : function(self:LuaMat3 , integer):(LuaVec3)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
     end
     
     
-    record LuaMat3Class
+    record ClassLuaMat3
 
         userdata
     
-    --Collection of static methods for [`LuaMat3`].
+    --Collection of static methods for [``].
 
-        --Creates a 3x3 matrix from two column vectors.
+        --Creates a 3x3 matrix from three column vectors.
 
-        from_cols : function((LuaVec3),(LuaVec3),(LuaVec3)):(LuaMat3)
+        from_cols : function(LuaVec3 , LuaVec3 , LuaVec3):(LuaMat3)
 
         --Creates a 3x3 matrix with its diagonal set to `diagonal` and all other entries set to 0.
 
@@ -9359,13 +10138,13 @@ global record BevyAPI
         --
         --Will panic if `axis` is not normalized when `glam_assert` is enabled.
 
-        from_axis_angle : function((LuaVec3),(number)):(LuaMat3)
+        from_axis_angle : function(LuaVec3 , number):(LuaMat3)
 
         --Creates a 3D rotation matrix from the given euler rotation sequence and the angles (in
         --
         --radians).
 
-        from_euler : function((LuaEulerRot),(number),(number),(number)):(LuaMat3)
+        from_euler : function(LuaEulerRot , number , number , number):(LuaMat3)
 
         --Creates a 3D rotation matrix from `angle` (in radians) around the x axis.
 
@@ -9411,7 +10190,7 @@ global record BevyAPI
         --
         --[`Self::transform_point2()`] and [`Self::transform_vector2()`].
 
-        from_scale_angle_translation : function((LuaVec2),(number),(LuaVec2)):(LuaMat3)
+        from_scale_angle_translation : function(LuaVec2 , number , LuaVec2):(LuaMat3)
 
         --Creates an affine transformation matrix from the given non-uniform 2D `scale`.
         --
@@ -9441,11 +10220,11 @@ global record BevyAPI
 
         from_mat2 : function(LuaMat2):(LuaMat3)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
     end
     
@@ -9466,7 +10245,7 @@ global record BevyAPI
         --
         --Panics if `index` is greater than 1.
 
-        col : function(LuaMat2,integer):(LuaVec2)
+        col : function(self:LuaMat2 , integer):(LuaVec2)
 
         --Returns the matrix row for the given `index`.
         --
@@ -9478,25 +10257,25 @@ global record BevyAPI
         --
         --Panics if `index` is greater than 1.
 
-        row : function(LuaMat2,integer):(LuaVec2)
+        row : function(self:LuaMat2 , integer):(LuaVec2)
 
         --Returns `true` if, and only if, all elements are finite.
         --
         --If any element is either `NaN`, positive or negative infinity, this will return `false`.
 
-        is_finite : function(LuaMat2):(boolean)
+        is_finite : function(self:LuaMat2):(boolean)
 
         --Returns `true` if any elements are `NaN`.
 
-        is_nan : function(LuaMat2):(boolean)
+        is_nan : function(self:LuaMat2):(boolean)
 
         --Returns the transpose of `self`.
 
-        transpose : function(LuaMat2):(LuaMat2)
+        transpose : function(self:LuaMat2):(LuaMat2)
 
         --Returns the determinant of `self`.
 
-        determinant : function(LuaMat2):(number)
+        determinant : function(self:LuaMat2):(number)
 
         --Returns the inverse of `self`.
         --
@@ -9512,27 +10291,27 @@ global record BevyAPI
         --
         --Will panic if the determinant of `self` is zero when `glam_assert` is enabled.
 
-        inverse : function(LuaMat2):(LuaMat2)
+        inverse : function(self:LuaMat2):(LuaMat2)
 
         --Transforms a 2D vector.
 
-        mul_vec2 : function(LuaMat2,LuaVec2):(LuaVec2)
+        mul_vec2 : function(self:LuaMat2 , LuaVec2):(LuaVec2)
 
         --Multiplies two 2x2 matrices.
 
-        mul_mat2 : function(LuaMat2,LuaMat2):(LuaMat2)
+        mul_mat2 : function(self:LuaMat2 , LuaMat2):(LuaMat2)
 
         --Adds two 2x2 matrices.
 
-        add_mat2 : function(LuaMat2,LuaMat2):(LuaMat2)
+        add_mat2 : function(self:LuaMat2 , LuaMat2):(LuaMat2)
 
         --Subtracts two 2x2 matrices.
 
-        sub_mat2 : function(LuaMat2,LuaMat2):(LuaMat2)
+        sub_mat2 : function(self:LuaMat2 , LuaMat2):(LuaMat2)
 
         --Multiplies a 2x2 matrix by a scalar.
 
-        mul_scalar : function(LuaMat2,number):(LuaMat2)
+        mul_scalar : function(self:LuaMat2 , number):(LuaMat2)
 
         --Returns true if the absolute difference of all elements between `self` and `rhs`
         --
@@ -9552,13 +10331,13 @@ global record BevyAPI
         --
         --[comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
 
-        abs_diff_eq : function(LuaMat2,(LuaMat2),(number)):(boolean)
+        abs_diff_eq : function(self:LuaMat2 , LuaMat2 , number):(boolean)
 
-        as_dmat2 : function(LuaMat2):(LuaDMat2)
+        as_dmat2 : function(self:LuaMat2):(LuaDMat2)
 
         --Creates a 2x2 matrix from two column vectors.
 
-        from_cols : function((LuaVec2),(LuaVec2)):(LuaMat2)
+        from_cols : function(LuaVec2 , LuaVec2):(LuaMat2)
 
         --Creates a 2x2 matrix with its diagonal set to `diagonal` and all other entries set to 0.
 
@@ -9568,7 +10347,7 @@ global record BevyAPI
         --
         --`angle` (in radians).
 
-        from_scale_angle : function((LuaVec2),(number)):(LuaMat2)
+        from_scale_angle : function(LuaVec2 , number):(LuaMat2)
 
         --Creates a 2x2 matrix containing a rotation of `angle` (in radians).
 
@@ -9582,30 +10361,30 @@ global record BevyAPI
 
         from_mat3a : function(LuaMat3A):(LuaMat2)
 
-        __tostring : function(LuaMat2):(string)
+        __tostring : function(self:LuaMat2):(string)
 
-        __unm : function(LuaMat2):(LuaMat2)
+        __unm : function(self:LuaMat2):(LuaMat2)
 
-        __index : function(LuaMat2,integer):(LuaVec2)
+        __index : function(self:LuaMat2 , integer):(LuaVec2)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
     end
     
     
-    record LuaMat2Class
+    record ClassLuaMat2
 
         userdata
     
-    --Collection of static methods for [`LuaMat2`].
+    --Collection of static methods for [``].
 
         --Creates a 2x2 matrix from two column vectors.
 
-        from_cols : function((LuaVec2),(LuaVec2)):(LuaMat2)
+        from_cols : function(LuaVec2 , LuaVec2):(LuaMat2)
 
         --Creates a 2x2 matrix with its diagonal set to `diagonal` and all other entries set to 0.
 
@@ -9615,7 +10394,7 @@ global record BevyAPI
         --
         --`angle` (in radians).
 
-        from_scale_angle : function((LuaVec2),(number)):(LuaMat2)
+        from_scale_angle : function(LuaVec2 , number):(LuaMat2)
 
         --Creates a 2x2 matrix containing a rotation of `angle` (in radians).
 
@@ -9629,11 +10408,11 @@ global record BevyAPI
 
         from_mat3a : function(LuaMat3A):(LuaMat2)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
     end
     
@@ -9660,7 +10439,7 @@ global record BevyAPI
         --
         --Panics if `index` is greater than 2.
 
-        col : function(LuaMat3A,integer):(LuaVec3A)
+        col : function(self:LuaMat3A , integer):(LuaVec3A)
 
         --Returns the matrix row for the given `index`.
         --
@@ -9672,25 +10451,25 @@ global record BevyAPI
         --
         --Panics if `index` is greater than 2.
 
-        row : function(LuaMat3A,integer):(LuaVec3A)
+        row : function(self:LuaMat3A , integer):(LuaVec3A)
 
         --Returns `true` if, and only if, all elements are finite.
         --
         --If any element is either `NaN`, positive or negative infinity, this will return `false`.
 
-        is_finite : function(LuaMat3A):(boolean)
+        is_finite : function(self:LuaMat3A):(boolean)
 
         --Returns `true` if any elements are `NaN`.
 
-        is_nan : function(LuaMat3A):(boolean)
+        is_nan : function(self:LuaMat3A):(boolean)
 
         --Returns the transpose of `self`.
 
-        transpose : function(LuaMat3A):(LuaMat3A)
+        transpose : function(self:LuaMat3A):(LuaMat3A)
 
         --Returns the determinant of `self`.
 
-        determinant : function(LuaMat3A):(number)
+        determinant : function(self:LuaMat3A):(number)
 
         --Returns the inverse of `self`.
         --
@@ -9706,7 +10485,7 @@ global record BevyAPI
         --
         --Will panic if the determinant of `self` is zero when `glam_assert` is enabled.
 
-        inverse : function(LuaMat3A):(LuaMat3A)
+        inverse : function(self:LuaMat3A):(LuaMat3A)
 
         --Transforms the given 2D vector as a point.
         --
@@ -9726,7 +10505,7 @@ global record BevyAPI
         --
         --Will panic if the 2nd row of `self` is not `(0, 0, 1)` when `glam_assert` is enabled.
 
-        transform_point2 : function(LuaMat3A,LuaVec2):(LuaVec2)
+        transform_point2 : function(self:LuaMat3A , LuaVec2):(LuaVec2)
 
         --Rotates the given 2D vector.
         --
@@ -9746,31 +10525,31 @@ global record BevyAPI
         --
         --Will panic if the 2nd row of `self` is not `(0, 0, 1)` when `glam_assert` is enabled.
 
-        transform_vector2 : function(LuaMat3A,LuaVec2):(LuaVec2)
+        transform_vector2 : function(self:LuaMat3A , LuaVec2):(LuaVec2)
 
         --Transforms a 3D vector.
 
-        mul_vec3 : function(LuaMat3A,LuaVec3):(LuaVec3)
+        mul_vec3 : function(self:LuaMat3A , LuaVec3):(LuaVec3)
 
-        --Transforms a `Vec3A`.
+        --Transforms a [`Vec3A`].
 
-        mul_vec3a : function(LuaMat3A,LuaVec3A):(LuaVec3A)
+        mul_vec3a : function(self:LuaMat3A , LuaVec3A):(LuaVec3A)
 
         --Multiplies two 3x3 matrices.
 
-        mul_mat3 : function(LuaMat3A,LuaMat3A):(LuaMat3A)
+        mul_mat3 : function(self:LuaMat3A , LuaMat3A):(LuaMat3A)
 
         --Adds two 3x3 matrices.
 
-        add_mat3 : function(LuaMat3A,LuaMat3A):(LuaMat3A)
+        add_mat3 : function(self:LuaMat3A , LuaMat3A):(LuaMat3A)
 
         --Subtracts two 3x3 matrices.
 
-        sub_mat3 : function(LuaMat3A,LuaMat3A):(LuaMat3A)
+        sub_mat3 : function(self:LuaMat3A , LuaMat3A):(LuaMat3A)
 
         --Multiplies a 3x3 matrix by a scalar.
 
-        mul_scalar : function(LuaMat3A,number):(LuaMat3A)
+        mul_scalar : function(self:LuaMat3A , number):(LuaMat3A)
 
         --Returns true if the absolute difference of all elements between `self` and `rhs`
         --
@@ -9790,13 +10569,13 @@ global record BevyAPI
         --
         --[comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
 
-        abs_diff_eq : function(LuaMat3A,(LuaMat3A),(number)):(boolean)
+        abs_diff_eq : function(self:LuaMat3A , LuaMat3A , number):(boolean)
 
-        as_dmat3 : function(LuaMat3A):(LuaDMat3)
+        as_dmat3 : function(self:LuaMat3A):(LuaDMat3)
 
-        --Creates a 3x3 matrix from two column vectors.
+        --Creates a 3x3 matrix from three column vectors.
 
-        from_cols : function((LuaVec3A),(LuaVec3A),(LuaVec3A)):(LuaMat3A)
+        from_cols : function(LuaVec3A , LuaVec3A , LuaVec3A):(LuaMat3A)
 
         --Creates a 3x3 matrix with its diagonal set to `diagonal` and all other entries set to 0.
 
@@ -9830,13 +10609,13 @@ global record BevyAPI
         --
         --Will panic if `axis` is not normalized when `glam_assert` is enabled.
 
-        from_axis_angle : function((LuaVec3),(number)):(LuaMat3A)
+        from_axis_angle : function(LuaVec3 , number):(LuaMat3A)
 
         --Creates a 3D rotation matrix from the given euler rotation sequence and the angles (in
         --
         --radians).
 
-        from_euler : function((LuaEulerRot),(number),(number),(number)):(LuaMat3A)
+        from_euler : function(LuaEulerRot , number , number , number):(LuaMat3A)
 
         --Creates a 3D rotation matrix from `angle` (in radians) around the x axis.
 
@@ -9882,7 +10661,7 @@ global record BevyAPI
         --
         --[`Self::transform_point2()`] and [`Self::transform_vector2()`].
 
-        from_scale_angle_translation : function((LuaVec2),(number),(LuaVec2)):(LuaMat3A)
+        from_scale_angle_translation : function(LuaVec2 , number , LuaVec2):(LuaMat3A)
 
         --Creates an affine transformation matrix from the given non-uniform 2D `scale`.
         --
@@ -9912,30 +10691,30 @@ global record BevyAPI
 
         from_mat2 : function(LuaMat2):(LuaMat3A)
 
-        __tostring : function(LuaMat3A):(string)
+        __tostring : function(self:LuaMat3A):(string)
 
-        __unm : function(LuaMat3A):(LuaMat3A)
+        __unm : function(self:LuaMat3A):(LuaMat3A)
 
-        __index : function(LuaMat3A,integer):(LuaVec3A)
+        __index : function(self:LuaMat3A , integer):(LuaVec3A)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
     end
     
     
-    record LuaMat3AClass
+    record ClassLuaMat3A
 
         userdata
     
-    --Collection of static methods for [`LuaMat3A`].
+    --Collection of static methods for [``].
 
-        --Creates a 3x3 matrix from two column vectors.
+        --Creates a 3x3 matrix from three column vectors.
 
-        from_cols : function((LuaVec3A),(LuaVec3A),(LuaVec3A)):(LuaMat3A)
+        from_cols : function(LuaVec3A , LuaVec3A , LuaVec3A):(LuaMat3A)
 
         --Creates a 3x3 matrix with its diagonal set to `diagonal` and all other entries set to 0.
 
@@ -9969,13 +10748,13 @@ global record BevyAPI
         --
         --Will panic if `axis` is not normalized when `glam_assert` is enabled.
 
-        from_axis_angle : function((LuaVec3),(number)):(LuaMat3A)
+        from_axis_angle : function(LuaVec3 , number):(LuaMat3A)
 
         --Creates a 3D rotation matrix from the given euler rotation sequence and the angles (in
         --
         --radians).
 
-        from_euler : function((LuaEulerRot),(number),(number),(number)):(LuaMat3A)
+        from_euler : function(LuaEulerRot , number , number , number):(LuaMat3A)
 
         --Creates a 3D rotation matrix from `angle` (in radians) around the x axis.
 
@@ -10021,7 +10800,7 @@ global record BevyAPI
         --
         --[`Self::transform_point2()`] and [`Self::transform_vector2()`].
 
-        from_scale_angle_translation : function((LuaVec2),(number),(LuaVec2)):(LuaMat3A)
+        from_scale_angle_translation : function(LuaVec2 , number , LuaVec2):(LuaMat3A)
 
         --Creates an affine transformation matrix from the given non-uniform 2D `scale`.
         --
@@ -10051,11 +10830,11 @@ global record BevyAPI
 
         from_mat2 : function(LuaMat2):(LuaMat3A)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
     end
     
@@ -10084,7 +10863,7 @@ global record BevyAPI
         --
         --Panics if `index` is greater than 3.
 
-        col : function(LuaMat4,integer):(LuaVec4)
+        col : function(self:LuaMat4 , integer):(LuaVec4)
 
         --Returns the matrix row for the given `index`.
         --
@@ -10096,25 +10875,25 @@ global record BevyAPI
         --
         --Panics if `index` is greater than 3.
 
-        row : function(LuaMat4,integer):(LuaVec4)
+        row : function(self:LuaMat4 , integer):(LuaVec4)
 
         --Returns `true` if, and only if, all elements are finite.
         --
         --If any element is either `NaN`, positive or negative infinity, this will return `false`.
 
-        is_finite : function(LuaMat4):(boolean)
+        is_finite : function(self:LuaMat4):(boolean)
 
         --Returns `true` if any elements are `NaN`.
 
-        is_nan : function(LuaMat4):(boolean)
+        is_nan : function(self:LuaMat4):(boolean)
 
         --Returns the transpose of `self`.
 
-        transpose : function(LuaMat4):(LuaMat4)
+        transpose : function(self:LuaMat4):(LuaMat4)
 
         --Returns the determinant of `self`.
 
-        determinant : function(LuaMat4):(number)
+        determinant : function(self:LuaMat4):(number)
 
         --Returns the inverse of `self`.
         --
@@ -10130,7 +10909,7 @@ global record BevyAPI
         --
         --Will panic if the determinant of `self` is zero when `glam_assert` is enabled.
 
-        inverse : function(LuaMat4):(LuaMat4)
+        inverse : function(self:LuaMat4):(LuaMat4)
 
         --Transforms the given 3D vector as a point, applying perspective correction.
         --
@@ -10144,7 +10923,7 @@ global record BevyAPI
         --
         --This method assumes that `self` contains a projective transform.
 
-        project_point3 : function(LuaMat4,LuaVec3):(LuaVec3)
+        project_point3 : function(self:LuaMat4 , LuaVec3):(LuaVec3)
 
         --Transforms the given 3D vector as a point.
         --
@@ -10170,7 +10949,7 @@ global record BevyAPI
         --
         --Will panic if the 3rd row of `self` is not `(0, 0, 0, 1)` when `glam_assert` is enabled.
 
-        transform_point3 : function(LuaMat4,LuaVec3):(LuaVec3)
+        transform_point3 : function(self:LuaMat4 , LuaVec3):(LuaVec3)
 
         --Transforms the give 3D vector as a direction.
         --
@@ -10192,43 +10971,43 @@ global record BevyAPI
         --
         --Will panic if the 3rd row of `self` is not `(0, 0, 0, 1)` when `glam_assert` is enabled.
 
-        transform_vector3 : function(LuaMat4,LuaVec3):(LuaVec3)
+        transform_vector3 : function(self:LuaMat4 , LuaVec3):(LuaVec3)
 
-        --Transforms the given `Vec3A` as 3D point.
+        --Transforms the given [`Vec3A`] as 3D point.
         --
         --
         --
-        --This is the equivalent of multiplying the `Vec3A` as a 4D vector where `w` is `1.0`.
+        --This is the equivalent of multiplying the [`Vec3A`] as a 4D vector where `w` is `1.0`.
 
-        transform_point3a : function(LuaMat4,LuaVec3A):(LuaVec3A)
+        transform_point3a : function(self:LuaMat4 , LuaVec3A):(LuaVec3A)
 
-        --Transforms the give `Vec3A` as 3D vector.
+        --Transforms the give [`Vec3A`] as 3D vector.
         --
         --
         --
-        --This is the equivalent of multiplying the `Vec3A` as a 4D vector where `w` is `0.0`.
+        --This is the equivalent of multiplying the [`Vec3A`] as a 4D vector where `w` is `0.0`.
 
-        transform_vector3a : function(LuaMat4,LuaVec3A):(LuaVec3A)
+        transform_vector3a : function(self:LuaMat4 , LuaVec3A):(LuaVec3A)
 
         --Transforms a 4D vector.
 
-        mul_vec4 : function(LuaMat4,LuaVec4):(LuaVec4)
+        mul_vec4 : function(self:LuaMat4 , LuaVec4):(LuaVec4)
 
         --Multiplies two 4x4 matrices.
 
-        mul_mat4 : function(LuaMat4,LuaMat4):(LuaMat4)
+        mul_mat4 : function(self:LuaMat4 , LuaMat4):(LuaMat4)
 
         --Adds two 4x4 matrices.
 
-        add_mat4 : function(LuaMat4,LuaMat4):(LuaMat4)
+        add_mat4 : function(self:LuaMat4 , LuaMat4):(LuaMat4)
 
         --Subtracts two 4x4 matrices.
 
-        sub_mat4 : function(LuaMat4,LuaMat4):(LuaMat4)
+        sub_mat4 : function(self:LuaMat4 , LuaMat4):(LuaMat4)
 
         --Multiplies a 4x4 matrix by a scalar.
 
-        mul_scalar : function(LuaMat4,number):(LuaMat4)
+        mul_scalar : function(self:LuaMat4 , number):(LuaMat4)
 
         --Returns true if the absolute difference of all elements between `self` and `rhs`
         --
@@ -10248,13 +11027,13 @@ global record BevyAPI
         --
         --[comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
 
-        abs_diff_eq : function(LuaMat4,(LuaMat4),(number)):(boolean)
+        abs_diff_eq : function(self:LuaMat4 , LuaMat4 , number):(boolean)
 
-        as_dmat4 : function(LuaMat4):(LuaDMat4)
+        as_dmat4 : function(self:LuaMat4):(LuaDMat4)
 
-        --Creates a 4x4 matrix from two column vectors.
+        --Creates a 4x4 matrix from four column vectors.
 
-        from_cols : function((LuaVec4),(LuaVec4),(LuaVec4),(LuaVec4)):(LuaMat4)
+        from_cols : function(LuaVec4 , LuaVec4 , LuaVec4 , LuaVec4):(LuaMat4)
 
         --Creates a 4x4 matrix with its diagonal set to `diagonal` and all other entries set to 0.
 
@@ -10278,7 +11057,7 @@ global record BevyAPI
         --
         --Will panic if `rotation` is not normalized when `glam_assert` is enabled.
 
-        from_scale_rotation_translation : function((LuaVec3),(LuaQuat),(LuaVec3)):(LuaMat4)
+        from_scale_rotation_translation : function(LuaVec3 , LuaQuat , LuaVec3):(LuaMat4)
 
         --Creates an affine transformation matrix from the given 3D `translation`.
         --
@@ -10296,7 +11075,7 @@ global record BevyAPI
         --
         --Will panic if `rotation` is not normalized when `glam_assert` is enabled.
 
-        from_rotation_translation : function((LuaQuat),(LuaVec3)):(LuaMat4)
+        from_rotation_translation : function(LuaQuat , LuaVec3):(LuaMat4)
 
         --Creates an affine transformation matrix from the given `rotation` quaternion.
         --
@@ -10368,7 +11147,7 @@ global record BevyAPI
         --
         --Will panic if `axis` is not normalized when `glam_assert` is enabled.
 
-        from_axis_angle : function((LuaVec3),(number)):(LuaMat4)
+        from_axis_angle : function(LuaVec3 , number):(LuaMat4)
 
         --Creates a affine transformation matrix containing a rotation from the given euler
         --
@@ -10380,7 +11159,7 @@ global record BevyAPI
         --
         --[`Self::transform_point3()`] and [`Self::transform_vector3()`].
 
-        from_euler : function((LuaEulerRot),(number),(number),(number)):(LuaMat4)
+        from_euler : function(LuaEulerRot , number , number , number):(LuaMat4)
 
         --Creates an affine transformation matrix containing a 3D rotation around the x axis of
         --
@@ -10444,7 +11223,7 @@ global record BevyAPI
         --
         --For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
 
-        look_to_lh : function((LuaVec3),(LuaVec3),(LuaVec3)):(LuaMat4)
+        look_to_lh : function(LuaVec3 , LuaVec3 , LuaVec3):(LuaMat4)
 
         --Creates a right-handed view matrix using a camera position, an up direction, and a facing
         --
@@ -10454,7 +11233,7 @@ global record BevyAPI
         --
         --For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
 
-        look_to_rh : function((LuaVec3),(LuaVec3),(LuaVec3)):(LuaMat4)
+        look_to_rh : function(LuaVec3 , LuaVec3 , LuaVec3):(LuaMat4)
 
         --Creates a left-handed view matrix using a camera position, an up direction, and a focal
         --
@@ -10470,7 +11249,7 @@ global record BevyAPI
         --
         --Will panic if `up` is not normalized when `glam_assert` is enabled.
 
-        look_at_lh : function((LuaVec3),(LuaVec3),(LuaVec3)):(LuaMat4)
+        look_at_lh : function(LuaVec3 , LuaVec3 , LuaVec3):(LuaMat4)
 
         --Creates a right-handed view matrix using a camera position, an up direction, and a focal
         --
@@ -10486,7 +11265,7 @@ global record BevyAPI
         --
         --Will panic if `up` is not normalized when `glam_assert` is enabled.
 
-        look_at_rh : function((LuaVec3),(LuaVec3),(LuaVec3)):(LuaMat4)
+        look_at_rh : function(LuaVec3 , LuaVec3 , LuaVec3):(LuaMat4)
 
         --Creates a right-handed perspective projection matrix with [-1,1] depth range.
         --
@@ -10494,7 +11273,7 @@ global record BevyAPI
         --
         --See <https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml>
 
-        perspective_rh_gl : function((number),(number),(number),(number)):(LuaMat4)
+        perspective_rh_gl : function(number , number , number , number):(LuaMat4)
 
         --Creates a left-handed perspective projection matrix with `[0,1]` depth range.
         --
@@ -10508,7 +11287,7 @@ global record BevyAPI
         --
         --enabled.
 
-        perspective_lh : function((number),(number),(number),(number)):(LuaMat4)
+        perspective_lh : function(number , number , number , number):(LuaMat4)
 
         --Creates a right-handed perspective projection matrix with `[0,1]` depth range.
         --
@@ -10522,7 +11301,7 @@ global record BevyAPI
         --
         --enabled.
 
-        perspective_rh : function((number),(number),(number),(number)):(LuaMat4)
+        perspective_rh : function(number , number , number , number):(LuaMat4)
 
         --Creates an infinite left-handed perspective projection matrix with `[0,1]` depth range.
         --
@@ -10534,7 +11313,7 @@ global record BevyAPI
         --
         --Will panic if `z_near` is less than or equal to zero when `glam_assert` is enabled.
 
-        perspective_infinite_lh : function((number),(number),(number)):(LuaMat4)
+        perspective_infinite_lh : function(number , number , number):(LuaMat4)
 
         --Creates an infinite left-handed perspective projection matrix with `[0,1]` depth range.
         --
@@ -10546,19 +11325,19 @@ global record BevyAPI
         --
         --Will panic if `z_near` is less than or equal to zero when `glam_assert` is enabled.
 
-        perspective_infinite_reverse_lh : function((number),(number),(number)):(LuaMat4)
+        perspective_infinite_reverse_lh : function(number , number , number):(LuaMat4)
 
         --Creates an infinite right-handed perspective projection matrix with
         --
         --`[0,1]` depth range.
 
-        perspective_infinite_rh : function((number),(number),(number)):(LuaMat4)
+        perspective_infinite_rh : function(number , number , number):(LuaMat4)
 
         --Creates an infinite reverse right-handed perspective projection matrix
         --
         --with `[0,1]` depth range.
 
-        perspective_infinite_reverse_rh : function((number),(number),(number)):(LuaMat4)
+        perspective_infinite_reverse_rh : function(number , number , number):(LuaMat4)
 
         --Creates a right-handed orthographic projection matrix with `[-1,1]` depth
         --
@@ -10568,40 +11347,40 @@ global record BevyAPI
         --
         --<https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glOrtho.xml>
 
-        orthographic_rh_gl : function((number),(number),(number),(number),(number),(number)):(LuaMat4)
+        orthographic_rh_gl : function(number , number , number , number , number , number):(LuaMat4)
 
         --Creates a left-handed orthographic projection matrix with `[0,1]` depth range.
 
-        orthographic_lh : function((number),(number),(number),(number),(number),(number)):(LuaMat4)
+        orthographic_lh : function(number , number , number , number , number , number):(LuaMat4)
 
         --Creates a right-handed orthographic projection matrix with `[0,1]` depth range.
 
-        orthographic_rh : function((number),(number),(number),(number),(number),(number)):(LuaMat4)
+        orthographic_rh : function(number , number , number , number , number , number):(LuaMat4)
 
-        __tostring : function(LuaMat4):(string)
+        __tostring : function(self:LuaMat4):(string)
 
-        __unm : function(LuaMat4):(LuaMat4)
+        __unm : function(self:LuaMat4):(LuaMat4)
 
-        __index : function(LuaMat4,integer):(LuaVec4)
+        __index : function(self:LuaMat4 , integer):(LuaVec4)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
     end
     
     
-    record LuaMat4Class
+    record ClassLuaMat4
 
         userdata
     
-    --Collection of static methods for [`LuaMat4`].
+    --Collection of static methods for [``].
 
-        --Creates a 4x4 matrix from two column vectors.
+        --Creates a 4x4 matrix from four column vectors.
 
-        from_cols : function((LuaVec4),(LuaVec4),(LuaVec4),(LuaVec4)):(LuaMat4)
+        from_cols : function(LuaVec4 , LuaVec4 , LuaVec4 , LuaVec4):(LuaMat4)
 
         --Creates a 4x4 matrix with its diagonal set to `diagonal` and all other entries set to 0.
 
@@ -10625,7 +11404,7 @@ global record BevyAPI
         --
         --Will panic if `rotation` is not normalized when `glam_assert` is enabled.
 
-        from_scale_rotation_translation : function((LuaVec3),(LuaQuat),(LuaVec3)):(LuaMat4)
+        from_scale_rotation_translation : function(LuaVec3 , LuaQuat , LuaVec3):(LuaMat4)
 
         --Creates an affine transformation matrix from the given 3D `translation`.
         --
@@ -10643,7 +11422,7 @@ global record BevyAPI
         --
         --Will panic if `rotation` is not normalized when `glam_assert` is enabled.
 
-        from_rotation_translation : function((LuaQuat),(LuaVec3)):(LuaMat4)
+        from_rotation_translation : function(LuaQuat , LuaVec3):(LuaMat4)
 
         --Creates an affine transformation matrix from the given `rotation` quaternion.
         --
@@ -10715,7 +11494,7 @@ global record BevyAPI
         --
         --Will panic if `axis` is not normalized when `glam_assert` is enabled.
 
-        from_axis_angle : function((LuaVec3),(number)):(LuaMat4)
+        from_axis_angle : function(LuaVec3 , number):(LuaMat4)
 
         --Creates a affine transformation matrix containing a rotation from the given euler
         --
@@ -10727,7 +11506,7 @@ global record BevyAPI
         --
         --[`Self::transform_point3()`] and [`Self::transform_vector3()`].
 
-        from_euler : function((LuaEulerRot),(number),(number),(number)):(LuaMat4)
+        from_euler : function(LuaEulerRot , number , number , number):(LuaMat4)
 
         --Creates an affine transformation matrix containing a 3D rotation around the x axis of
         --
@@ -10791,7 +11570,7 @@ global record BevyAPI
         --
         --For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
 
-        look_to_lh : function((LuaVec3),(LuaVec3),(LuaVec3)):(LuaMat4)
+        look_to_lh : function(LuaVec3 , LuaVec3 , LuaVec3):(LuaMat4)
 
         --Creates a right-handed view matrix using a camera position, an up direction, and a facing
         --
@@ -10801,7 +11580,7 @@ global record BevyAPI
         --
         --For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
 
-        look_to_rh : function((LuaVec3),(LuaVec3),(LuaVec3)):(LuaMat4)
+        look_to_rh : function(LuaVec3 , LuaVec3 , LuaVec3):(LuaMat4)
 
         --Creates a left-handed view matrix using a camera position, an up direction, and a focal
         --
@@ -10817,7 +11596,7 @@ global record BevyAPI
         --
         --Will panic if `up` is not normalized when `glam_assert` is enabled.
 
-        look_at_lh : function((LuaVec3),(LuaVec3),(LuaVec3)):(LuaMat4)
+        look_at_lh : function(LuaVec3 , LuaVec3 , LuaVec3):(LuaMat4)
 
         --Creates a right-handed view matrix using a camera position, an up direction, and a focal
         --
@@ -10833,7 +11612,7 @@ global record BevyAPI
         --
         --Will panic if `up` is not normalized when `glam_assert` is enabled.
 
-        look_at_rh : function((LuaVec3),(LuaVec3),(LuaVec3)):(LuaMat4)
+        look_at_rh : function(LuaVec3 , LuaVec3 , LuaVec3):(LuaMat4)
 
         --Creates a right-handed perspective projection matrix with [-1,1] depth range.
         --
@@ -10841,7 +11620,7 @@ global record BevyAPI
         --
         --See <https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml>
 
-        perspective_rh_gl : function((number),(number),(number),(number)):(LuaMat4)
+        perspective_rh_gl : function(number , number , number , number):(LuaMat4)
 
         --Creates a left-handed perspective projection matrix with `[0,1]` depth range.
         --
@@ -10855,7 +11634,7 @@ global record BevyAPI
         --
         --enabled.
 
-        perspective_lh : function((number),(number),(number),(number)):(LuaMat4)
+        perspective_lh : function(number , number , number , number):(LuaMat4)
 
         --Creates a right-handed perspective projection matrix with `[0,1]` depth range.
         --
@@ -10869,7 +11648,7 @@ global record BevyAPI
         --
         --enabled.
 
-        perspective_rh : function((number),(number),(number),(number)):(LuaMat4)
+        perspective_rh : function(number , number , number , number):(LuaMat4)
 
         --Creates an infinite left-handed perspective projection matrix with `[0,1]` depth range.
         --
@@ -10881,7 +11660,7 @@ global record BevyAPI
         --
         --Will panic if `z_near` is less than or equal to zero when `glam_assert` is enabled.
 
-        perspective_infinite_lh : function((number),(number),(number)):(LuaMat4)
+        perspective_infinite_lh : function(number , number , number):(LuaMat4)
 
         --Creates an infinite left-handed perspective projection matrix with `[0,1]` depth range.
         --
@@ -10893,19 +11672,19 @@ global record BevyAPI
         --
         --Will panic if `z_near` is less than or equal to zero when `glam_assert` is enabled.
 
-        perspective_infinite_reverse_lh : function((number),(number),(number)):(LuaMat4)
+        perspective_infinite_reverse_lh : function(number , number , number):(LuaMat4)
 
         --Creates an infinite right-handed perspective projection matrix with
         --
         --`[0,1]` depth range.
 
-        perspective_infinite_rh : function((number),(number),(number)):(LuaMat4)
+        perspective_infinite_rh : function(number , number , number):(LuaMat4)
 
         --Creates an infinite reverse right-handed perspective projection matrix
         --
         --with `[0,1]` depth range.
 
-        perspective_infinite_reverse_rh : function((number),(number),(number)):(LuaMat4)
+        perspective_infinite_reverse_rh : function(number , number , number):(LuaMat4)
 
         --Creates a right-handed orthographic projection matrix with `[-1,1]` depth
         --
@@ -10915,21 +11694,21 @@ global record BevyAPI
         --
         --<https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glOrtho.xml>
 
-        orthographic_rh_gl : function((number),(number),(number),(number),(number),(number)):(LuaMat4)
+        orthographic_rh_gl : function(number , number , number , number , number , number):(LuaMat4)
 
         --Creates a left-handed orthographic projection matrix with `[0,1]` depth range.
 
-        orthographic_lh : function((number),(number),(number),(number),(number),(number)):(LuaMat4)
+        orthographic_lh : function(number , number , number , number , number , number):(LuaMat4)
 
         --Creates a right-handed orthographic projection matrix with `[0,1]` depth range.
 
-        orthographic_rh : function((number),(number),(number),(number),(number),(number)):(LuaMat4)
+        orthographic_rh : function(number , number , number , number , number , number):(LuaMat4)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
     end
     
@@ -10954,7 +11733,7 @@ global record BevyAPI
         --
         --Panics if `index` is greater than 1.
 
-        col : function(LuaDMat2,integer):(LuaDVec2)
+        col : function(self:LuaDMat2 , integer):(LuaDVec2)
 
         --Returns the matrix row for the given `index`.
         --
@@ -10966,25 +11745,25 @@ global record BevyAPI
         --
         --Panics if `index` is greater than 1.
 
-        row : function(LuaDMat2,integer):(LuaDVec2)
+        row : function(self:LuaDMat2 , integer):(LuaDVec2)
 
         --Returns `true` if, and only if, all elements are finite.
         --
         --If any element is either `NaN`, positive or negative infinity, this will return `false`.
 
-        is_finite : function(LuaDMat2):(boolean)
+        is_finite : function(self:LuaDMat2):(boolean)
 
         --Returns `true` if any elements are `NaN`.
 
-        is_nan : function(LuaDMat2):(boolean)
+        is_nan : function(self:LuaDMat2):(boolean)
 
         --Returns the transpose of `self`.
 
-        transpose : function(LuaDMat2):(LuaDMat2)
+        transpose : function(self:LuaDMat2):(LuaDMat2)
 
         --Returns the determinant of `self`.
 
-        determinant : function(LuaDMat2):(number)
+        determinant : function(self:LuaDMat2):(number)
 
         --Returns the inverse of `self`.
         --
@@ -11000,27 +11779,27 @@ global record BevyAPI
         --
         --Will panic if the determinant of `self` is zero when `glam_assert` is enabled.
 
-        inverse : function(LuaDMat2):(LuaDMat2)
+        inverse : function(self:LuaDMat2):(LuaDMat2)
 
         --Transforms a 2D vector.
 
-        mul_vec2 : function(LuaDMat2,LuaDVec2):(LuaDVec2)
+        mul_vec2 : function(self:LuaDMat2 , LuaDVec2):(LuaDVec2)
 
         --Multiplies two 2x2 matrices.
 
-        mul_mat2 : function(LuaDMat2,LuaDMat2):(LuaDMat2)
+        mul_mat2 : function(self:LuaDMat2 , LuaDMat2):(LuaDMat2)
 
         --Adds two 2x2 matrices.
 
-        add_mat2 : function(LuaDMat2,LuaDMat2):(LuaDMat2)
+        add_mat2 : function(self:LuaDMat2 , LuaDMat2):(LuaDMat2)
 
         --Subtracts two 2x2 matrices.
 
-        sub_mat2 : function(LuaDMat2,LuaDMat2):(LuaDMat2)
+        sub_mat2 : function(self:LuaDMat2 , LuaDMat2):(LuaDMat2)
 
         --Multiplies a 2x2 matrix by a scalar.
 
-        mul_scalar : function(LuaDMat2,number):(LuaDMat2)
+        mul_scalar : function(self:LuaDMat2 , number):(LuaDMat2)
 
         --Returns true if the absolute difference of all elements between `self` and `rhs`
         --
@@ -11040,13 +11819,13 @@ global record BevyAPI
         --
         --[comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
 
-        abs_diff_eq : function(LuaDMat2,(LuaDMat2),(number)):(boolean)
+        abs_diff_eq : function(self:LuaDMat2 , LuaDMat2 , number):(boolean)
 
-        as_mat2 : function(LuaDMat2):(LuaMat2)
+        as_mat2 : function(self:LuaDMat2):(LuaMat2)
 
         --Creates a 2x2 matrix from two column vectors.
 
-        from_cols : function((LuaDVec2),(LuaDVec2)):(LuaDMat2)
+        from_cols : function(LuaDVec2 , LuaDVec2):(LuaDMat2)
 
         --Creates a 2x2 matrix with its diagonal set to `diagonal` and all other entries set to 0.
 
@@ -11056,7 +11835,7 @@ global record BevyAPI
         --
         --`angle` (in radians).
 
-        from_scale_angle : function((LuaDVec2),(number)):(LuaDMat2)
+        from_scale_angle : function(LuaDVec2 , number):(LuaDMat2)
 
         --Creates a 2x2 matrix containing a rotation of `angle` (in radians).
 
@@ -11066,30 +11845,30 @@ global record BevyAPI
 
         from_mat3 : function(LuaDMat3):(LuaDMat2)
 
-        __tostring : function(LuaDMat2):(string)
+        __tostring : function(self:LuaDMat2):(string)
 
-        __unm : function(LuaDMat2):(LuaDMat2)
+        __unm : function(self:LuaDMat2):(LuaDMat2)
 
-        __index : function(LuaDMat2,integer):(LuaDVec2)
+        __index : function(self:LuaDMat2 , integer):(LuaDVec2)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
     end
     
     
-    record LuaDMat2Class
+    record ClassLuaDMat2
 
         userdata
     
-    --Collection of static methods for [`LuaDMat2`].
+    --Collection of static methods for [``].
 
         --Creates a 2x2 matrix from two column vectors.
 
-        from_cols : function((LuaDVec2),(LuaDVec2)):(LuaDMat2)
+        from_cols : function(LuaDVec2 , LuaDVec2):(LuaDMat2)
 
         --Creates a 2x2 matrix with its diagonal set to `diagonal` and all other entries set to 0.
 
@@ -11099,7 +11878,7 @@ global record BevyAPI
         --
         --`angle` (in radians).
 
-        from_scale_angle : function((LuaDVec2),(number)):(LuaDMat2)
+        from_scale_angle : function(LuaDVec2 , number):(LuaDMat2)
 
         --Creates a 2x2 matrix containing a rotation of `angle` (in radians).
 
@@ -11109,11 +11888,11 @@ global record BevyAPI
 
         from_mat3 : function(LuaDMat3):(LuaDMat2)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
     end
     
@@ -11140,7 +11919,7 @@ global record BevyAPI
         --
         --Panics if `index` is greater than 2.
 
-        col : function(LuaDMat3,integer):(LuaDVec3)
+        col : function(self:LuaDMat3 , integer):(LuaDVec3)
 
         --Returns the matrix row for the given `index`.
         --
@@ -11152,25 +11931,25 @@ global record BevyAPI
         --
         --Panics if `index` is greater than 2.
 
-        row : function(LuaDMat3,integer):(LuaDVec3)
+        row : function(self:LuaDMat3 , integer):(LuaDVec3)
 
         --Returns `true` if, and only if, all elements are finite.
         --
         --If any element is either `NaN`, positive or negative infinity, this will return `false`.
 
-        is_finite : function(LuaDMat3):(boolean)
+        is_finite : function(self:LuaDMat3):(boolean)
 
         --Returns `true` if any elements are `NaN`.
 
-        is_nan : function(LuaDMat3):(boolean)
+        is_nan : function(self:LuaDMat3):(boolean)
 
         --Returns the transpose of `self`.
 
-        transpose : function(LuaDMat3):(LuaDMat3)
+        transpose : function(self:LuaDMat3):(LuaDMat3)
 
         --Returns the determinant of `self`.
 
-        determinant : function(LuaDMat3):(number)
+        determinant : function(self:LuaDMat3):(number)
 
         --Returns the inverse of `self`.
         --
@@ -11186,7 +11965,7 @@ global record BevyAPI
         --
         --Will panic if the determinant of `self` is zero when `glam_assert` is enabled.
 
-        inverse : function(LuaDMat3):(LuaDMat3)
+        inverse : function(self:LuaDMat3):(LuaDMat3)
 
         --Transforms the given 2D vector as a point.
         --
@@ -11206,7 +11985,7 @@ global record BevyAPI
         --
         --Will panic if the 2nd row of `self` is not `(0, 0, 1)` when `glam_assert` is enabled.
 
-        transform_point2 : function(LuaDMat3,LuaDVec2):(LuaDVec2)
+        transform_point2 : function(self:LuaDMat3 , LuaDVec2):(LuaDVec2)
 
         --Rotates the given 2D vector.
         --
@@ -11226,27 +12005,27 @@ global record BevyAPI
         --
         --Will panic if the 2nd row of `self` is not `(0, 0, 1)` when `glam_assert` is enabled.
 
-        transform_vector2 : function(LuaDMat3,LuaDVec2):(LuaDVec2)
+        transform_vector2 : function(self:LuaDMat3 , LuaDVec2):(LuaDVec2)
 
         --Transforms a 3D vector.
 
-        mul_vec3 : function(LuaDMat3,LuaDVec3):(LuaDVec3)
+        mul_vec3 : function(self:LuaDMat3 , LuaDVec3):(LuaDVec3)
 
         --Multiplies two 3x3 matrices.
 
-        mul_mat3 : function(LuaDMat3,LuaDMat3):(LuaDMat3)
+        mul_mat3 : function(self:LuaDMat3 , LuaDMat3):(LuaDMat3)
 
         --Adds two 3x3 matrices.
 
-        add_mat3 : function(LuaDMat3,LuaDMat3):(LuaDMat3)
+        add_mat3 : function(self:LuaDMat3 , LuaDMat3):(LuaDMat3)
 
         --Subtracts two 3x3 matrices.
 
-        sub_mat3 : function(LuaDMat3,LuaDMat3):(LuaDMat3)
+        sub_mat3 : function(self:LuaDMat3 , LuaDMat3):(LuaDMat3)
 
         --Multiplies a 3x3 matrix by a scalar.
 
-        mul_scalar : function(LuaDMat3,number):(LuaDMat3)
+        mul_scalar : function(self:LuaDMat3 , number):(LuaDMat3)
 
         --Returns true if the absolute difference of all elements between `self` and `rhs`
         --
@@ -11266,13 +12045,13 @@ global record BevyAPI
         --
         --[comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
 
-        abs_diff_eq : function(LuaDMat3,(LuaDMat3),(number)):(boolean)
+        abs_diff_eq : function(self:LuaDMat3 , LuaDMat3 , number):(boolean)
 
-        as_mat3 : function(LuaDMat3):(LuaMat3)
+        as_mat3 : function(self:LuaDMat3):(LuaMat3)
 
-        --Creates a 3x3 matrix from two column vectors.
+        --Creates a 3x3 matrix from three column vectors.
 
-        from_cols : function((LuaDVec3),(LuaDVec3),(LuaDVec3)):(LuaDMat3)
+        from_cols : function(LuaDVec3 , LuaDVec3 , LuaDVec3):(LuaDMat3)
 
         --Creates a 3x3 matrix with its diagonal set to `diagonal` and all other entries set to 0.
 
@@ -11306,13 +12085,13 @@ global record BevyAPI
         --
         --Will panic if `axis` is not normalized when `glam_assert` is enabled.
 
-        from_axis_angle : function((LuaDVec3),(number)):(LuaDMat3)
+        from_axis_angle : function(LuaDVec3 , number):(LuaDMat3)
 
         --Creates a 3D rotation matrix from the given euler rotation sequence and the angles (in
         --
         --radians).
 
-        from_euler : function((LuaEulerRot),(number),(number),(number)):(LuaDMat3)
+        from_euler : function(LuaEulerRot , number , number , number):(LuaDMat3)
 
         --Creates a 3D rotation matrix from `angle` (in radians) around the x axis.
 
@@ -11358,7 +12137,7 @@ global record BevyAPI
         --
         --[`Self::transform_point2()`] and [`Self::transform_vector2()`].
 
-        from_scale_angle_translation : function((LuaDVec2),(number),(LuaDVec2)):(LuaDMat3)
+        from_scale_angle_translation : function(LuaDVec2 , number , LuaDVec2):(LuaDMat3)
 
         --Creates an affine transformation matrix from the given non-uniform 2D `scale`.
         --
@@ -11388,30 +12167,30 @@ global record BevyAPI
 
         from_mat2 : function(LuaDMat2):(LuaDMat3)
 
-        __tostring : function(LuaDMat3):(string)
+        __tostring : function(self:LuaDMat3):(string)
 
-        __unm : function(LuaDMat3):(LuaDMat3)
+        __unm : function(self:LuaDMat3):(LuaDMat3)
 
-        __index : function(LuaDMat3,integer):(LuaDVec3)
+        __index : function(self:LuaDMat3 , integer):(LuaDVec3)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
     end
     
     
-    record LuaDMat3Class
+    record ClassLuaDMat3
 
         userdata
     
-    --Collection of static methods for [`LuaDMat3`].
+    --Collection of static methods for [``].
 
-        --Creates a 3x3 matrix from two column vectors.
+        --Creates a 3x3 matrix from three column vectors.
 
-        from_cols : function((LuaDVec3),(LuaDVec3),(LuaDVec3)):(LuaDMat3)
+        from_cols : function(LuaDVec3 , LuaDVec3 , LuaDVec3):(LuaDMat3)
 
         --Creates a 3x3 matrix with its diagonal set to `diagonal` and all other entries set to 0.
 
@@ -11445,13 +12224,13 @@ global record BevyAPI
         --
         --Will panic if `axis` is not normalized when `glam_assert` is enabled.
 
-        from_axis_angle : function((LuaDVec3),(number)):(LuaDMat3)
+        from_axis_angle : function(LuaDVec3 , number):(LuaDMat3)
 
         --Creates a 3D rotation matrix from the given euler rotation sequence and the angles (in
         --
         --radians).
 
-        from_euler : function((LuaEulerRot),(number),(number),(number)):(LuaDMat3)
+        from_euler : function(LuaEulerRot , number , number , number):(LuaDMat3)
 
         --Creates a 3D rotation matrix from `angle` (in radians) around the x axis.
 
@@ -11497,7 +12276,7 @@ global record BevyAPI
         --
         --[`Self::transform_point2()`] and [`Self::transform_vector2()`].
 
-        from_scale_angle_translation : function((LuaDVec2),(number),(LuaDVec2)):(LuaDMat3)
+        from_scale_angle_translation : function(LuaDVec2 , number , LuaDVec2):(LuaDMat3)
 
         --Creates an affine transformation matrix from the given non-uniform 2D `scale`.
         --
@@ -11527,11 +12306,11 @@ global record BevyAPI
 
         from_mat2 : function(LuaDMat2):(LuaDMat3)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
     end
     
@@ -11560,7 +12339,7 @@ global record BevyAPI
         --
         --Panics if `index` is greater than 3.
 
-        col : function(LuaDMat4,integer):(LuaDVec4)
+        col : function(self:LuaDMat4 , integer):(LuaDVec4)
 
         --Returns the matrix row for the given `index`.
         --
@@ -11572,25 +12351,25 @@ global record BevyAPI
         --
         --Panics if `index` is greater than 3.
 
-        row : function(LuaDMat4,integer):(LuaDVec4)
+        row : function(self:LuaDMat4 , integer):(LuaDVec4)
 
         --Returns `true` if, and only if, all elements are finite.
         --
         --If any element is either `NaN`, positive or negative infinity, this will return `false`.
 
-        is_finite : function(LuaDMat4):(boolean)
+        is_finite : function(self:LuaDMat4):(boolean)
 
         --Returns `true` if any elements are `NaN`.
 
-        is_nan : function(LuaDMat4):(boolean)
+        is_nan : function(self:LuaDMat4):(boolean)
 
         --Returns the transpose of `self`.
 
-        transpose : function(LuaDMat4):(LuaDMat4)
+        transpose : function(self:LuaDMat4):(LuaDMat4)
 
         --Returns the determinant of `self`.
 
-        determinant : function(LuaDMat4):(number)
+        determinant : function(self:LuaDMat4):(number)
 
         --Returns the inverse of `self`.
         --
@@ -11606,7 +12385,7 @@ global record BevyAPI
         --
         --Will panic if the determinant of `self` is zero when `glam_assert` is enabled.
 
-        inverse : function(LuaDMat4):(LuaDMat4)
+        inverse : function(self:LuaDMat4):(LuaDMat4)
 
         --Transforms the given 3D vector as a point, applying perspective correction.
         --
@@ -11620,7 +12399,7 @@ global record BevyAPI
         --
         --This method assumes that `self` contains a projective transform.
 
-        project_point3 : function(LuaDMat4,LuaDVec3):(LuaDVec3)
+        project_point3 : function(self:LuaDMat4 , LuaDVec3):(LuaDVec3)
 
         --Transforms the given 3D vector as a point.
         --
@@ -11646,7 +12425,7 @@ global record BevyAPI
         --
         --Will panic if the 3rd row of `self` is not `(0, 0, 0, 1)` when `glam_assert` is enabled.
 
-        transform_point3 : function(LuaDMat4,LuaDVec3):(LuaDVec3)
+        transform_point3 : function(self:LuaDMat4 , LuaDVec3):(LuaDVec3)
 
         --Transforms the give 3D vector as a direction.
         --
@@ -11668,27 +12447,27 @@ global record BevyAPI
         --
         --Will panic if the 3rd row of `self` is not `(0, 0, 0, 1)` when `glam_assert` is enabled.
 
-        transform_vector3 : function(LuaDMat4,LuaDVec3):(LuaDVec3)
+        transform_vector3 : function(self:LuaDMat4 , LuaDVec3):(LuaDVec3)
 
         --Transforms a 4D vector.
 
-        mul_vec4 : function(LuaDMat4,LuaDVec4):(LuaDVec4)
+        mul_vec4 : function(self:LuaDMat4 , LuaDVec4):(LuaDVec4)
 
         --Multiplies two 4x4 matrices.
 
-        mul_mat4 : function(LuaDMat4,LuaDMat4):(LuaDMat4)
+        mul_mat4 : function(self:LuaDMat4 , LuaDMat4):(LuaDMat4)
 
         --Adds two 4x4 matrices.
 
-        add_mat4 : function(LuaDMat4,LuaDMat4):(LuaDMat4)
+        add_mat4 : function(self:LuaDMat4 , LuaDMat4):(LuaDMat4)
 
         --Subtracts two 4x4 matrices.
 
-        sub_mat4 : function(LuaDMat4,LuaDMat4):(LuaDMat4)
+        sub_mat4 : function(self:LuaDMat4 , LuaDMat4):(LuaDMat4)
 
         --Multiplies a 4x4 matrix by a scalar.
 
-        mul_scalar : function(LuaDMat4,number):(LuaDMat4)
+        mul_scalar : function(self:LuaDMat4 , number):(LuaDMat4)
 
         --Returns true if the absolute difference of all elements between `self` and `rhs`
         --
@@ -11708,13 +12487,13 @@ global record BevyAPI
         --
         --[comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
 
-        abs_diff_eq : function(LuaDMat4,(LuaDMat4),(number)):(boolean)
+        abs_diff_eq : function(self:LuaDMat4 , LuaDMat4 , number):(boolean)
 
-        as_mat4 : function(LuaDMat4):(LuaMat4)
+        as_mat4 : function(self:LuaDMat4):(LuaMat4)
 
-        --Creates a 4x4 matrix from two column vectors.
+        --Creates a 4x4 matrix from four column vectors.
 
-        from_cols : function((LuaDVec4),(LuaDVec4),(LuaDVec4),(LuaDVec4)):(LuaDMat4)
+        from_cols : function(LuaDVec4 , LuaDVec4 , LuaDVec4 , LuaDVec4):(LuaDMat4)
 
         --Creates a 4x4 matrix with its diagonal set to `diagonal` and all other entries set to 0.
 
@@ -11738,7 +12517,7 @@ global record BevyAPI
         --
         --Will panic if `rotation` is not normalized when `glam_assert` is enabled.
 
-        from_scale_rotation_translation : function((LuaDVec3),(LuaDQuat),(LuaDVec3)):(LuaDMat4)
+        from_scale_rotation_translation : function(LuaDVec3 , LuaDQuat , LuaDVec3):(LuaDMat4)
 
         --Creates an affine transformation matrix from the given 3D `translation`.
         --
@@ -11756,7 +12535,7 @@ global record BevyAPI
         --
         --Will panic if `rotation` is not normalized when `glam_assert` is enabled.
 
-        from_rotation_translation : function((LuaDQuat),(LuaDVec3)):(LuaDMat4)
+        from_rotation_translation : function(LuaDQuat , LuaDVec3):(LuaDMat4)
 
         --Creates an affine transformation matrix from the given `rotation` quaternion.
         --
@@ -11816,7 +12595,7 @@ global record BevyAPI
         --
         --Will panic if `axis` is not normalized when `glam_assert` is enabled.
 
-        from_axis_angle : function((LuaDVec3),(number)):(LuaDMat4)
+        from_axis_angle : function(LuaDVec3 , number):(LuaDMat4)
 
         --Creates a affine transformation matrix containing a rotation from the given euler
         --
@@ -11828,7 +12607,7 @@ global record BevyAPI
         --
         --[`Self::transform_point3()`] and [`Self::transform_vector3()`].
 
-        from_euler : function((LuaEulerRot),(number),(number),(number)):(LuaDMat4)
+        from_euler : function(LuaEulerRot , number , number , number):(LuaDMat4)
 
         --Creates an affine transformation matrix containing a 3D rotation around the x axis of
         --
@@ -11892,7 +12671,7 @@ global record BevyAPI
         --
         --For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
 
-        look_to_lh : function((LuaDVec3),(LuaDVec3),(LuaDVec3)):(LuaDMat4)
+        look_to_lh : function(LuaDVec3 , LuaDVec3 , LuaDVec3):(LuaDMat4)
 
         --Creates a right-handed view matrix using a camera position, an up direction, and a facing
         --
@@ -11902,7 +12681,7 @@ global record BevyAPI
         --
         --For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
 
-        look_to_rh : function((LuaDVec3),(LuaDVec3),(LuaDVec3)):(LuaDMat4)
+        look_to_rh : function(LuaDVec3 , LuaDVec3 , LuaDVec3):(LuaDMat4)
 
         --Creates a left-handed view matrix using a camera position, an up direction, and a focal
         --
@@ -11918,7 +12697,7 @@ global record BevyAPI
         --
         --Will panic if `up` is not normalized when `glam_assert` is enabled.
 
-        look_at_lh : function((LuaDVec3),(LuaDVec3),(LuaDVec3)):(LuaDMat4)
+        look_at_lh : function(LuaDVec3 , LuaDVec3 , LuaDVec3):(LuaDMat4)
 
         --Creates a right-handed view matrix using a camera position, an up direction, and a focal
         --
@@ -11934,7 +12713,7 @@ global record BevyAPI
         --
         --Will panic if `up` is not normalized when `glam_assert` is enabled.
 
-        look_at_rh : function((LuaDVec3),(LuaDVec3),(LuaDVec3)):(LuaDMat4)
+        look_at_rh : function(LuaDVec3 , LuaDVec3 , LuaDVec3):(LuaDMat4)
 
         --Creates a right-handed perspective projection matrix with [-1,1] depth range.
         --
@@ -11942,7 +12721,7 @@ global record BevyAPI
         --
         --See <https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml>
 
-        perspective_rh_gl : function((number),(number),(number),(number)):(LuaDMat4)
+        perspective_rh_gl : function(number , number , number , number):(LuaDMat4)
 
         --Creates a left-handed perspective projection matrix with `[0,1]` depth range.
         --
@@ -11956,7 +12735,7 @@ global record BevyAPI
         --
         --enabled.
 
-        perspective_lh : function((number),(number),(number),(number)):(LuaDMat4)
+        perspective_lh : function(number , number , number , number):(LuaDMat4)
 
         --Creates a right-handed perspective projection matrix with `[0,1]` depth range.
         --
@@ -11970,7 +12749,7 @@ global record BevyAPI
         --
         --enabled.
 
-        perspective_rh : function((number),(number),(number),(number)):(LuaDMat4)
+        perspective_rh : function(number , number , number , number):(LuaDMat4)
 
         --Creates an infinite left-handed perspective projection matrix with `[0,1]` depth range.
         --
@@ -11982,7 +12761,7 @@ global record BevyAPI
         --
         --Will panic if `z_near` is less than or equal to zero when `glam_assert` is enabled.
 
-        perspective_infinite_lh : function((number),(number),(number)):(LuaDMat4)
+        perspective_infinite_lh : function(number , number , number):(LuaDMat4)
 
         --Creates an infinite left-handed perspective projection matrix with `[0,1]` depth range.
         --
@@ -11994,19 +12773,19 @@ global record BevyAPI
         --
         --Will panic if `z_near` is less than or equal to zero when `glam_assert` is enabled.
 
-        perspective_infinite_reverse_lh : function((number),(number),(number)):(LuaDMat4)
+        perspective_infinite_reverse_lh : function(number , number , number):(LuaDMat4)
 
         --Creates an infinite right-handed perspective projection matrix with
         --
         --`[0,1]` depth range.
 
-        perspective_infinite_rh : function((number),(number),(number)):(LuaDMat4)
+        perspective_infinite_rh : function(number , number , number):(LuaDMat4)
 
         --Creates an infinite reverse right-handed perspective projection matrix
         --
         --with `[0,1]` depth range.
 
-        perspective_infinite_reverse_rh : function((number),(number),(number)):(LuaDMat4)
+        perspective_infinite_reverse_rh : function(number , number , number):(LuaDMat4)
 
         --Creates a right-handed orthographic projection matrix with `[-1,1]` depth
         --
@@ -12016,40 +12795,40 @@ global record BevyAPI
         --
         --<https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glOrtho.xml>
 
-        orthographic_rh_gl : function((number),(number),(number),(number),(number),(number)):(LuaDMat4)
+        orthographic_rh_gl : function(number , number , number , number , number , number):(LuaDMat4)
 
         --Creates a left-handed orthographic projection matrix with `[0,1]` depth range.
 
-        orthographic_lh : function((number),(number),(number),(number),(number),(number)):(LuaDMat4)
+        orthographic_lh : function(number , number , number , number , number , number):(LuaDMat4)
 
         --Creates a right-handed orthographic projection matrix with `[0,1]` depth range.
 
-        orthographic_rh : function((number),(number),(number),(number),(number),(number)):(LuaDMat4)
+        orthographic_rh : function(number , number , number , number , number , number):(LuaDMat4)
 
-        __tostring : function(LuaDMat4):(string)
+        __tostring : function(self:LuaDMat4):(string)
 
-        __unm : function(LuaDMat4):(LuaDMat4)
+        __unm : function(self:LuaDMat4):(LuaDMat4)
 
-        __index : function(LuaDMat4,integer):(LuaDVec4)
+        __index : function(self:LuaDMat4 , integer):(LuaDVec4)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
     end
     
     
-    record LuaDMat4Class
+    record ClassLuaDMat4
 
         userdata
     
-    --Collection of static methods for [`LuaDMat4`].
+    --Collection of static methods for [``].
 
-        --Creates a 4x4 matrix from two column vectors.
+        --Creates a 4x4 matrix from four column vectors.
 
-        from_cols : function((LuaDVec4),(LuaDVec4),(LuaDVec4),(LuaDVec4)):(LuaDMat4)
+        from_cols : function(LuaDVec4 , LuaDVec4 , LuaDVec4 , LuaDVec4):(LuaDMat4)
 
         --Creates a 4x4 matrix with its diagonal set to `diagonal` and all other entries set to 0.
 
@@ -12073,7 +12852,7 @@ global record BevyAPI
         --
         --Will panic if `rotation` is not normalized when `glam_assert` is enabled.
 
-        from_scale_rotation_translation : function((LuaDVec3),(LuaDQuat),(LuaDVec3)):(LuaDMat4)
+        from_scale_rotation_translation : function(LuaDVec3 , LuaDQuat , LuaDVec3):(LuaDMat4)
 
         --Creates an affine transformation matrix from the given 3D `translation`.
         --
@@ -12091,7 +12870,7 @@ global record BevyAPI
         --
         --Will panic if `rotation` is not normalized when `glam_assert` is enabled.
 
-        from_rotation_translation : function((LuaDQuat),(LuaDVec3)):(LuaDMat4)
+        from_rotation_translation : function(LuaDQuat , LuaDVec3):(LuaDMat4)
 
         --Creates an affine transformation matrix from the given `rotation` quaternion.
         --
@@ -12151,7 +12930,7 @@ global record BevyAPI
         --
         --Will panic if `axis` is not normalized when `glam_assert` is enabled.
 
-        from_axis_angle : function((LuaDVec3),(number)):(LuaDMat4)
+        from_axis_angle : function(LuaDVec3 , number):(LuaDMat4)
 
         --Creates a affine transformation matrix containing a rotation from the given euler
         --
@@ -12163,7 +12942,7 @@ global record BevyAPI
         --
         --[`Self::transform_point3()`] and [`Self::transform_vector3()`].
 
-        from_euler : function((LuaEulerRot),(number),(number),(number)):(LuaDMat4)
+        from_euler : function(LuaEulerRot , number , number , number):(LuaDMat4)
 
         --Creates an affine transformation matrix containing a 3D rotation around the x axis of
         --
@@ -12227,7 +13006,7 @@ global record BevyAPI
         --
         --For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
 
-        look_to_lh : function((LuaDVec3),(LuaDVec3),(LuaDVec3)):(LuaDMat4)
+        look_to_lh : function(LuaDVec3 , LuaDVec3 , LuaDVec3):(LuaDMat4)
 
         --Creates a right-handed view matrix using a camera position, an up direction, and a facing
         --
@@ -12237,7 +13016,7 @@ global record BevyAPI
         --
         --For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
 
-        look_to_rh : function((LuaDVec3),(LuaDVec3),(LuaDVec3)):(LuaDMat4)
+        look_to_rh : function(LuaDVec3 , LuaDVec3 , LuaDVec3):(LuaDMat4)
 
         --Creates a left-handed view matrix using a camera position, an up direction, and a focal
         --
@@ -12253,7 +13032,7 @@ global record BevyAPI
         --
         --Will panic if `up` is not normalized when `glam_assert` is enabled.
 
-        look_at_lh : function((LuaDVec3),(LuaDVec3),(LuaDVec3)):(LuaDMat4)
+        look_at_lh : function(LuaDVec3 , LuaDVec3 , LuaDVec3):(LuaDMat4)
 
         --Creates a right-handed view matrix using a camera position, an up direction, and a focal
         --
@@ -12269,7 +13048,7 @@ global record BevyAPI
         --
         --Will panic if `up` is not normalized when `glam_assert` is enabled.
 
-        look_at_rh : function((LuaDVec3),(LuaDVec3),(LuaDVec3)):(LuaDMat4)
+        look_at_rh : function(LuaDVec3 , LuaDVec3 , LuaDVec3):(LuaDMat4)
 
         --Creates a right-handed perspective projection matrix with [-1,1] depth range.
         --
@@ -12277,7 +13056,7 @@ global record BevyAPI
         --
         --See <https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml>
 
-        perspective_rh_gl : function((number),(number),(number),(number)):(LuaDMat4)
+        perspective_rh_gl : function(number , number , number , number):(LuaDMat4)
 
         --Creates a left-handed perspective projection matrix with `[0,1]` depth range.
         --
@@ -12291,7 +13070,7 @@ global record BevyAPI
         --
         --enabled.
 
-        perspective_lh : function((number),(number),(number),(number)):(LuaDMat4)
+        perspective_lh : function(number , number , number , number):(LuaDMat4)
 
         --Creates a right-handed perspective projection matrix with `[0,1]` depth range.
         --
@@ -12305,7 +13084,7 @@ global record BevyAPI
         --
         --enabled.
 
-        perspective_rh : function((number),(number),(number),(number)):(LuaDMat4)
+        perspective_rh : function(number , number , number , number):(LuaDMat4)
 
         --Creates an infinite left-handed perspective projection matrix with `[0,1]` depth range.
         --
@@ -12317,7 +13096,7 @@ global record BevyAPI
         --
         --Will panic if `z_near` is less than or equal to zero when `glam_assert` is enabled.
 
-        perspective_infinite_lh : function((number),(number),(number)):(LuaDMat4)
+        perspective_infinite_lh : function(number , number , number):(LuaDMat4)
 
         --Creates an infinite left-handed perspective projection matrix with `[0,1]` depth range.
         --
@@ -12329,19 +13108,19 @@ global record BevyAPI
         --
         --Will panic if `z_near` is less than or equal to zero when `glam_assert` is enabled.
 
-        perspective_infinite_reverse_lh : function((number),(number),(number)):(LuaDMat4)
+        perspective_infinite_reverse_lh : function(number , number , number):(LuaDMat4)
 
         --Creates an infinite right-handed perspective projection matrix with
         --
         --`[0,1]` depth range.
 
-        perspective_infinite_rh : function((number),(number),(number)):(LuaDMat4)
+        perspective_infinite_rh : function(number , number , number):(LuaDMat4)
 
         --Creates an infinite reverse right-handed perspective projection matrix
         --
         --with `[0,1]` depth range.
 
-        perspective_infinite_reverse_rh : function((number),(number),(number)):(LuaDMat4)
+        perspective_infinite_reverse_rh : function(number , number , number):(LuaDMat4)
 
         --Creates a right-handed orthographic projection matrix with `[-1,1]` depth
         --
@@ -12351,21 +13130,21 @@ global record BevyAPI
         --
         --<https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glOrtho.xml>
 
-        orthographic_rh_gl : function((number),(number),(number),(number),(number),(number)):(LuaDMat4)
+        orthographic_rh_gl : function(number , number , number , number , number , number):(LuaDMat4)
 
         --Creates a left-handed orthographic projection matrix with `[0,1]` depth range.
 
-        orthographic_lh : function((number),(number),(number),(number),(number),(number)):(LuaDMat4)
+        orthographic_lh : function(number , number , number , number , number , number):(LuaDMat4)
 
         --Creates a right-handed orthographic projection matrix with `[0,1]` depth range.
 
-        orthographic_rh : function((number),(number),(number),(number),(number),(number)):(LuaDMat4)
+        orthographic_rh : function(number , number , number , number , number , number):(LuaDMat4)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
     end
     
@@ -12382,7 +13161,7 @@ global record BevyAPI
 
         --Transforms the given 2D point, applying shear, scale, rotation and translation.
 
-        transform_point2 : function(LuaAffine2,LuaVec2):(LuaVec2)
+        transform_point2 : function(self:LuaAffine2 , LuaVec2):(LuaVec2)
 
         --Transforms the given 2D vector, applying shear, scale and rotation (but NOT
         --
@@ -12390,9 +13169,9 @@ global record BevyAPI
         --
         --
         --
-        --To also apply translation, use [`Self::transform_point2`] instead.
+        --To also apply translation, use [`Self::transform_point2()`] instead.
 
-        transform_vector2 : function(LuaAffine2,LuaVec2):(LuaVec2)
+        transform_vector2 : function(self:LuaAffine2 , LuaVec2):(LuaVec2)
 
         --Returns `true` if, and only if, all elements are finite.
         --
@@ -12402,11 +13181,11 @@ global record BevyAPI
         --
         --`false`.
 
-        is_finite : function(LuaAffine2):(boolean)
+        is_finite : function(self:LuaAffine2):(boolean)
 
         --Returns `true` if any elements are `NaN`.
 
-        is_nan : function(LuaAffine2):(boolean)
+        is_nan : function(self:LuaAffine2):(boolean)
 
         --Returns true if the absolute difference of all elements between `self` and `rhs`
         --
@@ -12426,7 +13205,7 @@ global record BevyAPI
         --
         --[comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
 
-        abs_diff_eq : function(LuaAffine2,(LuaAffine2),(number)):(boolean)
+        abs_diff_eq : function(self:LuaAffine2 , LuaAffine2 , number):(boolean)
 
         --Return the inverse of this transform.
         --
@@ -12434,11 +13213,11 @@ global record BevyAPI
         --
         --Note that if the transform is not invertible the result will be invalid.
 
-        inverse : function(LuaAffine2):(LuaAffine2)
+        inverse : function(self:LuaAffine2):(LuaAffine2)
 
         --Creates an affine transform from three column vectors.
 
-        from_cols : function((LuaVec2),(LuaVec2),(LuaVec2)):(LuaAffine2)
+        from_cols : function(LuaVec2 , LuaVec2 , LuaVec2):(LuaAffine2)
 
         --Creates an affine transform that changes scale.
         --
@@ -12468,7 +13247,7 @@ global record BevyAPI
         --
         --`Affine2::from_translation(translation) * Affine2::from_mat2(mat2)`
 
-        from_mat2_translation : function((LuaMat2),(LuaVec2)):(LuaAffine2)
+        from_mat2_translation : function(LuaMat2 , LuaVec2):(LuaAffine2)
 
         --Creates an affine transform from the given 2D `scale`, rotation `angle` (in radians) and
         --
@@ -12480,7 +13259,7 @@ global record BevyAPI
         --
         --Affine2::from_angle(angle) * Affine2::from_scale(scale)`
 
-        from_scale_angle_translation : function((LuaVec2),(number),(LuaVec2)):(LuaAffine2)
+        from_scale_angle_translation : function(LuaVec2 , number , LuaVec2):(LuaAffine2)
 
         --Creates an affine transform from the given 2D rotation `angle` (in radians) and
         --
@@ -12490,32 +13269,32 @@ global record BevyAPI
         --
         --Equivalent to `Affine2::from_translation(translation) * Affine2::from_angle(angle)`
 
-        from_angle_translation : function((number),(LuaVec2)):(LuaAffine2)
+        from_angle_translation : function(number , LuaVec2):(LuaAffine2)
 
         --The given `Mat3` must be an affine transform,
 
         from_mat3 : function(LuaMat3):(LuaAffine2)
 
-        --The given `Mat3A` must be an affine transform,
+        --The given [`Mat3A`] must be an affine transform,
 
         from_mat3a : function(LuaMat3A):(LuaAffine2)
 
-        __tostring : function(LuaAffine2):(string)
+        __tostring : function(self:LuaAffine2):(string)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
     end
     
     
-    record LuaAffine2Class
+    record ClassLuaAffine2
 
         userdata
     
-    --Collection of static methods for [`LuaAffine2`].
+    --Collection of static methods for [``].
 
         --Creates an affine transform from three column vectors.
 
-        from_cols : function((LuaVec2),(LuaVec2),(LuaVec2)):(LuaAffine2)
+        from_cols : function(LuaVec2 , LuaVec2 , LuaVec2):(LuaAffine2)
 
         --Creates an affine transform that changes scale.
         --
@@ -12545,7 +13324,7 @@ global record BevyAPI
         --
         --`Affine2::from_translation(translation) * Affine2::from_mat2(mat2)`
 
-        from_mat2_translation : function((LuaMat2),(LuaVec2)):(LuaAffine2)
+        from_mat2_translation : function(LuaMat2 , LuaVec2):(LuaAffine2)
 
         --Creates an affine transform from the given 2D `scale`, rotation `angle` (in radians) and
         --
@@ -12557,7 +13336,7 @@ global record BevyAPI
         --
         --Affine2::from_angle(angle) * Affine2::from_scale(scale)`
 
-        from_scale_angle_translation : function((LuaVec2),(number),(LuaVec2)):(LuaAffine2)
+        from_scale_angle_translation : function(LuaVec2 , number , LuaVec2):(LuaAffine2)
 
         --Creates an affine transform from the given 2D rotation `angle` (in radians) and
         --
@@ -12567,17 +13346,17 @@ global record BevyAPI
         --
         --Equivalent to `Affine2::from_translation(translation) * Affine2::from_angle(angle)`
 
-        from_angle_translation : function((number),(LuaVec2)):(LuaAffine2)
+        from_angle_translation : function(number , LuaVec2):(LuaAffine2)
 
         --The given `Mat3` must be an affine transform,
 
         from_mat3 : function(LuaMat3):(LuaAffine2)
 
-        --The given `Mat3A` must be an affine transform,
+        --The given [`Mat3A`] must be an affine transform,
 
         from_mat3a : function(LuaMat3A):(LuaAffine2)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
     end
     
@@ -12594,7 +13373,7 @@ global record BevyAPI
 
         --Transforms the given 3D points, applying shear, scale, rotation and translation.
 
-        transform_point3 : function(LuaAffine3A,LuaVec3):(LuaVec3)
+        transform_point3 : function(self:LuaAffine3A , LuaVec3):(LuaVec3)
 
         --Transforms the given 3D vector, applying shear, scale and rotation (but NOT
         --
@@ -12602,23 +13381,23 @@ global record BevyAPI
         --
         --
         --
-        --To also apply translation, use [`Self::transform_point3`] instead.
+        --To also apply translation, use [`Self::transform_point3()`] instead.
 
-        transform_vector3 : function(LuaAffine3A,LuaVec3):(LuaVec3)
+        transform_vector3 : function(self:LuaAffine3A , LuaVec3):(LuaVec3)
 
-        --Transforms the given `Vec3A`, applying shear, scale, rotation and translation.
+        --Transforms the given [`Vec3A`], applying shear, scale, rotation and translation.
 
-        transform_point3a : function(LuaAffine3A,LuaVec3A):(LuaVec3A)
+        transform_point3a : function(self:LuaAffine3A , LuaVec3A):(LuaVec3A)
 
-        --Transforms the given `Vec3A`, applying shear, scale and rotation (but NOT
+        --Transforms the given [`Vec3A`], applying shear, scale and rotation (but NOT
         --
         --translation).
         --
         --
         --
-        --To also apply translation, use [`Self::transform_point3a`] instead.
+        --To also apply translation, use [`Self::transform_point3a()`] instead.
 
-        transform_vector3a : function(LuaAffine3A,LuaVec3A):(LuaVec3A)
+        transform_vector3a : function(self:LuaAffine3A , LuaVec3A):(LuaVec3A)
 
         --Returns `true` if, and only if, all elements are finite.
         --
@@ -12628,11 +13407,11 @@ global record BevyAPI
         --
         --`false`.
 
-        is_finite : function(LuaAffine3A):(boolean)
+        is_finite : function(self:LuaAffine3A):(boolean)
 
         --Returns `true` if any elements are `NaN`.
 
-        is_nan : function(LuaAffine3A):(boolean)
+        is_nan : function(self:LuaAffine3A):(boolean)
 
         --Returns true if the absolute difference of all elements between `self` and `rhs`
         --
@@ -12652,7 +13431,7 @@ global record BevyAPI
         --
         --[comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
 
-        abs_diff_eq : function(LuaAffine3A,(LuaAffine3A),(number)):(boolean)
+        abs_diff_eq : function(self:LuaAffine3A , LuaAffine3A , number):(boolean)
 
         --Return the inverse of this transform.
         --
@@ -12660,11 +13439,11 @@ global record BevyAPI
         --
         --Note that if the transform is not invertible the result will be invalid.
 
-        inverse : function(LuaAffine3A):(LuaAffine3A)
+        inverse : function(self:LuaAffine3A):(LuaAffine3A)
 
         --Creates an affine transform from three column vectors.
 
-        from_cols : function((LuaVec3A),(LuaVec3A),(LuaVec3A),(LuaVec3A)):(LuaAffine3A)
+        from_cols : function(LuaVec3A , LuaVec3A , LuaVec3A , LuaVec3A):(LuaAffine3A)
 
         --Creates an affine transform that changes scale.
         --
@@ -12680,7 +13459,7 @@ global record BevyAPI
         --
         --rotation `axis` of `angle` (in radians).
 
-        from_axis_angle : function((LuaVec3),(number)):(LuaAffine3A)
+        from_axis_angle : function(LuaVec3 , number):(LuaAffine3A)
 
         --Creates an affine transform containing a 3D rotation around the x axis of
         --
@@ -12718,7 +13497,7 @@ global record BevyAPI
         --
         --Equivalent to `Affine3A::from_translation(translation) * Affine3A::from_mat3(mat3)`
 
-        from_mat3_translation : function((LuaMat3),(LuaVec3)):(LuaAffine3A)
+        from_mat3_translation : function(LuaMat3 , LuaVec3):(LuaAffine3A)
 
         --Creates an affine transform from the given 3D `scale`, `rotation` and
         --
@@ -12730,7 +13509,7 @@ global record BevyAPI
         --
         --Affine3A::from_quat(rotation) * Affine3A::from_scale(scale)`
 
-        from_scale_rotation_translation : function((LuaVec3),(LuaQuat),(LuaVec3)):(LuaAffine3A)
+        from_scale_rotation_translation : function(LuaVec3 , LuaQuat , LuaVec3):(LuaAffine3A)
 
         --Creates an affine transform from the given 3D `rotation` and `translation`.
         --
@@ -12738,7 +13517,7 @@ global record BevyAPI
         --
         --Equivalent to `Affine3A::from_translation(translation) * Affine3A::from_quat(rotation)`
 
-        from_rotation_translation : function((LuaQuat),(LuaVec3)):(LuaAffine3A)
+        from_rotation_translation : function(LuaQuat , LuaVec3):(LuaAffine3A)
 
         --The given `Mat4` must be an affine transform,
         --
@@ -12754,7 +13533,7 @@ global record BevyAPI
         --
         --For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
 
-        look_to_lh : function((LuaVec3),(LuaVec3),(LuaVec3)):(LuaAffine3A)
+        look_to_lh : function(LuaVec3 , LuaVec3 , LuaVec3):(LuaAffine3A)
 
         --Creates a right-handed view transform using a camera position, an up direction, and a facing
         --
@@ -12764,7 +13543,7 @@ global record BevyAPI
         --
         --For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
 
-        look_to_rh : function((LuaVec3),(LuaVec3),(LuaVec3)):(LuaAffine3A)
+        look_to_rh : function(LuaVec3 , LuaVec3 , LuaVec3):(LuaAffine3A)
 
         --Creates a left-handed view transform using a camera position, an up direction, and a focal
         --
@@ -12780,7 +13559,7 @@ global record BevyAPI
         --
         --Will panic if `up` is not normalized when `glam_assert` is enabled.
 
-        look_at_lh : function((LuaVec3),(LuaVec3),(LuaVec3)):(LuaAffine3A)
+        look_at_lh : function(LuaVec3 , LuaVec3 , LuaVec3):(LuaAffine3A)
 
         --Creates a right-handed view transform using a camera position, an up direction, and a focal
         --
@@ -12796,24 +13575,24 @@ global record BevyAPI
         --
         --Will panic if `up` is not normalized when `glam_assert` is enabled.
 
-        look_at_rh : function((LuaVec3),(LuaVec3),(LuaVec3)):(LuaAffine3A)
+        look_at_rh : function(LuaVec3 , LuaVec3 , LuaVec3):(LuaAffine3A)
 
-        __tostring : function(LuaAffine3A):(string)
+        __tostring : function(self:LuaAffine3A):(string)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
     end
     
     
-    record LuaAffine3AClass
+    record ClassLuaAffine3A
 
         userdata
     
-    --Collection of static methods for [`LuaAffine3A`].
+    --Collection of static methods for [``].
 
         --Creates an affine transform from three column vectors.
 
-        from_cols : function((LuaVec3A),(LuaVec3A),(LuaVec3A),(LuaVec3A)):(LuaAffine3A)
+        from_cols : function(LuaVec3A , LuaVec3A , LuaVec3A , LuaVec3A):(LuaAffine3A)
 
         --Creates an affine transform that changes scale.
         --
@@ -12829,7 +13608,7 @@ global record BevyAPI
         --
         --rotation `axis` of `angle` (in radians).
 
-        from_axis_angle : function((LuaVec3),(number)):(LuaAffine3A)
+        from_axis_angle : function(LuaVec3 , number):(LuaAffine3A)
 
         --Creates an affine transform containing a 3D rotation around the x axis of
         --
@@ -12867,7 +13646,7 @@ global record BevyAPI
         --
         --Equivalent to `Affine3A::from_translation(translation) * Affine3A::from_mat3(mat3)`
 
-        from_mat3_translation : function((LuaMat3),(LuaVec3)):(LuaAffine3A)
+        from_mat3_translation : function(LuaMat3 , LuaVec3):(LuaAffine3A)
 
         --Creates an affine transform from the given 3D `scale`, `rotation` and
         --
@@ -12879,7 +13658,7 @@ global record BevyAPI
         --
         --Affine3A::from_quat(rotation) * Affine3A::from_scale(scale)`
 
-        from_scale_rotation_translation : function((LuaVec3),(LuaQuat),(LuaVec3)):(LuaAffine3A)
+        from_scale_rotation_translation : function(LuaVec3 , LuaQuat , LuaVec3):(LuaAffine3A)
 
         --Creates an affine transform from the given 3D `rotation` and `translation`.
         --
@@ -12887,7 +13666,7 @@ global record BevyAPI
         --
         --Equivalent to `Affine3A::from_translation(translation) * Affine3A::from_quat(rotation)`
 
-        from_rotation_translation : function((LuaQuat),(LuaVec3)):(LuaAffine3A)
+        from_rotation_translation : function(LuaQuat , LuaVec3):(LuaAffine3A)
 
         --The given `Mat4` must be an affine transform,
         --
@@ -12903,7 +13682,7 @@ global record BevyAPI
         --
         --For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
 
-        look_to_lh : function((LuaVec3),(LuaVec3),(LuaVec3)):(LuaAffine3A)
+        look_to_lh : function(LuaVec3 , LuaVec3 , LuaVec3):(LuaAffine3A)
 
         --Creates a right-handed view transform using a camera position, an up direction, and a facing
         --
@@ -12913,7 +13692,7 @@ global record BevyAPI
         --
         --For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
 
-        look_to_rh : function((LuaVec3),(LuaVec3),(LuaVec3)):(LuaAffine3A)
+        look_to_rh : function(LuaVec3 , LuaVec3 , LuaVec3):(LuaAffine3A)
 
         --Creates a left-handed view transform using a camera position, an up direction, and a focal
         --
@@ -12929,7 +13708,7 @@ global record BevyAPI
         --
         --Will panic if `up` is not normalized when `glam_assert` is enabled.
 
-        look_at_lh : function((LuaVec3),(LuaVec3),(LuaVec3)):(LuaAffine3A)
+        look_at_lh : function(LuaVec3 , LuaVec3 , LuaVec3):(LuaAffine3A)
 
         --Creates a right-handed view transform using a camera position, an up direction, and a focal
         --
@@ -12945,9 +13724,9 @@ global record BevyAPI
         --
         --Will panic if `up` is not normalized when `glam_assert` is enabled.
 
-        look_at_rh : function((LuaVec3),(LuaVec3),(LuaVec3)):(LuaAffine3A)
+        look_at_rh : function(LuaVec3 , LuaVec3 , LuaVec3):(LuaAffine3A)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
     end
     
@@ -12964,7 +13743,7 @@ global record BevyAPI
 
         --Transforms the given 2D point, applying shear, scale, rotation and translation.
 
-        transform_point2 : function(LuaDAffine2,LuaDVec2):(LuaDVec2)
+        transform_point2 : function(self:LuaDAffine2 , LuaDVec2):(LuaDVec2)
 
         --Transforms the given 2D vector, applying shear, scale and rotation (but NOT
         --
@@ -12972,9 +13751,9 @@ global record BevyAPI
         --
         --
         --
-        --To also apply translation, use [`Self::transform_point2`] instead.
+        --To also apply translation, use [`Self::transform_point2()`] instead.
 
-        transform_vector2 : function(LuaDAffine2,LuaDVec2):(LuaDVec2)
+        transform_vector2 : function(self:LuaDAffine2 , LuaDVec2):(LuaDVec2)
 
         --Returns `true` if, and only if, all elements are finite.
         --
@@ -12984,11 +13763,11 @@ global record BevyAPI
         --
         --`false`.
 
-        is_finite : function(LuaDAffine2):(boolean)
+        is_finite : function(self:LuaDAffine2):(boolean)
 
         --Returns `true` if any elements are `NaN`.
 
-        is_nan : function(LuaDAffine2):(boolean)
+        is_nan : function(self:LuaDAffine2):(boolean)
 
         --Returns true if the absolute difference of all elements between `self` and `rhs`
         --
@@ -13008,7 +13787,7 @@ global record BevyAPI
         --
         --[comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
 
-        abs_diff_eq : function(LuaDAffine2,(LuaDAffine2),(number)):(boolean)
+        abs_diff_eq : function(self:LuaDAffine2 , LuaDAffine2 , number):(boolean)
 
         --Return the inverse of this transform.
         --
@@ -13016,11 +13795,11 @@ global record BevyAPI
         --
         --Note that if the transform is not invertible the result will be invalid.
 
-        inverse : function(LuaDAffine2):(LuaDAffine2)
+        inverse : function(self:LuaDAffine2):(LuaDAffine2)
 
         --Creates an affine transform from three column vectors.
 
-        from_cols : function((LuaDVec2),(LuaDVec2),(LuaDVec2)):(LuaDAffine2)
+        from_cols : function(LuaDVec2 , LuaDVec2 , LuaDVec2):(LuaDAffine2)
 
         --Creates an affine transform that changes scale.
         --
@@ -13050,7 +13829,7 @@ global record BevyAPI
         --
         --`DAffine2::from_translation(translation) * DAffine2::from_mat2(mat2)`
 
-        from_mat2_translation : function((LuaDMat2),(LuaDVec2)):(LuaDAffine2)
+        from_mat2_translation : function(LuaDMat2 , LuaDVec2):(LuaDAffine2)
 
         --Creates an affine transform from the given 2D `scale`, rotation `angle` (in radians) and
         --
@@ -13062,7 +13841,7 @@ global record BevyAPI
         --
         --DAffine2::from_angle(angle) * DAffine2::from_scale(scale)`
 
-        from_scale_angle_translation : function((LuaDVec2),(number),(LuaDVec2)):(LuaDAffine2)
+        from_scale_angle_translation : function(LuaDVec2 , number , LuaDVec2):(LuaDAffine2)
 
         --Creates an affine transform from the given 2D rotation `angle` (in radians) and
         --
@@ -13072,28 +13851,28 @@ global record BevyAPI
         --
         --Equivalent to `DAffine2::from_translation(translation) * DAffine2::from_angle(angle)`
 
-        from_angle_translation : function((number),(LuaDVec2)):(LuaDAffine2)
+        from_angle_translation : function(number , LuaDVec2):(LuaDAffine2)
 
         --The given `DMat3` must be an affine transform,
 
         from_mat3 : function(LuaDMat3):(LuaDAffine2)
 
-        __tostring : function(LuaDAffine2):(string)
+        __tostring : function(self:LuaDAffine2):(string)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
     end
     
     
-    record LuaDAffine2Class
+    record ClassLuaDAffine2
 
         userdata
     
-    --Collection of static methods for [`LuaDAffine2`].
+    --Collection of static methods for [``].
 
         --Creates an affine transform from three column vectors.
 
-        from_cols : function((LuaDVec2),(LuaDVec2),(LuaDVec2)):(LuaDAffine2)
+        from_cols : function(LuaDVec2 , LuaDVec2 , LuaDVec2):(LuaDAffine2)
 
         --Creates an affine transform that changes scale.
         --
@@ -13123,7 +13902,7 @@ global record BevyAPI
         --
         --`DAffine2::from_translation(translation) * DAffine2::from_mat2(mat2)`
 
-        from_mat2_translation : function((LuaDMat2),(LuaDVec2)):(LuaDAffine2)
+        from_mat2_translation : function(LuaDMat2 , LuaDVec2):(LuaDAffine2)
 
         --Creates an affine transform from the given 2D `scale`, rotation `angle` (in radians) and
         --
@@ -13135,7 +13914,7 @@ global record BevyAPI
         --
         --DAffine2::from_angle(angle) * DAffine2::from_scale(scale)`
 
-        from_scale_angle_translation : function((LuaDVec2),(number),(LuaDVec2)):(LuaDAffine2)
+        from_scale_angle_translation : function(LuaDVec2 , number , LuaDVec2):(LuaDAffine2)
 
         --Creates an affine transform from the given 2D rotation `angle` (in radians) and
         --
@@ -13145,13 +13924,13 @@ global record BevyAPI
         --
         --Equivalent to `DAffine2::from_translation(translation) * DAffine2::from_angle(angle)`
 
-        from_angle_translation : function((number),(LuaDVec2)):(LuaDAffine2)
+        from_angle_translation : function(number , LuaDVec2):(LuaDAffine2)
 
         --The given `DMat3` must be an affine transform,
 
         from_mat3 : function(LuaDMat3):(LuaDAffine2)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
     end
     
@@ -13168,7 +13947,7 @@ global record BevyAPI
 
         --Transforms the given 3D points, applying shear, scale, rotation and translation.
 
-        transform_point3 : function(LuaDAffine3,LuaDVec3):(LuaDVec3)
+        transform_point3 : function(self:LuaDAffine3 , LuaDVec3):(LuaDVec3)
 
         --Transforms the given 3D vector, applying shear, scale and rotation (but NOT
         --
@@ -13176,9 +13955,9 @@ global record BevyAPI
         --
         --
         --
-        --To also apply translation, use [`Self::transform_point3`] instead.
+        --To also apply translation, use [`Self::transform_point3()`] instead.
 
-        transform_vector3 : function(LuaDAffine3,LuaDVec3):(LuaDVec3)
+        transform_vector3 : function(self:LuaDAffine3 , LuaDVec3):(LuaDVec3)
 
         --Returns `true` if, and only if, all elements are finite.
         --
@@ -13188,11 +13967,11 @@ global record BevyAPI
         --
         --`false`.
 
-        is_finite : function(LuaDAffine3):(boolean)
+        is_finite : function(self:LuaDAffine3):(boolean)
 
         --Returns `true` if any elements are `NaN`.
 
-        is_nan : function(LuaDAffine3):(boolean)
+        is_nan : function(self:LuaDAffine3):(boolean)
 
         --Returns true if the absolute difference of all elements between `self` and `rhs`
         --
@@ -13212,7 +13991,7 @@ global record BevyAPI
         --
         --[comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
 
-        abs_diff_eq : function(LuaDAffine3,(LuaDAffine3),(number)):(boolean)
+        abs_diff_eq : function(self:LuaDAffine3 , LuaDAffine3 , number):(boolean)
 
         --Return the inverse of this transform.
         --
@@ -13220,11 +13999,11 @@ global record BevyAPI
         --
         --Note that if the transform is not invertible the result will be invalid.
 
-        inverse : function(LuaDAffine3):(LuaDAffine3)
+        inverse : function(self:LuaDAffine3):(LuaDAffine3)
 
         --Creates an affine transform from three column vectors.
 
-        from_cols : function((LuaDVec3),(LuaDVec3),(LuaDVec3),(LuaDVec3)):(LuaDAffine3)
+        from_cols : function(LuaDVec3 , LuaDVec3 , LuaDVec3 , LuaDVec3):(LuaDAffine3)
 
         --Creates an affine transform that changes scale.
         --
@@ -13240,7 +14019,7 @@ global record BevyAPI
         --
         --rotation `axis` of `angle` (in radians).
 
-        from_axis_angle : function((LuaDVec3),(number)):(LuaDAffine3)
+        from_axis_angle : function(LuaDVec3 , number):(LuaDAffine3)
 
         --Creates an affine transform containing a 3D rotation around the x axis of
         --
@@ -13278,7 +14057,7 @@ global record BevyAPI
         --
         --Equivalent to `DAffine3::from_translation(translation) * DAffine3::from_mat3(mat3)`
 
-        from_mat3_translation : function((LuaDMat3),(LuaDVec3)):(LuaDAffine3)
+        from_mat3_translation : function(LuaDMat3 , LuaDVec3):(LuaDAffine3)
 
         --Creates an affine transform from the given 3D `scale`, `rotation` and
         --
@@ -13290,7 +14069,7 @@ global record BevyAPI
         --
         --DAffine3::from_quat(rotation) * DAffine3::from_scale(scale)`
 
-        from_scale_rotation_translation : function((LuaDVec3),(LuaDQuat),(LuaDVec3)):(LuaDAffine3)
+        from_scale_rotation_translation : function(LuaDVec3 , LuaDQuat , LuaDVec3):(LuaDAffine3)
 
         --Creates an affine transform from the given 3D `rotation` and `translation`.
         --
@@ -13298,7 +14077,7 @@ global record BevyAPI
         --
         --Equivalent to `DAffine3::from_translation(translation) * DAffine3::from_quat(rotation)`
 
-        from_rotation_translation : function((LuaDQuat),(LuaDVec3)):(LuaDAffine3)
+        from_rotation_translation : function(LuaDQuat , LuaDVec3):(LuaDAffine3)
 
         --The given `DMat4` must be an affine transform,
         --
@@ -13314,7 +14093,7 @@ global record BevyAPI
         --
         --For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
 
-        look_to_lh : function((LuaDVec3),(LuaDVec3),(LuaDVec3)):(LuaDAffine3)
+        look_to_lh : function(LuaDVec3 , LuaDVec3 , LuaDVec3):(LuaDAffine3)
 
         --Creates a right-handed view transform using a camera position, an up direction, and a facing
         --
@@ -13324,7 +14103,7 @@ global record BevyAPI
         --
         --For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
 
-        look_to_rh : function((LuaDVec3),(LuaDVec3),(LuaDVec3)):(LuaDAffine3)
+        look_to_rh : function(LuaDVec3 , LuaDVec3 , LuaDVec3):(LuaDAffine3)
 
         --Creates a left-handed view transform using a camera position, an up direction, and a focal
         --
@@ -13340,7 +14119,7 @@ global record BevyAPI
         --
         --Will panic if `up` is not normalized when `glam_assert` is enabled.
 
-        look_at_lh : function((LuaDVec3),(LuaDVec3),(LuaDVec3)):(LuaDAffine3)
+        look_at_lh : function(LuaDVec3 , LuaDVec3 , LuaDVec3):(LuaDAffine3)
 
         --Creates a right-handed view transform using a camera position, an up direction, and a focal
         --
@@ -13356,24 +14135,24 @@ global record BevyAPI
         --
         --Will panic if `up` is not normalized when `glam_assert` is enabled.
 
-        look_at_rh : function((LuaDVec3),(LuaDVec3),(LuaDVec3)):(LuaDAffine3)
+        look_at_rh : function(LuaDVec3 , LuaDVec3 , LuaDVec3):(LuaDAffine3)
 
-        __tostring : function(LuaDAffine3):(string)
+        __tostring : function(self:LuaDAffine3):(string)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
     end
     
     
-    record LuaDAffine3Class
+    record ClassLuaDAffine3
 
         userdata
     
-    --Collection of static methods for [`LuaDAffine3`].
+    --Collection of static methods for [``].
 
         --Creates an affine transform from three column vectors.
 
-        from_cols : function((LuaDVec3),(LuaDVec3),(LuaDVec3),(LuaDVec3)):(LuaDAffine3)
+        from_cols : function(LuaDVec3 , LuaDVec3 , LuaDVec3 , LuaDVec3):(LuaDAffine3)
 
         --Creates an affine transform that changes scale.
         --
@@ -13389,7 +14168,7 @@ global record BevyAPI
         --
         --rotation `axis` of `angle` (in radians).
 
-        from_axis_angle : function((LuaDVec3),(number)):(LuaDAffine3)
+        from_axis_angle : function(LuaDVec3 , number):(LuaDAffine3)
 
         --Creates an affine transform containing a 3D rotation around the x axis of
         --
@@ -13427,7 +14206,7 @@ global record BevyAPI
         --
         --Equivalent to `DAffine3::from_translation(translation) * DAffine3::from_mat3(mat3)`
 
-        from_mat3_translation : function((LuaDMat3),(LuaDVec3)):(LuaDAffine3)
+        from_mat3_translation : function(LuaDMat3 , LuaDVec3):(LuaDAffine3)
 
         --Creates an affine transform from the given 3D `scale`, `rotation` and
         --
@@ -13439,7 +14218,7 @@ global record BevyAPI
         --
         --DAffine3::from_quat(rotation) * DAffine3::from_scale(scale)`
 
-        from_scale_rotation_translation : function((LuaDVec3),(LuaDQuat),(LuaDVec3)):(LuaDAffine3)
+        from_scale_rotation_translation : function(LuaDVec3 , LuaDQuat , LuaDVec3):(LuaDAffine3)
 
         --Creates an affine transform from the given 3D `rotation` and `translation`.
         --
@@ -13447,7 +14226,7 @@ global record BevyAPI
         --
         --Equivalent to `DAffine3::from_translation(translation) * DAffine3::from_quat(rotation)`
 
-        from_rotation_translation : function((LuaDQuat),(LuaDVec3)):(LuaDAffine3)
+        from_rotation_translation : function(LuaDQuat , LuaDVec3):(LuaDAffine3)
 
         --The given `DMat4` must be an affine transform,
         --
@@ -13463,7 +14242,7 @@ global record BevyAPI
         --
         --For a view coordinate system with `+X=right`, `+Y=up` and `+Z=forward`.
 
-        look_to_lh : function((LuaDVec3),(LuaDVec3),(LuaDVec3)):(LuaDAffine3)
+        look_to_lh : function(LuaDVec3 , LuaDVec3 , LuaDVec3):(LuaDAffine3)
 
         --Creates a right-handed view transform using a camera position, an up direction, and a facing
         --
@@ -13473,7 +14252,7 @@ global record BevyAPI
         --
         --For a view coordinate system with `+X=right`, `+Y=up` and `+Z=back`.
 
-        look_to_rh : function((LuaDVec3),(LuaDVec3),(LuaDVec3)):(LuaDAffine3)
+        look_to_rh : function(LuaDVec3 , LuaDVec3 , LuaDVec3):(LuaDAffine3)
 
         --Creates a left-handed view transform using a camera position, an up direction, and a focal
         --
@@ -13489,7 +14268,7 @@ global record BevyAPI
         --
         --Will panic if `up` is not normalized when `glam_assert` is enabled.
 
-        look_at_lh : function((LuaDVec3),(LuaDVec3),(LuaDVec3)):(LuaDAffine3)
+        look_at_lh : function(LuaDVec3 , LuaDVec3 , LuaDVec3):(LuaDAffine3)
 
         --Creates a right-handed view transform using a camera position, an up direction, and a focal
         --
@@ -13505,9 +14284,9 @@ global record BevyAPI
         --
         --Will panic if `up` is not normalized when `glam_assert` is enabled.
 
-        look_at_rh : function((LuaDVec3),(LuaDVec3),(LuaDVec3)):(LuaDAffine3)
+        look_at_rh : function(LuaDVec3 , LuaDVec3 , LuaDVec3):(LuaDAffine3)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
     end
     
@@ -13520,17 +14299,17 @@ global record BevyAPI
 
         --Returns the rotation axis scaled by the rotation in radians.
 
-        to_scaled_axis : function(LuaQuat):(LuaVec3)
+        to_scaled_axis : function(self:LuaQuat):(LuaVec3)
 
         --Returns the vector part of the quaternion.
 
-        xyz : function(LuaQuat):(LuaVec3)
+        xyz : function(self:LuaQuat):(LuaVec3)
 
         --Returns the quaternion conjugate of `self`. For a unit quaternion the
         --
         --conjugate is also the inverse.
 
-        conjugate : function(LuaQuat):(LuaQuat)
+        conjugate : function(self:LuaQuat):(LuaQuat)
 
         --Returns the inverse of a normalized quaternion.
         --
@@ -13550,17 +14329,17 @@ global record BevyAPI
         --
         --Will panic if `self` is not normalized when `glam_assert` is enabled.
 
-        inverse : function(LuaQuat):(LuaQuat)
+        inverse : function(self:LuaQuat):(LuaQuat)
 
         --Computes the dot product of `self` and `rhs`. The dot product is
         --
         --equal to the cosine of the angle between two quaternion rotations.
 
-        dot : function(LuaQuat,LuaQuat):(number)
+        dot : function(self:LuaQuat , LuaQuat):(number)
 
         --Computes the length of `self`.
 
-        length : function(LuaQuat):(number)
+        length : function(self:LuaQuat):(number)
 
         --Computes the squared length of `self`.
         --
@@ -13570,7 +14349,7 @@ global record BevyAPI
         --
         --root operation.
 
-        length_squared : function(LuaQuat):(number)
+        length_squared : function(self:LuaQuat):(number)
 
         --Computes `1.0 / length()`.
         --
@@ -13578,7 +14357,7 @@ global record BevyAPI
         --
         --For valid results, `self` must _not_ be of length zero.
 
-        length_recip : function(LuaQuat):(number)
+        length_recip : function(self:LuaQuat):(number)
 
         --Returns `self` normalized to length 1.0.
         --
@@ -13594,15 +14373,15 @@ global record BevyAPI
         --
         --Will panic if `self` is zero length when `glam_assert` is enabled.
 
-        normalize : function(LuaQuat):(LuaQuat)
+        normalize : function(self:LuaQuat):(LuaQuat)
 
         --Returns `true` if, and only if, all elements are finite.
         --
         --If any element is either `NaN`, positive or negative infinity, this will return `false`.
 
-        is_finite : function(LuaQuat):(boolean)
+        is_finite : function(self:LuaQuat):(boolean)
 
-        is_nan : function(LuaQuat):(boolean)
+        is_nan : function(self:LuaQuat):(boolean)
 
         --Returns whether `self` of length `1.0` or not.
         --
@@ -13610,9 +14389,9 @@ global record BevyAPI
         --
         --Uses a precision threshold of `1e-6`.
 
-        is_normalized : function(LuaQuat):(boolean)
+        is_normalized : function(self:LuaQuat):(boolean)
 
-        is_near_identity : function(LuaQuat):(boolean)
+        is_near_identity : function(self:LuaQuat):(boolean)
 
         --Returns the angle (in radians) for the minimal rotation
         --
@@ -13630,7 +14409,7 @@ global record BevyAPI
         --
         --Will panic if `self` or `rhs` are not normalized when `glam_assert` is enabled.
 
-        angle_between : function(LuaQuat,LuaQuat):(number)
+        angle_between : function(self:LuaQuat , LuaQuat):(number)
 
         --Returns true if the absolute difference of all elements between `self` and `rhs`
         --
@@ -13650,7 +14429,7 @@ global record BevyAPI
         --
         --[comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
 
-        abs_diff_eq : function(LuaQuat,(LuaQuat),(number)):(boolean)
+        abs_diff_eq : function(self:LuaQuat , LuaQuat , number):(boolean)
 
         --Performs a linear interpolation between `self` and `rhs` based on
         --
@@ -13670,7 +14449,7 @@ global record BevyAPI
         --
         --Will panic if `self` or `end` are not normalized when `glam_assert` is enabled.
 
-        lerp : function(LuaQuat,(LuaQuat),(number)):(LuaQuat)
+        lerp : function(self:LuaQuat , LuaQuat , number):(LuaQuat)
 
         --Performs a spherical linear interpolation between `self` and `end`
         --
@@ -13690,7 +14469,7 @@ global record BevyAPI
         --
         --Will panic if `self` or `end` are not normalized when `glam_assert` is enabled.
 
-        slerp : function(LuaQuat,(LuaQuat),(number)):(LuaQuat)
+        slerp : function(self:LuaQuat , LuaQuat , number):(LuaQuat)
 
         --Multiplies a quaternion and a 3D vector, returning the rotated vector.
         --
@@ -13702,7 +14481,7 @@ global record BevyAPI
         --
         --Will panic if `self` is not normalized when `glam_assert` is enabled.
 
-        mul_vec3 : function(LuaQuat,LuaVec3):(LuaVec3)
+        mul_vec3 : function(self:LuaQuat , LuaVec3):(LuaVec3)
 
         --Multiplies two quaternions. If they each represent a rotation, the result will
         --
@@ -13720,13 +14499,13 @@ global record BevyAPI
         --
         --Will panic if `self` or `rhs` are not normalized when `glam_assert` is enabled.
 
-        mul_quat : function(LuaQuat,LuaQuat):(LuaQuat)
+        mul_quat : function(self:LuaQuat , LuaQuat):(LuaQuat)
 
         --Multiplies a quaternion and a 3D vector, returning the rotated vector.
 
-        mul_vec3a : function(LuaQuat,LuaVec3A):(LuaVec3A)
+        mul_vec3a : function(self:LuaQuat , LuaVec3A):(LuaVec3A)
 
-        as_f64 : function(LuaQuat):(LuaDQuat)
+        as_f64 : function(self:LuaQuat):(LuaDQuat)
 
         --Creates a new rotation quaternion.
         --
@@ -13750,7 +14529,7 @@ global record BevyAPI
         --
         --provide normalized input or to normalized the resulting quaternion.
 
-        from_xyzw : function((number),(number),(number),(number)):(LuaQuat)
+        from_xyzw : function(number , number , number , number):(LuaQuat)
 
         --Creates a new rotation quaternion from a 4D vector.
         --
@@ -13768,7 +14547,9 @@ global record BevyAPI
 
         --Create a quaternion for a normalized rotation `axis` and `angle` (in radians).
         --
-        --The axis must be normalized (unit-length).
+        --
+        --
+        --The axis must be a unit vector.
         --
         --
         --
@@ -13778,7 +14559,7 @@ global record BevyAPI
         --
         --Will panic if `axis` is not normalized when `glam_assert` is enabled.
 
-        from_axis_angle : function((LuaVec3),(number)):(LuaQuat)
+        from_axis_angle : function(LuaVec3 , number):(LuaQuat)
 
         --Create a quaternion that rotates `v.length()` radians around `v.normalize()`.
         --
@@ -13802,7 +14583,7 @@ global record BevyAPI
 
         --Creates a quaternion from the given Euler rotation sequence and the angles (in radians).
 
-        from_euler : function((LuaEulerRot),(number),(number),(number)):(LuaQuat)
+        from_euler : function(LuaEulerRot , number , number , number):(LuaQuat)
 
         --Creates a quaternion from a 3x3 rotation matrix.
 
@@ -13822,7 +14603,7 @@ global record BevyAPI
         --
         --
         --
-        --The input vectors must be normalized (unit-length).
+        --The inputs must be unit vectors.
         --
         --
         --
@@ -13842,7 +14623,7 @@ global record BevyAPI
         --
         --Will panic if `from` or `to` are not normalized when `glam_assert` is enabled.
 
-        from_rotation_arc : function((LuaVec3),(LuaVec3)):(LuaQuat)
+        from_rotation_arc : function(LuaVec3 , LuaVec3):(LuaQuat)
 
         --Gets the minimal rotation for transforming `from` to either `to` or `-to`.  This means
         --
@@ -13856,7 +14637,7 @@ global record BevyAPI
         --
         --
         --
-        --The input vectors must be normalized (unit-length).
+        --The inputs must be unit vectors.
         --
         --
         --
@@ -13870,7 +14651,7 @@ global record BevyAPI
         --
         --Will panic if `from` or `to` are not normalized when `glam_assert` is enabled.
 
-        from_rotation_arc_colinear : function((LuaVec3),(LuaVec3)):(LuaQuat)
+        from_rotation_arc_colinear : function(LuaVec3 , LuaVec3):(LuaQuat)
 
         --Gets the minimal rotation for transforming `from` to `to`.  The resulting rotation is
         --
@@ -13878,7 +14659,7 @@ global record BevyAPI
         --
         --
         --
-        --The input vectors must be normalized (unit-length).
+        --The inputs must be unit vectors.
         --
         --
         --
@@ -13898,32 +14679,32 @@ global record BevyAPI
         --
         --Will panic if `from` or `to` are not normalized when `glam_assert` is enabled.
 
-        from_rotation_arc_2d : function((LuaVec2),(LuaVec2)):(LuaQuat)
+        from_rotation_arc_2d : function(LuaVec2 , LuaVec2):(LuaQuat)
 
         --Creates a quaternion from a 3x3 rotation matrix inside a 3D affine transform.
 
         from_affine3 : function(LuaAffine3A):(LuaQuat)
 
-        __tostring : function(LuaQuat):(string)
+        __tostring : function(self:LuaQuat):(string)
 
-        __unm : function(LuaQuat):(LuaQuat)
+        __unm : function(self:LuaQuat):(LuaQuat)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __div : function((any),(any)):(any)
+        __div : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
     end
     
     
-    record LuaQuatClass
+    record ClassLuaQuat
 
         userdata
     
-    --Collection of static methods for [`LuaQuat`].
+    --Collection of static methods for [``].
 
         --Creates a new rotation quaternion.
         --
@@ -13947,7 +14728,7 @@ global record BevyAPI
         --
         --provide normalized input or to normalized the resulting quaternion.
 
-        from_xyzw : function((number),(number),(number),(number)):(LuaQuat)
+        from_xyzw : function(number , number , number , number):(LuaQuat)
 
         --Creates a new rotation quaternion from a 4D vector.
         --
@@ -13965,7 +14746,9 @@ global record BevyAPI
 
         --Create a quaternion for a normalized rotation `axis` and `angle` (in radians).
         --
-        --The axis must be normalized (unit-length).
+        --
+        --
+        --The axis must be a unit vector.
         --
         --
         --
@@ -13975,7 +14758,7 @@ global record BevyAPI
         --
         --Will panic if `axis` is not normalized when `glam_assert` is enabled.
 
-        from_axis_angle : function((LuaVec3),(number)):(LuaQuat)
+        from_axis_angle : function(LuaVec3 , number):(LuaQuat)
 
         --Create a quaternion that rotates `v.length()` radians around `v.normalize()`.
         --
@@ -13999,7 +14782,7 @@ global record BevyAPI
 
         --Creates a quaternion from the given Euler rotation sequence and the angles (in radians).
 
-        from_euler : function((LuaEulerRot),(number),(number),(number)):(LuaQuat)
+        from_euler : function(LuaEulerRot , number , number , number):(LuaQuat)
 
         --Creates a quaternion from a 3x3 rotation matrix.
 
@@ -14019,7 +14802,7 @@ global record BevyAPI
         --
         --
         --
-        --The input vectors must be normalized (unit-length).
+        --The inputs must be unit vectors.
         --
         --
         --
@@ -14039,7 +14822,7 @@ global record BevyAPI
         --
         --Will panic if `from` or `to` are not normalized when `glam_assert` is enabled.
 
-        from_rotation_arc : function((LuaVec3),(LuaVec3)):(LuaQuat)
+        from_rotation_arc : function(LuaVec3 , LuaVec3):(LuaQuat)
 
         --Gets the minimal rotation for transforming `from` to either `to` or `-to`.  This means
         --
@@ -14053,7 +14836,7 @@ global record BevyAPI
         --
         --
         --
-        --The input vectors must be normalized (unit-length).
+        --The inputs must be unit vectors.
         --
         --
         --
@@ -14067,7 +14850,7 @@ global record BevyAPI
         --
         --Will panic if `from` or `to` are not normalized when `glam_assert` is enabled.
 
-        from_rotation_arc_colinear : function((LuaVec3),(LuaVec3)):(LuaQuat)
+        from_rotation_arc_colinear : function(LuaVec3 , LuaVec3):(LuaQuat)
 
         --Gets the minimal rotation for transforming `from` to `to`.  The resulting rotation is
         --
@@ -14075,7 +14858,7 @@ global record BevyAPI
         --
         --
         --
-        --The input vectors must be normalized (unit-length).
+        --The inputs must be unit vectors.
         --
         --
         --
@@ -14095,19 +14878,19 @@ global record BevyAPI
         --
         --Will panic if `from` or `to` are not normalized when `glam_assert` is enabled.
 
-        from_rotation_arc_2d : function((LuaVec2),(LuaVec2)):(LuaQuat)
+        from_rotation_arc_2d : function(LuaVec2 , LuaVec2):(LuaQuat)
 
         --Creates a quaternion from a 3x3 rotation matrix inside a 3D affine transform.
 
         from_affine3 : function(LuaAffine3A):(LuaQuat)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __div : function((any),(any)):(any)
+        __div : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
     end
     
@@ -14128,17 +14911,17 @@ global record BevyAPI
 
         --Returns the rotation axis scaled by the rotation in radians.
 
-        to_scaled_axis : function(LuaDQuat):(LuaDVec3)
+        to_scaled_axis : function(self:LuaDQuat):(LuaDVec3)
 
         --Returns the vector part of the quaternion.
 
-        xyz : function(LuaDQuat):(LuaDVec3)
+        xyz : function(self:LuaDQuat):(LuaDVec3)
 
         --Returns the quaternion conjugate of `self`. For a unit quaternion the
         --
         --conjugate is also the inverse.
 
-        conjugate : function(LuaDQuat):(LuaDQuat)
+        conjugate : function(self:LuaDQuat):(LuaDQuat)
 
         --Returns the inverse of a normalized quaternion.
         --
@@ -14158,17 +14941,17 @@ global record BevyAPI
         --
         --Will panic if `self` is not normalized when `glam_assert` is enabled.
 
-        inverse : function(LuaDQuat):(LuaDQuat)
+        inverse : function(self:LuaDQuat):(LuaDQuat)
 
         --Computes the dot product of `self` and `rhs`. The dot product is
         --
         --equal to the cosine of the angle between two quaternion rotations.
 
-        dot : function(LuaDQuat,LuaDQuat):(number)
+        dot : function(self:LuaDQuat , LuaDQuat):(number)
 
         --Computes the length of `self`.
 
-        length : function(LuaDQuat):(number)
+        length : function(self:LuaDQuat):(number)
 
         --Computes the squared length of `self`.
         --
@@ -14178,7 +14961,7 @@ global record BevyAPI
         --
         --root operation.
 
-        length_squared : function(LuaDQuat):(number)
+        length_squared : function(self:LuaDQuat):(number)
 
         --Computes `1.0 / length()`.
         --
@@ -14186,7 +14969,7 @@ global record BevyAPI
         --
         --For valid results, `self` must _not_ be of length zero.
 
-        length_recip : function(LuaDQuat):(number)
+        length_recip : function(self:LuaDQuat):(number)
 
         --Returns `self` normalized to length 1.0.
         --
@@ -14202,15 +14985,15 @@ global record BevyAPI
         --
         --Will panic if `self` is zero length when `glam_assert` is enabled.
 
-        normalize : function(LuaDQuat):(LuaDQuat)
+        normalize : function(self:LuaDQuat):(LuaDQuat)
 
         --Returns `true` if, and only if, all elements are finite.
         --
         --If any element is either `NaN`, positive or negative infinity, this will return `false`.
 
-        is_finite : function(LuaDQuat):(boolean)
+        is_finite : function(self:LuaDQuat):(boolean)
 
-        is_nan : function(LuaDQuat):(boolean)
+        is_nan : function(self:LuaDQuat):(boolean)
 
         --Returns whether `self` of length `1.0` or not.
         --
@@ -14218,9 +15001,9 @@ global record BevyAPI
         --
         --Uses a precision threshold of `1e-6`.
 
-        is_normalized : function(LuaDQuat):(boolean)
+        is_normalized : function(self:LuaDQuat):(boolean)
 
-        is_near_identity : function(LuaDQuat):(boolean)
+        is_near_identity : function(self:LuaDQuat):(boolean)
 
         --Returns the angle (in radians) for the minimal rotation
         --
@@ -14238,7 +15021,7 @@ global record BevyAPI
         --
         --Will panic if `self` or `rhs` are not normalized when `glam_assert` is enabled.
 
-        angle_between : function(LuaDQuat,LuaDQuat):(number)
+        angle_between : function(self:LuaDQuat , LuaDQuat):(number)
 
         --Returns true if the absolute difference of all elements between `self` and `rhs`
         --
@@ -14258,7 +15041,7 @@ global record BevyAPI
         --
         --[comparing floating point numbers](https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/).
 
-        abs_diff_eq : function(LuaDQuat,(LuaDQuat),(number)):(boolean)
+        abs_diff_eq : function(self:LuaDQuat , LuaDQuat , number):(boolean)
 
         --Performs a linear interpolation between `self` and `rhs` based on
         --
@@ -14278,7 +15061,7 @@ global record BevyAPI
         --
         --Will panic if `self` or `end` are not normalized when `glam_assert` is enabled.
 
-        lerp : function(LuaDQuat,(LuaDQuat),(number)):(LuaDQuat)
+        lerp : function(self:LuaDQuat , LuaDQuat , number):(LuaDQuat)
 
         --Performs a spherical linear interpolation between `self` and `end`
         --
@@ -14298,7 +15081,7 @@ global record BevyAPI
         --
         --Will panic if `self` or `end` are not normalized when `glam_assert` is enabled.
 
-        slerp : function(LuaDQuat,(LuaDQuat),(number)):(LuaDQuat)
+        slerp : function(self:LuaDQuat , LuaDQuat , number):(LuaDQuat)
 
         --Multiplies a quaternion and a 3D vector, returning the rotated vector.
         --
@@ -14310,7 +15093,7 @@ global record BevyAPI
         --
         --Will panic if `self` is not normalized when `glam_assert` is enabled.
 
-        mul_vec3 : function(LuaDQuat,LuaDVec3):(LuaDVec3)
+        mul_vec3 : function(self:LuaDQuat , LuaDVec3):(LuaDVec3)
 
         --Multiplies two quaternions. If they each represent a rotation, the result will
         --
@@ -14328,9 +15111,9 @@ global record BevyAPI
         --
         --Will panic if `self` or `rhs` are not normalized when `glam_assert` is enabled.
 
-        mul_quat : function(LuaDQuat,LuaDQuat):(LuaDQuat)
+        mul_quat : function(self:LuaDQuat , LuaDQuat):(LuaDQuat)
 
-        as_f32 : function(LuaDQuat):(LuaQuat)
+        as_f32 : function(self:LuaDQuat):(LuaQuat)
 
         --Creates a new rotation quaternion.
         --
@@ -14354,7 +15137,7 @@ global record BevyAPI
         --
         --provide normalized input or to normalized the resulting quaternion.
 
-        from_xyzw : function((number),(number),(number),(number)):(LuaDQuat)
+        from_xyzw : function(number , number , number , number):(LuaDQuat)
 
         --Creates a new rotation quaternion from a 4D vector.
         --
@@ -14372,7 +15155,9 @@ global record BevyAPI
 
         --Create a quaternion for a normalized rotation `axis` and `angle` (in radians).
         --
-        --The axis must be normalized (unit-length).
+        --
+        --
+        --The axis must be a unit vector.
         --
         --
         --
@@ -14382,7 +15167,7 @@ global record BevyAPI
         --
         --Will panic if `axis` is not normalized when `glam_assert` is enabled.
 
-        from_axis_angle : function((LuaDVec3),(number)):(LuaDQuat)
+        from_axis_angle : function(LuaDVec3 , number):(LuaDQuat)
 
         --Create a quaternion that rotates `v.length()` radians around `v.normalize()`.
         --
@@ -14406,7 +15191,7 @@ global record BevyAPI
 
         --Creates a quaternion from the given Euler rotation sequence and the angles (in radians).
 
-        from_euler : function((LuaEulerRot),(number),(number),(number)):(LuaDQuat)
+        from_euler : function(LuaEulerRot , number , number , number):(LuaDQuat)
 
         --Creates a quaternion from a 3x3 rotation matrix.
 
@@ -14422,7 +15207,7 @@ global record BevyAPI
         --
         --
         --
-        --The input vectors must be normalized (unit-length).
+        --The inputs must be unit vectors.
         --
         --
         --
@@ -14442,7 +15227,7 @@ global record BevyAPI
         --
         --Will panic if `from` or `to` are not normalized when `glam_assert` is enabled.
 
-        from_rotation_arc : function((LuaDVec3),(LuaDVec3)):(LuaDQuat)
+        from_rotation_arc : function(LuaDVec3 , LuaDVec3):(LuaDQuat)
 
         --Gets the minimal rotation for transforming `from` to either `to` or `-to`.  This means
         --
@@ -14456,7 +15241,7 @@ global record BevyAPI
         --
         --
         --
-        --The input vectors must be normalized (unit-length).
+        --The inputs must be unit vectors.
         --
         --
         --
@@ -14470,7 +15255,7 @@ global record BevyAPI
         --
         --Will panic if `from` or `to` are not normalized when `glam_assert` is enabled.
 
-        from_rotation_arc_colinear : function((LuaDVec3),(LuaDVec3)):(LuaDQuat)
+        from_rotation_arc_colinear : function(LuaDVec3 , LuaDVec3):(LuaDQuat)
 
         --Gets the minimal rotation for transforming `from` to `to`.  The resulting rotation is
         --
@@ -14478,7 +15263,7 @@ global record BevyAPI
         --
         --
         --
-        --The input vectors must be normalized (unit-length).
+        --The inputs must be unit vectors.
         --
         --
         --
@@ -14498,32 +15283,32 @@ global record BevyAPI
         --
         --Will panic if `from` or `to` are not normalized when `glam_assert` is enabled.
 
-        from_rotation_arc_2d : function((LuaDVec2),(LuaDVec2)):(LuaDQuat)
+        from_rotation_arc_2d : function(LuaDVec2 , LuaDVec2):(LuaDQuat)
 
         --Creates a quaternion from a 3x3 rotation matrix inside a 3D affine transform.
 
         from_affine3 : function(LuaDAffine3):(LuaDQuat)
 
-        __tostring : function(LuaDQuat):(string)
+        __tostring : function(self:LuaDQuat):(string)
 
-        __unm : function(LuaDQuat):(LuaDQuat)
+        __unm : function(self:LuaDQuat):(LuaDQuat)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __div : function((any),(any)):(any)
+        __div : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
     end
     
     
-    record LuaDQuatClass
+    record ClassLuaDQuat
 
         userdata
     
-    --Collection of static methods for [`LuaDQuat`].
+    --Collection of static methods for [``].
 
         --Creates a new rotation quaternion.
         --
@@ -14547,7 +15332,7 @@ global record BevyAPI
         --
         --provide normalized input or to normalized the resulting quaternion.
 
-        from_xyzw : function((number),(number),(number),(number)):(LuaDQuat)
+        from_xyzw : function(number , number , number , number):(LuaDQuat)
 
         --Creates a new rotation quaternion from a 4D vector.
         --
@@ -14565,7 +15350,9 @@ global record BevyAPI
 
         --Create a quaternion for a normalized rotation `axis` and `angle` (in radians).
         --
-        --The axis must be normalized (unit-length).
+        --
+        --
+        --The axis must be a unit vector.
         --
         --
         --
@@ -14575,7 +15362,7 @@ global record BevyAPI
         --
         --Will panic if `axis` is not normalized when `glam_assert` is enabled.
 
-        from_axis_angle : function((LuaDVec3),(number)):(LuaDQuat)
+        from_axis_angle : function(LuaDVec3 , number):(LuaDQuat)
 
         --Create a quaternion that rotates `v.length()` radians around `v.normalize()`.
         --
@@ -14599,7 +15386,7 @@ global record BevyAPI
 
         --Creates a quaternion from the given Euler rotation sequence and the angles (in radians).
 
-        from_euler : function((LuaEulerRot),(number),(number),(number)):(LuaDQuat)
+        from_euler : function(LuaEulerRot , number , number , number):(LuaDQuat)
 
         --Creates a quaternion from a 3x3 rotation matrix.
 
@@ -14615,7 +15402,7 @@ global record BevyAPI
         --
         --
         --
-        --The input vectors must be normalized (unit-length).
+        --The inputs must be unit vectors.
         --
         --
         --
@@ -14635,7 +15422,7 @@ global record BevyAPI
         --
         --Will panic if `from` or `to` are not normalized when `glam_assert` is enabled.
 
-        from_rotation_arc : function((LuaDVec3),(LuaDVec3)):(LuaDQuat)
+        from_rotation_arc : function(LuaDVec3 , LuaDVec3):(LuaDQuat)
 
         --Gets the minimal rotation for transforming `from` to either `to` or `-to`.  This means
         --
@@ -14649,7 +15436,7 @@ global record BevyAPI
         --
         --
         --
-        --The input vectors must be normalized (unit-length).
+        --The inputs must be unit vectors.
         --
         --
         --
@@ -14663,7 +15450,7 @@ global record BevyAPI
         --
         --Will panic if `from` or `to` are not normalized when `glam_assert` is enabled.
 
-        from_rotation_arc_colinear : function((LuaDVec3),(LuaDVec3)):(LuaDQuat)
+        from_rotation_arc_colinear : function(LuaDVec3 , LuaDVec3):(LuaDQuat)
 
         --Gets the minimal rotation for transforming `from` to `to`.  The resulting rotation is
         --
@@ -14671,7 +15458,7 @@ global record BevyAPI
         --
         --
         --
-        --The input vectors must be normalized (unit-length).
+        --The inputs must be unit vectors.
         --
         --
         --
@@ -14691,19 +15478,19 @@ global record BevyAPI
         --
         --Will panic if `from` or `to` are not normalized when `glam_assert` is enabled.
 
-        from_rotation_arc_2d : function((LuaDVec2),(LuaDVec2)):(LuaDQuat)
+        from_rotation_arc_2d : function(LuaDVec2 , LuaDVec2):(LuaDQuat)
 
         --Creates a quaternion from a 3x3 rotation matrix inside a 3D affine transform.
 
         from_affine3 : function(LuaDAffine3):(LuaDQuat)
 
-        __add : function((any),(any)):(any)
+        __add : function(any , any):(any)
 
-        __sub : function((any),(any)):(any)
+        __sub : function(any , any):(any)
 
-        __div : function((any),(any)):(any)
+        __div : function(any , any):(any)
 
-        __mul : function((any),(any)):(any)
+        __mul : function(any , any):(any)
 
     end
     
@@ -14714,7 +15501,7 @@ global record BevyAPI
     
     --
 
-        __tostring : function(LuaEulerRot):(string)
+        __tostring : function(self:LuaEulerRot):(string)
 
     end
     
@@ -14751,7 +15538,7 @@ global record BevyAPI
         --
         --```
 
-        is_empty : function(LuaRect):(boolean)
+        is_empty : function(self:LuaRect):(boolean)
 
         --Rectangle width (max.x - min.x).
         --
@@ -14771,7 +15558,7 @@ global record BevyAPI
         --
         --```
 
-        width : function(LuaRect):(number)
+        width : function(self:LuaRect):(number)
 
         --Rectangle height (max.y - min.y).
         --
@@ -14791,7 +15578,7 @@ global record BevyAPI
         --
         --```
 
-        height : function(LuaRect):(number)
+        height : function(self:LuaRect):(number)
 
         --Rectangle size.
         --
@@ -14811,7 +15598,7 @@ global record BevyAPI
         --
         --```
 
-        size : function(LuaRect):(LuaVec2)
+        size : function(self:LuaRect):(LuaVec2)
 
         --Rectangle half-size.
         --
@@ -14831,7 +15618,7 @@ global record BevyAPI
         --
         --```
 
-        half_size : function(LuaRect):(LuaVec2)
+        half_size : function(self:LuaRect):(LuaVec2)
 
         --The center point of the rectangle.
         --
@@ -14851,7 +15638,7 @@ global record BevyAPI
         --
         --```
 
-        center : function(LuaRect):(LuaVec2)
+        center : function(self:LuaRect):(LuaVec2)
 
         --Check if a point lies within this rectangle, inclusive of its edges.
         --
@@ -14875,7 +15662,7 @@ global record BevyAPI
         --
         --```
 
-        contains : function(LuaRect,LuaVec2):(boolean)
+        contains : function(self:LuaRect , LuaVec2):(boolean)
 
         --Build a new rectangle formed of the union of this rectangle and another rectangle.
         --
@@ -14905,7 +15692,7 @@ global record BevyAPI
         --
         --```
 
-        union : function(LuaRect,LuaRect):(LuaRect)
+        union : function(self:LuaRect , LuaRect):(LuaRect)
 
         --Build a new rectangle formed of the union of this rectangle and a point.
         --
@@ -14935,7 +15722,7 @@ global record BevyAPI
         --
         --```
 
-        union_point : function(LuaRect,LuaVec2):(LuaRect)
+        union_point : function(self:LuaRect , LuaVec2):(LuaRect)
 
         --Build a new rectangle formed of the intersection of this rectangle and another rectangle.
         --
@@ -14969,7 +15756,7 @@ global record BevyAPI
         --
         --```
 
-        intersect : function(LuaRect,LuaRect):(LuaRect)
+        intersect : function(self:LuaRect , LuaRect):(LuaRect)
 
         --Create a new rectangle with a constant inset.
         --
@@ -14999,9 +15786,53 @@ global record BevyAPI
         --
         --assert!(r2.max.abs_diff_eq(Vec2::new(8., 4.), 1e-5));
         --
+        --
+        --
+        --let r = Rect::new(0., -1., 6., 7.); // w=6 h=8
+        --
+        --let r2 = r.inset(-2.); // w=11 h=7
+        --
+        --assert!(r2.min.abs_diff_eq(Vec2::new(2., 1.), 1e-5));
+        --
+        --assert!(r2.max.abs_diff_eq(Vec2::new(4., 5.), 1e-5));
+        --
         --```
 
-        inset : function(LuaRect,number):(LuaRect)
+        inset : function(self:LuaRect , number):(LuaRect)
+
+        --Build a new rectangle from this one with its coordinates expressed
+        --
+        --relative to `other` in a normalized ([0..1] x [0..1]) coordinate system.
+        --
+        --
+        --
+        --# Examples
+        --
+        --
+        --
+        --```rust
+        --
+        --# use bevy_math::{Rect, Vec2};
+        --
+        --let r = Rect::new(2., 3., 4., 6.);
+        --
+        --let s = Rect::new(0., 0., 10., 10.);
+        --
+        --let n = r.normalize(s);
+        --
+        --
+        --
+        --assert_eq!(n.min.x, 0.2);
+        --
+        --assert_eq!(n.min.y, 0.3);
+        --
+        --assert_eq!(n.max.x, 0.4);
+        --
+        --assert_eq!(n.max.y, 0.6);
+        --
+        --```
+
+        normalize : function(self:LuaRect , LuaRect):(LuaRect)
 
         --Create a new rectangle from two corner points.
         --
@@ -15027,7 +15858,7 @@ global record BevyAPI
         --
         --```
 
-        new : function((number),(number),(number),(number)):(LuaRect)
+        new : function(number , number , number , number):(LuaRect)
 
         --Create a new rectangle from two corner points.
         --
@@ -15053,7 +15884,7 @@ global record BevyAPI
         --
         --```
 
-        from_corners : function((LuaVec2),(LuaVec2)):(LuaRect)
+        from_corners : function(LuaVec2 , LuaVec2):(LuaRect)
 
         --Create a new rectangle from its center and size.
         --
@@ -15083,7 +15914,7 @@ global record BevyAPI
         --
         --```
 
-        from_center_size : function((LuaVec2),(LuaVec2)):(LuaRect)
+        from_center_size : function(LuaVec2 , LuaVec2):(LuaRect)
 
         --Create a new rectangle from its center and half-size.
         --
@@ -15113,18 +15944,18 @@ global record BevyAPI
         --
         --```
 
-        from_center_half_size : function((LuaVec2),(LuaVec2)):(LuaRect)
+        from_center_half_size : function(LuaVec2 , LuaVec2):(LuaRect)
 
-        __tostring : function(LuaRect):(string)
+        __tostring : function(self:LuaRect):(string)
 
     end
     
     
-    record LuaRectClass
+    record ClassLuaRect
 
         userdata
     
-    --Collection of static methods for [`LuaRect`].
+    --Collection of static methods for [``].
 
         --Create a new rectangle from two corner points.
         --
@@ -15150,7 +15981,7 @@ global record BevyAPI
         --
         --```
 
-        new : function((number),(number),(number),(number)):(LuaRect)
+        new : function(number , number , number , number):(LuaRect)
 
         --Create a new rectangle from two corner points.
         --
@@ -15176,7 +16007,7 @@ global record BevyAPI
         --
         --```
 
-        from_corners : function((LuaVec2),(LuaVec2)):(LuaRect)
+        from_corners : function(LuaVec2 , LuaVec2):(LuaRect)
 
         --Create a new rectangle from its center and size.
         --
@@ -15206,7 +16037,7 @@ global record BevyAPI
         --
         --```
 
-        from_center_size : function((LuaVec2),(LuaVec2)):(LuaRect)
+        from_center_size : function(LuaVec2 , LuaVec2):(LuaRect)
 
         --Create a new rectangle from its center and half-size.
         --
@@ -15236,7 +16067,7 @@ global record BevyAPI
         --
         --```
 
-        from_center_half_size : function((LuaVec2),(LuaVec2)):(LuaRect)
+        from_center_half_size : function(LuaVec2 , LuaVec2):(LuaRect)
 
     end
     
@@ -15251,11 +16082,11 @@ global record BevyAPI
         --
         --
 
-        __tostring : function(ReflectedValue):(string)
+        __tostring : function(self:ReflectedValue):(string)
 
-        __index : function(ReflectedValue,any):(ReflectedValue)
+        __index : function(self:ReflectedValue , any):(ReflectedValue)
 
-        __newindex : function(ReflectedValue,(any),(any)):()
+        __newindex : function(self:ReflectedValue , any , any)
 
     end
     
@@ -15279,108 +16110,100 @@ global record BevyAPI
         --
         --This is used extensively in [`LuaWorld`]
 
-        get_type_by_name : function(LuaWorld,string):(LuaTypeRegistration)
+        get_type_by_name : function(self:LuaWorld , string):(LuaTypeRegistration)
 
         --Inserts a component of the given type to the given entity by instantiating a default version of it.
         --
         --The component can then be modified using field access.
 
-        add_default_component : function(LuaWorld,(LuaEntity),(LuaTypeRegistration)):(ReflectedValue)
+        add_default_component : function(self:LuaWorld , LuaEntity , LuaTypeRegistration):(ReflectedValue)
 
         --Retrieves a component of the given type from the given entity.
         --
         --If such a component does not exist returns `nil`.
 
-        get_component : function(LuaWorld,(LuaEntity),(LuaTypeRegistration)):(ReflectedValue)
+        get_component : function(self:LuaWorld , LuaEntity , LuaTypeRegistration):(ReflectedValue)
 
         --Returns `true` if the given entity contains a component of the given type.
 
-        has_component : function(LuaWorld,(LuaEntity),(LuaTypeRegistration)):(boolean)
+        has_component : function(self:LuaWorld , LuaEntity , LuaTypeRegistration):(boolean)
 
         --Retrieves a resource of the given type from the world.
         --
         --If such a resource does not exist returns `nil`.
 
-        get_resource : function(LuaWorld,LuaTypeRegistration):(ReflectedValue)
+        get_resource : function(self:LuaWorld , LuaTypeRegistration):(ReflectedValue)
 
         --Removes the given resource from the world, if one doesn't exist it does nothing.
 
-        remove_resource : function(LuaWorld,LuaTypeRegistration):()
+        remove_resource : function(self:LuaWorld , LuaTypeRegistration)
 
         --Returns `true` if the world contains a resource of the given type.
 
-        has_resource : function(LuaWorld,LuaTypeRegistration):(boolean)
+        has_resource : function(self:LuaWorld , LuaTypeRegistration):(boolean)
 
         --Retrieves children entities of the parent entity if it has any.
 
-        get_children : function(LuaWorld,LuaEntity):({LuaEntity})
+        get_children : function(self:LuaWorld , LuaEntity):({LuaEntity})
 
         --Retrieves the parent entity of the given entity if it has any.
 
-        get_parent : function(LuaWorld,LuaEntity):(LuaEntity)
+        get_parent : function(self:LuaWorld , LuaEntity):(LuaEntity)
 
         --Attaches children entities to the given parent entity.
 
-        push_children : function(LuaWorld,(LuaEntity),({LuaEntity})):()
+        push_children : function(self:LuaWorld , LuaEntity , {LuaEntity})
 
         --Removes children entities from the given parent entity.
 
-        remove_children : function(LuaWorld,(LuaEntity),({LuaEntity})):()
+        remove_children : function(self:LuaWorld , LuaEntity , {LuaEntity})
 
         --Removes child entity from the given parent entity.
 
-        remove_child : function(LuaWorld,(LuaEntity),(LuaEntity)):()
+        remove_child : function(self:LuaWorld , LuaEntity , LuaEntity)
 
         --Inserts children entities to the given parent entity at the given index.
-        --
-        --Despawns the given entity and the entity's children recursively
 
-        insert_children : function(LuaWorld,(LuaEntity),(integer),({LuaEntity})):()
+        insert_children : function(self:LuaWorld , LuaEntity , integer , {LuaEntity})
 
         --Inserts child entity to the given parent entity at the given index.
 
-        insert_child : function(LuaWorld,(LuaEntity),(integer),(LuaEntity)):()
+        insert_child : function(self:LuaWorld , LuaEntity , integer , LuaEntity)
 
         --Despawns the given entity's children recursively
 
-        despawn_children_recursive : function(LuaWorld,LuaEntity):()
+        despawn_children_recursive : function(self:LuaWorld , LuaEntity)
 
         --Despawns the given entity and the entity's children recursively
 
-        despawn_recursive : function(LuaWorld,LuaEntity):()
-
-        --Inserts children entities to the given parent entity at the given index.
-        --
-        --Despawns the given entity and the entity's children recursively
-
-        insert_children : function(LuaWorld,LuaEntity):()
+        despawn_recursive : function(self:LuaWorld , LuaEntity)
 
         --Spawns a new entity and returns its Entity ID
 
-        spawn : function(LuaWorld):(LuaEntity)
+        spawn : function(self:LuaWorld):(LuaEntity)
 
         --Despawns the given entity if it exists, returns true if deletion was successfull
 
-        despawn : function(LuaWorld,LuaEntity):(boolean)
+        despawn : function(self:LuaWorld , LuaEntity):(boolean)
 
         --Removes the given component from the given entity, does nothing if it doesn't exist on the entity.
 
-        remove_component : function(LuaWorld,(LuaEntity),(LuaTypeRegistration)):()
+        remove_component : function(self:LuaWorld , LuaEntity , LuaTypeRegistration)
 
         --Attaches child entity to the given parent entity.
 
-        push_child : function(LuaWorld,(LuaEntity),(LuaEntity)):()
+        push_child : function(self:LuaWorld , LuaEntity , LuaEntity)
 
-        __tostring : function(LuaWorld):(string)
+        __tostring : function(self:LuaWorld):(string)
 
     end
     
     
-    record LuaWorldClass
+    record ClassLuaWorld
 
         userdata
     
-    --Collection of static methods for [`LuaWorld`].
+    --Collection of static methods for [``].
 
     end
     
@@ -15395,16 +16218,16 @@ global record BevyAPI
 
         sid : integer
 
-        __tostring : function(LuaScriptData):(string)
+        __tostring : function(self:LuaScriptData):(string)
 
     end
     
     
-    record LuaScriptDataClass
+    record ClassLuaScriptData
 
         userdata
     
-    --Collection of static methods for [`LuaScriptData`].
+    --Collection of static methods for [``].
 
     end
     
@@ -15430,7 +16253,7 @@ global record BevyAPI
     end
     
     
-    record LuaVec<T>
+    record LuaVec
 
         userdata
     
@@ -15440,25 +16263,27 @@ global record BevyAPI
         --
         --
 
-        push : function(LuaVec<T>,any):()
+        to_table : function(self:LuaVec):({any : any})
 
-        pop : function(LuaVec<T>):(any)
+        push : function(self:LuaVec , any)
 
-        clear : function(LuaVec<T>):()
+        pop : function(self:LuaVec):(any)
 
-        insert : function(LuaVec<T>,(integer),(any)):()
+        clear : function(self:LuaVec)
 
-        remove : function(LuaVec<T>,integer):(any)
+        insert : function(self:LuaVec , integer , any)
 
-        __tostring : function(LuaVec<T>):(string)
+        remove : function(self:LuaVec , integer):(any)
 
-        __index : function(LuaVec<T>,integer):(ReflectedValue)
+        __tostring : function(self:LuaVec):(string)
 
-        __pairs : function(LuaVec<T>):(function():((any),(any)))
+        __index : function(self:LuaVec , integer):(ReflectedValue)
 
-        __len : function(LuaVec<T>):(integer)
+        __pairs : function(self:LuaVec):(function():(any , any))
 
-        __newindex : function(LuaVec<T>,(integer),(any)):()
+        __len : function(self:LuaVec):(integer)
+
+        __newindex : function(self:LuaVec , integer , any)
 
     end
     
@@ -15466,191 +16291,191 @@ end
 
     --
 
-    global UiImage : BevyAPI.LuaUiImageClass
+    global Overflow : BevyAPI.ClassLuaOverflow
 
     --
 
-    global Name : BevyAPI.LuaNameClass
+    global UiImage : BevyAPI.ClassLuaUiImage
 
     --
 
-    global Text : BevyAPI.LuaTextClass
+    global Name : BevyAPI.ClassLuaName
 
     --
 
-    global TextSection : BevyAPI.LuaTextSectionClass
+    global Text : BevyAPI.ClassLuaText
 
     --
 
-    global Stopwatch : BevyAPI.LuaStopwatchClass
+    global TextSection : BevyAPI.ClassLuaTextSection
 
     --
 
-    global Timer : BevyAPI.LuaTimerClass
+    global Stopwatch : BevyAPI.ClassLuaStopwatch
 
     --
 
-    global Entity : BevyAPI.LuaEntityClass
+    global Timer : BevyAPI.ClassLuaTimer
 
     --
 
-    global Transform : BevyAPI.LuaTransformClass
+    global Entity : BevyAPI.ClassLuaEntity
 
     --
 
-    global TextureAtlasSprite : BevyAPI.LuaTextureAtlasSpriteClass
+    global Transform : BevyAPI.ClassLuaTransform
 
     --
 
-    global RenderLayers : BevyAPI.LuaRenderLayersClass
+    global TextureAtlasSprite : BevyAPI.ClassLuaTextureAtlasSprite
 
     --
 
-    global Color : BevyAPI.LuaColorClass
+    global RenderLayers : BevyAPI.ClassLuaRenderLayers
 
     --
 
-    global Aabb : BevyAPI.LuaAabbClass
+    global Color : BevyAPI.ClassLuaColor
 
     --
 
-    global Frustum : BevyAPI.LuaFrustumClass
+    global Aabb : BevyAPI.ClassLuaAabb
 
     --
 
-    global CameraRenderGraph : BevyAPI.LuaCameraRenderGraphClass
+    global Frustum : BevyAPI.ClassLuaFrustum
 
     --
 
-    global HandleId : BevyAPI.LuaHandleIdClass
+    global CameraRenderGraph : BevyAPI.ClassLuaCameraRenderGraph
 
     --
 
-    global Vec2 : BevyAPI.LuaVec2Class
+    global Vec2 : BevyAPI.ClassLuaVec2
 
     --
 
-    global Vec3 : BevyAPI.LuaVec3Class
+    global Vec3 : BevyAPI.ClassLuaVec3
 
     --
 
-    global Vec3A : BevyAPI.LuaVec3AClass
+    global Vec3A : BevyAPI.ClassLuaVec3A
 
     --
 
-    global Vec4 : BevyAPI.LuaVec4Class
+    global Vec4 : BevyAPI.ClassLuaVec4
 
     --
 
-    global BVec2 : BevyAPI.LuaBVec2Class
+    global BVec2 : BevyAPI.ClassLuaBVec2
 
     --
 
-    global BVec3 : BevyAPI.LuaBVec3Class
+    global BVec3 : BevyAPI.ClassLuaBVec3
 
     --
 
-    global BVec4 : BevyAPI.LuaBVec4Class
+    global BVec4 : BevyAPI.ClassLuaBVec4
 
     --
 
-    global BVec3A : BevyAPI.LuaBVec3AClass
+    global BVec3A : BevyAPI.ClassLuaBVec3A
 
     --
 
-    global BVec4A : BevyAPI.LuaBVec4AClass
+    global BVec4A : BevyAPI.ClassLuaBVec4A
 
     --
 
-    global DVec2 : BevyAPI.LuaDVec2Class
+    global DVec2 : BevyAPI.ClassLuaDVec2
 
     --
 
-    global DVec3 : BevyAPI.LuaDVec3Class
+    global DVec3 : BevyAPI.ClassLuaDVec3
 
     --
 
-    global DVec4 : BevyAPI.LuaDVec4Class
+    global DVec4 : BevyAPI.ClassLuaDVec4
 
     --
 
-    global IVec2 : BevyAPI.LuaIVec2Class
+    global IVec2 : BevyAPI.ClassLuaIVec2
 
     --
 
-    global IVec3 : BevyAPI.LuaIVec3Class
+    global IVec3 : BevyAPI.ClassLuaIVec3
 
     --
 
-    global IVec4 : BevyAPI.LuaIVec4Class
+    global IVec4 : BevyAPI.ClassLuaIVec4
 
     --
 
-    global UVec2 : BevyAPI.LuaUVec2Class
+    global UVec2 : BevyAPI.ClassLuaUVec2
 
     --
 
-    global UVec3 : BevyAPI.LuaUVec3Class
+    global UVec3 : BevyAPI.ClassLuaUVec3
 
     --
 
-    global UVec4 : BevyAPI.LuaUVec4Class
+    global UVec4 : BevyAPI.ClassLuaUVec4
 
     --
 
-    global Mat3 : BevyAPI.LuaMat3Class
+    global Mat3 : BevyAPI.ClassLuaMat3
 
     --
 
-    global Mat2 : BevyAPI.LuaMat2Class
+    global Mat2 : BevyAPI.ClassLuaMat2
 
     --
 
-    global Mat3A : BevyAPI.LuaMat3AClass
+    global Mat3A : BevyAPI.ClassLuaMat3A
 
     --
 
-    global Mat4 : BevyAPI.LuaMat4Class
+    global Mat4 : BevyAPI.ClassLuaMat4
 
     --
 
-    global DMat2 : BevyAPI.LuaDMat2Class
+    global DMat2 : BevyAPI.ClassLuaDMat2
 
     --
 
-    global DMat3 : BevyAPI.LuaDMat3Class
+    global DMat3 : BevyAPI.ClassLuaDMat3
 
     --
 
-    global DMat4 : BevyAPI.LuaDMat4Class
+    global DMat4 : BevyAPI.ClassLuaDMat4
 
     --
 
-    global Affine2 : BevyAPI.LuaAffine2Class
+    global Affine2 : BevyAPI.ClassLuaAffine2
 
     --
 
-    global Affine3A : BevyAPI.LuaAffine3AClass
+    global Affine3A : BevyAPI.ClassLuaAffine3A
 
     --
 
-    global DAffine2 : BevyAPI.LuaDAffine2Class
+    global DAffine2 : BevyAPI.ClassLuaDAffine2
 
     --
 
-    global DAffine3 : BevyAPI.LuaDAffine3Class
+    global DAffine3 : BevyAPI.ClassLuaDAffine3
 
     --
 
-    global Quat : BevyAPI.LuaQuatClass
+    global Quat : BevyAPI.ClassLuaQuat
 
     --
 
-    global DQuat : BevyAPI.LuaDQuatClass
+    global DQuat : BevyAPI.ClassLuaDQuat
 
     --
 
-    global Rect : BevyAPI.LuaRectClass
+    global Rect : BevyAPI.ClassLuaRect
 
     --
 
