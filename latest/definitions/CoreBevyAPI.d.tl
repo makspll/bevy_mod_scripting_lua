@@ -486,9 +486,9 @@ global record CoreBevyAPI
 
         __tostring : function(self:LuaGlobalTransform):(string)
 
-        __mul : function(any , any):(any)
-
         __eq : function(any , any):(any)
+
+        __mul : function(any , any):(any)
 
     end
     
@@ -507,9 +507,9 @@ global record CoreBevyAPI
 
         from_scale : function(LuaVec3):(LuaGlobalTransform)
 
-        __mul : function(any , any):(any)
-
         __eq : function(any , any):(any)
+
+        __mul : function(any , any):(any)
 
     end
     
@@ -520,17 +520,11 @@ global record CoreBevyAPI
     
     --
 
-        translation : LuaVec3
-
         rotation : LuaQuat
 
         scale : LuaVec3
 
         translation : LuaVec3
-
-        rotation : LuaQuat
-
-        scale : LuaVec3
 
         clone : function(self:LuaTransform):(LuaTransform)
 
@@ -604,9 +598,9 @@ global record CoreBevyAPI
 
         __tostring : function(self:LuaTransform):(string)
 
-        __mul : function(any , any):(any)
-
         __eq : function(any , any):(any)
+
+        __mul : function(any , any):(any)
 
     end
     
@@ -627,9 +621,9 @@ global record CoreBevyAPI
 
         from_scale : function(LuaVec3):(LuaTransform)
 
-        __mul : function(any , any):(any)
-
         __eq : function(any , any):(any)
+
+        __mul : function(any , any):(any)
 
     end
     
@@ -708,13 +702,9 @@ global record CoreBevyAPI
     
     --
 
-        origin : LuaVec2
-
         direction : LuaDir2
 
         origin : LuaVec2
-
-        direction : LuaDir2
 
         get_point : function(self:LuaRay2d , number):(LuaVec2)
 
@@ -750,13 +740,9 @@ global record CoreBevyAPI
     
     --
 
-        origin : LuaVec3
-
         direction : LuaDir3
 
         origin : LuaVec3
-
-        direction : LuaDir3
 
         clone : function(self:LuaRay3d):(LuaRay3d)
 
@@ -791,10 +777,6 @@ global record CoreBevyAPI
         userdata
     
     --
-
-        cos : number
-
-        sin : number
 
         cos : number
 
@@ -840,9 +822,9 @@ global record CoreBevyAPI
 
         __tostring : function(self:LuaRot2):(string)
 
-        __eq : function(any , any):(any)
-
         __mul : function(any , any):(any)
+
+        __eq : function(any , any):(any)
 
     end
     
@@ -859,9 +841,9 @@ global record CoreBevyAPI
 
         from_sin_cos : function(number , number):(LuaRot2)
 
-        __eq : function(any , any):(any)
-
         __mul : function(any , any):(any)
+
+        __eq : function(any , any):(any)
 
     end
     
@@ -936,11 +918,11 @@ global record CoreBevyAPI
 
         __tostring : function(self:LuaDir3):(string)
 
+        __eq : function(any , any):(any)
+
         __mul : function(any , any):(any)
 
         __unm : function(any):(any)
-
-        __eq : function(any , any):(any)
 
     end
     
@@ -953,11 +935,11 @@ global record CoreBevyAPI
 
         new_unchecked : function(LuaVec3):(LuaDir3)
 
+        __eq : function(any , any):(any)
+
         __mul : function(any , any):(any)
 
         __unm : function(any):(any)
-
-        __eq : function(any , any):(any)
 
     end
     
@@ -980,9 +962,9 @@ global record CoreBevyAPI
 
         __mul : function(any , any):(any)
 
-        __eq : function(any , any):(any)
-
         __unm : function(any):(any)
+
+        __eq : function(any , any):(any)
 
     end
     
@@ -997,9 +979,9 @@ global record CoreBevyAPI
 
         __mul : function(any , any):(any)
 
-        __eq : function(any , any):(any)
-
         __unm : function(any):(any)
+
+        __eq : function(any , any):(any)
 
     end
     
@@ -1010,13 +992,9 @@ global record CoreBevyAPI
     
     --
 
-        min : LuaIVec2
-
         max : LuaIVec2
 
         min : LuaIVec2
-
-        max : LuaIVec2
 
         is_empty : function(self:LuaIRect):(boolean)
 
@@ -1088,13 +1066,9 @@ global record CoreBevyAPI
     
     --
 
-        min : LuaVec2
-
         max : LuaVec2
 
         min : LuaVec2
-
-        max : LuaVec2
 
         is_empty : function(self:LuaRect):(boolean)
 
@@ -1166,13 +1140,9 @@ global record CoreBevyAPI
     
     --
 
-        min : LuaUVec2
-
         max : LuaUVec2
 
         min : LuaUVec2
-
-        max : LuaUVec2
 
         is_empty : function(self:LuaURect):(boolean)
 
@@ -1248,10 +1218,6 @@ global record CoreBevyAPI
 
         translation : LuaVec3
 
-        matrix3 : LuaMat3
-
-        translation : LuaVec3
-
     end
     
     
@@ -1261,13 +1227,9 @@ global record CoreBevyAPI
     
     --
 
-        min : LuaVec2
-
         max : LuaVec2
 
         min : LuaVec2
-
-        max : LuaVec2
 
         bounding_circle : function(self:LuaAabb2d):(LuaBoundingCircle)
 
@@ -1298,10 +1260,6 @@ global record CoreBevyAPI
         userdata
     
     --
-
-        center : LuaVec2
-
-        circle : LuaCircle
 
         center : LuaVec2
 
@@ -1375,13 +1333,9 @@ global record CoreBevyAPI
     
     --
 
-        radius : number
-
         half_angle : number
 
         radius : number
-
-        half_angle : number
 
         clone : function(self:LuaArc2d):(LuaArc2d)
 
@@ -1449,13 +1403,9 @@ global record CoreBevyAPI
     
     --
 
-        radius : number
-
         half_length : number
 
         radius : number
-
-        half_length : number
 
         clone : function(self:LuaCapsule2d):(LuaCapsule2d)
 
@@ -1760,10 +1710,6 @@ global record CoreBevyAPI
 
         sides : integer
 
-        circumcircle : LuaCircle
-
-        sides : integer
-
         clone : function(self:LuaRegularPolygon):(LuaRegularPolygon)
 
         circumradius : function(self:LuaRegularPolygon):(number)
@@ -1860,10 +1806,6 @@ global record CoreBevyAPI
 
         half_length : number
 
-        direction : LuaDir2
-
-        half_length : number
-
         point1 : function(self:LuaSegment2d):(LuaVec2)
 
         point2 : function(self:LuaSegment2d):(LuaVec2)
@@ -1940,13 +1882,9 @@ global record CoreBevyAPI
     
     --
 
-        min : LuaVec3A
-
         max : LuaVec3A
 
         min : LuaVec3A
-
-        max : LuaVec3A
 
         bounding_sphere : function(self:LuaAabb3d):(LuaBoundingSphere)
 
@@ -1962,10 +1900,6 @@ global record CoreBevyAPI
         userdata
     
     --
-
-        center : LuaVec3A
-
-        sphere : LuaSphere
 
         center : LuaVec3A
 
@@ -2072,13 +2006,9 @@ global record CoreBevyAPI
     
     --
 
-        radius : number
-
         half_height : number
 
         radius : number
-
-        half_height : number
 
         clone : function(self:LuaCylinder):(LuaCylinder)
 
@@ -2116,13 +2046,9 @@ global record CoreBevyAPI
     
     --
 
-        radius : number
-
         half_length : number
 
         radius : number
-
-        half_length : number
 
         to_cylinder : function(self:LuaCapsule3d):(LuaCylinder)
 
@@ -2156,13 +2082,9 @@ global record CoreBevyAPI
     
     --
 
-        radius : number
-
         height : number
 
         radius : number
-
-        height : number
 
         clone : function(self:LuaCone):(LuaCone)
 
@@ -2187,17 +2109,11 @@ global record CoreBevyAPI
     
     --
 
-        radius_top : number
+        height : number
 
         radius_bottom : number
 
-        height : number
-
         radius_top : number
-
-        radius_bottom : number
-
-        height : number
 
         clone : function(self:LuaConicalFrustum):(LuaConicalFrustum)
 
@@ -2252,10 +2168,6 @@ global record CoreBevyAPI
 
         half_length : number
 
-        direction : LuaDir3
-
-        half_length : number
-
         point1 : function(self:LuaSegment3d):(LuaVec3)
 
         point2 : function(self:LuaSegment3d):(LuaVec3)
@@ -2290,13 +2202,9 @@ global record CoreBevyAPI
     
     --
 
-        minor_radius : number
-
         major_radius : number
 
         minor_radius : number
-
-        major_radius : number
 
         inner_radius : function(self:LuaTorus):(number)
 
@@ -2378,13 +2286,9 @@ global record CoreBevyAPI
     
     --
 
-        ray : LuaRay2d
-
         max : number
 
         ray : LuaRay2d
-
-        max : number
 
         clone : function(self:LuaRayCast2d):(LuaRayCast2d)
 
@@ -2422,13 +2326,9 @@ global record CoreBevyAPI
     
     --
 
-        ray : LuaRayCast2d
-
         aabb : LuaAabb2d
 
         ray : LuaRayCast2d
-
-        aabb : LuaAabb2d
 
         clone : function(self:LuaAabbCast2d):(LuaAabbCast2d)
 
@@ -2462,13 +2362,9 @@ global record CoreBevyAPI
     
     --
 
-        ray : LuaRayCast2d
-
         circle : LuaBoundingCircle
 
         ray : LuaRayCast2d
-
-        circle : LuaBoundingCircle
 
         circle_collision_at : function(self:LuaBoundingCircleCast , LuaBoundingCircle):(number)
 
@@ -2502,17 +2398,11 @@ global record CoreBevyAPI
     
     --
 
-        origin : LuaVec3A
-
         direction : LuaDir3A
 
         max : number
 
         origin : LuaVec3A
-
-        direction : LuaDir3A
-
-        max : number
 
         direction_recip : function(self:LuaRayCast3d):(LuaVec3A)
 
@@ -2546,13 +2436,9 @@ global record CoreBevyAPI
     
     --
 
-        ray : LuaRayCast3d
-
         aabb : LuaAabb3d
 
         ray : LuaRayCast3d
-
-        aabb : LuaAabb3d
 
         aabb_collision_at : function(self:LuaAabbCast3d , LuaAabb3d):(number)
 
@@ -2581,10 +2467,6 @@ global record CoreBevyAPI
         userdata
     
     --
-
-        ray : LuaRayCast3d
-
-        sphere : LuaBoundingSphere
 
         ray : LuaRayCast3d
 
@@ -2649,10 +2531,6 @@ global record CoreBevyAPI
 
         outer_circle : LuaCircle
 
-        inner_circle : LuaCircle
-
-        outer_circle : LuaCircle
-
         diameter : function(self:LuaAnnulus):(number)
 
         thickness : function(self:LuaAnnulus):(number)
@@ -2689,13 +2567,9 @@ global record CoreBevyAPI
     
     --
 
-        normal : LuaDir3
-
         half_size : LuaVec2
 
         normal : LuaDir3
-
-        half_size : LuaVec2
 
         clone : function(self:LuaPlane3d):(LuaPlane3d)
 
@@ -2797,13 +2671,9 @@ global record CoreBevyAPI
     
     --
 
-        gamepad : LuaGamepad
-
         axis_type : LuaGamepadAxisType
 
         gamepad : LuaGamepad
-
-        axis_type : LuaGamepadAxisType
 
         clone : function(self:LuaGamepadAxis):(LuaGamepadAxis)
 
@@ -2854,13 +2724,9 @@ global record CoreBevyAPI
     
     --
 
-        gamepad : LuaGamepad
-
         button_type : LuaGamepadButtonType
 
         gamepad : LuaGamepad
-
-        button_type : LuaGamepadButtonType
 
         assert_receiver_is_total_eq : function(self:LuaGamepadButton)
 
@@ -2945,12 +2811,6 @@ global record CoreBevyAPI
     
     --
 
-        phase : LuaTouchPhase
-
-        position : LuaVec2
-
-        window : LuaEntity
-
         force : ReflectedValue
 
         id : integer
@@ -2960,10 +2820,6 @@ global record CoreBevyAPI
         position : LuaVec2
 
         window : LuaEntity
-
-        force : ReflectedValue
-
-        id : integer
 
         clone : function(self:LuaTouchInput):(LuaTouchInput)
 
@@ -3005,14 +2861,6 @@ global record CoreBevyAPI
 
         window : LuaEntity
 
-        key_code : LuaKeyCode
-
-        logical_key : LuaKey
-
-        state : LuaButtonState
-
-        window : LuaEntity
-
         assert_receiver_is_total_eq : function(self:LuaKeyboardInput)
 
         clone : function(self:LuaKeyboardInput):(LuaKeyboardInput)
@@ -3029,12 +2877,6 @@ global record CoreBevyAPI
         userdata
     
     --
-
-        button : LuaMouseButton
-
-        state : LuaButtonState
-
-        window : LuaEntity
 
         button : LuaMouseButton
 
@@ -3078,19 +2920,11 @@ global record CoreBevyAPI
 
         unit : LuaMouseScrollUnit
 
-        x : number
-
-        y : number
-
         window : LuaEntity
-
-        unit : LuaMouseScrollUnit
 
         x : number
 
         y : number
-
-        window : LuaEntity
 
         clone : function(self:LuaMouseWheel):(LuaMouseWheel)
 
@@ -3107,15 +2941,9 @@ global record CoreBevyAPI
     
     --
 
-        gamepad : LuaGamepad
-
         axis_type : LuaGamepadAxisType
 
-        value : number
-
         gamepad : LuaGamepad
-
-        axis_type : LuaGamepadAxisType
 
         value : number
 
@@ -3149,15 +2977,9 @@ global record CoreBevyAPI
     
     --
 
-        gamepad : LuaGamepad
-
         button_type : LuaGamepadButtonType
 
-        value : number
-
         gamepad : LuaGamepad
-
-        button_type : LuaGamepadButtonType
 
         value : number
 
@@ -3195,10 +3017,6 @@ global record CoreBevyAPI
 
         state : LuaButtonState
 
-        button : LuaGamepadButton
-
-        state : LuaButtonState
-
         clone : function(self:LuaGamepadButtonInput):(LuaGamepadButtonInput)
 
         assert_receiver_is_total_eq : function(self:LuaGamepadButtonInput)
@@ -3216,13 +3034,9 @@ global record CoreBevyAPI
     
     --
 
-        gamepad : LuaGamepad
-
         connection : LuaGamepadConnection
 
         gamepad : LuaGamepad
-
-        connection : LuaGamepadConnection
 
         clone : function(self:LuaGamepadConnectionEvent):(LuaGamepadConnectionEvent)
 
@@ -3273,29 +3087,17 @@ global record CoreBevyAPI
     
     --
 
-        default_button_settings : LuaButtonSettings
+        axis_settings : ReflectedValue
+
+        button_axis_settings : ReflectedValue
+
+        button_settings : ReflectedValue
 
         default_axis_settings : LuaAxisSettings
 
         default_button_axis_settings : LuaButtonAxisSettings
 
-        button_settings : ReflectedValue
-
-        axis_settings : ReflectedValue
-
-        button_axis_settings : ReflectedValue
-
         default_button_settings : LuaButtonSettings
-
-        default_axis_settings : LuaAxisSettings
-
-        default_button_axis_settings : LuaButtonAxisSettings
-
-        button_settings : ReflectedValue
-
-        axis_settings : ReflectedValue
-
-        button_axis_settings : ReflectedValue
 
         __tostring : function(self:LuaGamepadSettings):(string)
 
@@ -3475,12 +3277,6 @@ global record CoreBevyAPI
         userdata
     
     --
-
-        high : number
-
-        low : number
-
-        threshold : number
 
         high : number
 
@@ -3894,17 +3690,11 @@ global record CoreBevyAPI
     
     --
 
-        window : LuaEntity
+        delta : ReflectedValue
 
         position : LuaVec2
 
-        delta : ReflectedValue
-
         window : LuaEntity
-
-        position : LuaVec2
-
-        delta : ReflectedValue
 
         clone : function(self:LuaCursorMoved):(LuaCursorMoved)
 
@@ -3972,13 +3762,9 @@ global record CoreBevyAPI
     
     --
 
-        window : LuaEntity
-
         char : LuaSmolStr
 
         window : LuaEntity
-
-        char : LuaSmolStr
 
         clone : function(self:LuaReceivedCharacter):(LuaReceivedCharacter)
 
@@ -3997,121 +3783,63 @@ global record CoreBevyAPI
     
     --
 
-        cursor : LuaCursor
-
-        present_mode : LuaPresentMode
-
-        mode : LuaWindowMode
-
-        position : LuaWindowPosition
-
-        resolution : LuaWindowResolution
-
-        title : string
-
-        name : string
+        canvas : string
 
         composite_alpha_mode : LuaCompositeAlphaMode
 
-        resize_constraints : LuaWindowResizeConstraints
-
-        resizable : boolean
-
-        enabled_buttons : LuaEnabledButtons
+        cursor : LuaCursor
 
         decorations : boolean
 
-        transparent : boolean
+        desired_maximum_frame_latency : ReflectedValue
 
-        focused : boolean
-
-        window_level : LuaWindowLevel
-
-        canvas : string
+        enabled_buttons : LuaEnabledButtons
 
         fit_canvas_to_parent : boolean
 
-        prevent_default_event_handling : boolean
-
-        internal : LuaInternalWindowState
+        focused : boolean
 
         ime_enabled : boolean
 
         ime_position : LuaVec2
 
-        window_theme : ReflectedValue
-
-        visible : boolean
-
-        skip_taskbar : boolean
-
-        desired_maximum_frame_latency : ReflectedValue
-
-        recognize_pinch_gesture : boolean
-
-        recognize_rotation_gesture : boolean
-
-        recognize_doubletap_gesture : boolean
-
-        recognize_pan_gesture : ReflectedValue
-
-        cursor : LuaCursor
-
-        present_mode : LuaPresentMode
+        internal : LuaInternalWindowState
 
         mode : LuaWindowMode
 
-        position : LuaWindowPosition
-
-        resolution : LuaWindowResolution
-
-        title : string
-
         name : string
 
-        composite_alpha_mode : LuaCompositeAlphaMode
+        position : LuaWindowPosition
 
-        resize_constraints : LuaWindowResizeConstraints
-
-        resizable : boolean
-
-        enabled_buttons : LuaEnabledButtons
-
-        decorations : boolean
-
-        transparent : boolean
-
-        focused : boolean
-
-        window_level : LuaWindowLevel
-
-        canvas : string
-
-        fit_canvas_to_parent : boolean
+        present_mode : LuaPresentMode
 
         prevent_default_event_handling : boolean
 
-        internal : LuaInternalWindowState
+        recognize_doubletap_gesture : boolean
 
-        ime_enabled : boolean
-
-        ime_position : LuaVec2
-
-        window_theme : ReflectedValue
-
-        visible : boolean
-
-        skip_taskbar : boolean
-
-        desired_maximum_frame_latency : ReflectedValue
+        recognize_pan_gesture : ReflectedValue
 
         recognize_pinch_gesture : boolean
 
         recognize_rotation_gesture : boolean
 
-        recognize_doubletap_gesture : boolean
+        resizable : boolean
 
-        recognize_pan_gesture : ReflectedValue
+        resize_constraints : LuaWindowResizeConstraints
+
+        resolution : LuaWindowResolution
+
+        skip_taskbar : boolean
+
+        title : string
+
+        transparent : boolean
+
+        visible : boolean
+
+        window_level : LuaWindowLevel
+
+        window_theme : ReflectedValue
 
         clone : function(self:LuaWindow):(LuaWindow)
 
@@ -4144,13 +3872,9 @@ global record CoreBevyAPI
     
     --
 
-        window : LuaEntity
-
         position : LuaIVec2
 
         window : LuaEntity
-
-        position : LuaIVec2
 
         assert_receiver_is_total_eq : function(self:LuaWindowMoved)
 
@@ -4203,21 +3927,13 @@ global record CoreBevyAPI
     
     --
 
-        min_width : number
-
-        min_height : number
+        max_height : number
 
         max_width : number
 
-        max_height : number
-
-        min_width : number
-
         min_height : number
 
-        max_width : number
-
-        max_height : number
+        min_width : number
 
         clone : function(self:LuaWindowResizeConstraints):(LuaWindowResizeConstraints)
 
@@ -4236,17 +3952,11 @@ global record CoreBevyAPI
     
     --
 
-        window : LuaEntity
+        height : number
 
         width : number
 
-        height : number
-
         window : LuaEntity
-
-        width : number
-
-        height : number
 
         clone : function(self:LuaWindowResized):(LuaWindowResized)
 
@@ -4375,13 +4085,9 @@ global record CoreBevyAPI
     
     --
 
-        window : LuaEntity
-
         focused : boolean
 
         window : LuaEntity
-
-        focused : boolean
 
         clone : function(self:LuaWindowFocused):(LuaWindowFocused)
 
@@ -4400,13 +4106,9 @@ global record CoreBevyAPI
     
     --
 
-        window : LuaEntity
-
         occluded : boolean
 
         window : LuaEntity
-
-        occluded : boolean
 
         clone : function(self:LuaWindowOccluded):(LuaWindowOccluded)
 
@@ -4425,13 +4127,9 @@ global record CoreBevyAPI
     
     --
 
-        window : LuaEntity
-
         scale_factor : number
 
         window : LuaEntity
-
-        scale_factor : number
 
         clone : function(self:LuaWindowScaleFactorChanged):(LuaWindowScaleFactorChanged)
 
@@ -4448,13 +4146,9 @@ global record CoreBevyAPI
     
     --
 
-        window : LuaEntity
-
         scale_factor : number
 
         window : LuaEntity
-
-        scale_factor : number
 
         clone : function(self:LuaWindowBackendScaleFactorChanged):(LuaWindowBackendScaleFactorChanged)
 
@@ -4471,13 +4165,9 @@ global record CoreBevyAPI
     
     --
 
-        window : LuaEntity
-
         theme : LuaWindowTheme
 
         window : LuaEntity
-
-        theme : LuaWindowTheme
 
         assert_receiver_is_total_eq : function(self:LuaWindowThemeChanged)
 
@@ -4581,10 +4271,6 @@ global record CoreBevyAPI
     
     --
 
-        icon : LuaCursorIcon
-
-        visible : boolean
-
         grab_mode : LuaCursorGrabMode
 
         hit_test : boolean
@@ -4592,10 +4278,6 @@ global record CoreBevyAPI
         icon : LuaCursorIcon
 
         visible : boolean
-
-        grab_mode : LuaCursorGrabMode
-
-        hit_test : boolean
 
         clone : function(self:LuaCursor):(LuaCursor)
 
@@ -4721,17 +4403,11 @@ global record CoreBevyAPI
     
     --
 
-        minimize : boolean
+        close : boolean
 
         maximize : boolean
 
-        close : boolean
-
         minimize : boolean
-
-        maximize : boolean
-
-        close : boolean
 
         clone : function(self:LuaEnabledButtons):(LuaEnabledButtons)
 
@@ -4855,15 +4531,15 @@ global record CoreBevyAPI
 
         __tostring : function(self:LuaDuration):(string)
 
-        __mul : function(any , any):(any)
-
         __add : function(any , any):(any)
+
+        __mul : function(any , any):(any)
 
         __div : function(any , any):(any)
 
-        __sub : function(any , any):(any)
-
         __eq : function(any , any):(any)
+
+        __sub : function(any , any):(any)
 
     end
     
@@ -4888,15 +4564,15 @@ global record CoreBevyAPI
 
         from_secs_f32 : function(number):(LuaDuration)
 
-        __mul : function(any , any):(any)
-
         __add : function(any , any):(any)
+
+        __mul : function(any , any):(any)
 
         __div : function(any , any):(any)
 
-        __sub : function(any , any):(any)
-
         __eq : function(any , any):(any)
+
+        __sub : function(any , any):(any)
 
     end
     
@@ -4921,11 +4597,11 @@ global record CoreBevyAPI
 
         __tostring : function(self:LuaInstant):(string)
 
-        __eq : function(any , any):(any)
-
         __sub : function(any , any):(any)
 
         __add : function(any , any):(any)
+
+        __eq : function(any , any):(any)
 
     end
     
@@ -4938,11 +4614,11 @@ global record CoreBevyAPI
 
         now : function():(LuaInstant)
 
-        __eq : function(any , any):(any)
-
         __sub : function(any , any):(any)
 
         __add : function(any , any):(any)
+
+        __eq : function(any , any):(any)
 
     end
     
@@ -5104,17 +4780,17 @@ global record CoreBevyAPI
 
         __tostring : function(self:LuaQuat):(string)
 
-        __sub : function(any , any):(any)
-
-        __unm : function(any):(any)
-
         __mul : function(any , any):(any)
+
+        __sub : function(any , any):(any)
 
         __add : function(any , any):(any)
 
-        __eq : function(any , any):(any)
-
         __div : function(any , any):(any)
+
+        __unm : function(any):(any)
+
+        __eq : function(any , any):(any)
 
     end
     
@@ -5157,17 +4833,17 @@ global record CoreBevyAPI
 
         from_affine3 : function(LuaAffine3A):(LuaQuat)
 
-        __sub : function(any , any):(any)
-
-        __unm : function(any):(any)
-
         __mul : function(any , any):(any)
+
+        __sub : function(any , any):(any)
 
         __add : function(any , any):(any)
 
-        __eq : function(any , any):(any)
-
         __div : function(any , any):(any)
+
+        __unm : function(any):(any)
+
+        __eq : function(any , any):(any)
 
     end
     
@@ -5177,12 +4853,6 @@ global record CoreBevyAPI
         userdata
     
     --
-
-        x : number
-
-        y : number
-
-        z : number
 
         x : number
 
@@ -5344,19 +5014,19 @@ global record CoreBevyAPI
 
         __newindex : function(self:LuaVec3 , integer , number)
 
-        __sub : function(any , any):(any)
+        __add : function(any , any):(any)
+
+        __unm : function(any):(any)
 
         __mul : function(any , any):(any)
 
-        __div : function(any , any):(any)
+        __eq : function(any , any):(any)
 
-        __add : function(any , any):(any)
+        __sub : function(any , any):(any)
 
         __mod : function(any , any):(any)
 
-        __eq : function(any , any):(any)
-
-        __unm : function(any):(any)
+        __div : function(any , any):(any)
 
     end
     
@@ -5375,19 +5045,19 @@ global record CoreBevyAPI
 
         from_array : function({number}):(LuaVec3)
 
-        __sub : function(any , any):(any)
+        __add : function(any , any):(any)
+
+        __unm : function(any):(any)
 
         __mul : function(any , any):(any)
 
-        __div : function(any , any):(any)
+        __eq : function(any , any):(any)
 
-        __add : function(any , any):(any)
+        __sub : function(any , any):(any)
 
         __mod : function(any , any):(any)
 
-        __eq : function(any , any):(any)
-
-        __unm : function(any):(any)
+        __div : function(any , any):(any)
 
     end
     
@@ -5397,10 +5067,6 @@ global record CoreBevyAPI
         userdata
     
     --
-
-        x : integer
-
-        y : integer
 
         x : integer
 
@@ -5516,19 +5182,19 @@ global record CoreBevyAPI
 
         __newindex : function(self:LuaIVec2 , integer , integer)
 
-        __add : function(any , any):(any)
-
-        __unm : function(any):(any)
-
-        __eq : function(any , any):(any)
-
-        __sub : function(any , any):(any)
-
-        __mul : function(any , any):(any)
+        __mod : function(any , any):(any)
 
         __div : function(any , any):(any)
 
-        __mod : function(any , any):(any)
+        __eq : function(any , any):(any)
+
+        __add : function(any , any):(any)
+
+        __sub : function(any , any):(any)
+
+        __unm : function(any):(any)
+
+        __mul : function(any , any):(any)
 
     end
     
@@ -5547,19 +5213,19 @@ global record CoreBevyAPI
 
         from_array : function({integer}):(LuaIVec2)
 
-        __add : function(any , any):(any)
-
-        __unm : function(any):(any)
-
-        __eq : function(any , any):(any)
-
-        __sub : function(any , any):(any)
-
-        __mul : function(any , any):(any)
+        __mod : function(any , any):(any)
 
         __div : function(any , any):(any)
 
-        __mod : function(any , any):(any)
+        __eq : function(any , any):(any)
+
+        __add : function(any , any):(any)
+
+        __sub : function(any , any):(any)
+
+        __unm : function(any):(any)
+
+        __mul : function(any , any):(any)
 
     end
     
@@ -5569,12 +5235,6 @@ global record CoreBevyAPI
         userdata
     
     --
-
-        x : integer
-
-        y : integer
-
-        z : integer
 
         x : integer
 
@@ -5694,19 +5354,19 @@ global record CoreBevyAPI
 
         __newindex : function(self:LuaIVec3 , integer , integer)
 
-        __add : function(any , any):(any)
-
-        __sub : function(any , any):(any)
+        __eq : function(any , any):(any)
 
         __mod : function(any , any):(any)
 
-        __mul : function(any , any):(any)
+        __add : function(any , any):(any)
+
+        __unm : function(any):(any)
 
         __div : function(any , any):(any)
 
-        __eq : function(any , any):(any)
+        __sub : function(any , any):(any)
 
-        __unm : function(any):(any)
+        __mul : function(any , any):(any)
 
     end
     
@@ -5725,19 +5385,19 @@ global record CoreBevyAPI
 
         from_array : function({integer}):(LuaIVec3)
 
-        __add : function(any , any):(any)
-
-        __sub : function(any , any):(any)
+        __eq : function(any , any):(any)
 
         __mod : function(any , any):(any)
 
-        __mul : function(any , any):(any)
+        __add : function(any , any):(any)
+
+        __unm : function(any):(any)
 
         __div : function(any , any):(any)
 
-        __eq : function(any , any):(any)
+        __sub : function(any , any):(any)
 
-        __unm : function(any):(any)
+        __mul : function(any , any):(any)
 
     end
     
@@ -5748,12 +5408,6 @@ global record CoreBevyAPI
     
     --
 
-        x : integer
-
-        y : integer
-
-        z : integer
-
         w : integer
 
         x : integer
@@ -5761,8 +5415,6 @@ global record CoreBevyAPI
         y : integer
 
         z : integer
-
-        w : integer
 
         to_array : function(self:LuaIVec4):({integer})
 
@@ -5872,17 +5524,17 @@ global record CoreBevyAPI
 
         __newindex : function(self:LuaIVec4 , integer , integer)
 
+        __eq : function(any , any):(any)
+
         __div : function(any , any):(any)
+
+        __sub : function(any , any):(any)
 
         __mod : function(any , any):(any)
 
         __mul : function(any , any):(any)
 
         __add : function(any , any):(any)
-
-        __sub : function(any , any):(any)
-
-        __eq : function(any , any):(any)
 
         __unm : function(any):(any)
 
@@ -5903,17 +5555,17 @@ global record CoreBevyAPI
 
         from_array : function({integer}):(LuaIVec4)
 
+        __eq : function(any , any):(any)
+
         __div : function(any , any):(any)
+
+        __sub : function(any , any):(any)
 
         __mod : function(any , any):(any)
 
         __mul : function(any , any):(any)
 
         __add : function(any , any):(any)
-
-        __sub : function(any , any):(any)
-
-        __eq : function(any , any):(any)
 
         __unm : function(any):(any)
 
@@ -5925,10 +5577,6 @@ global record CoreBevyAPI
         userdata
     
     --
-
-        x : integer
-
-        y : integer
 
         x : integer
 
@@ -6040,19 +5688,19 @@ global record CoreBevyAPI
 
         __tostring : function(self:LuaI64Vec2):(string)
 
+        __eq : function(any , any):(any)
+
+        __unm : function(any):(any)
+
         __sub : function(any , any):(any)
 
-        __eq : function(any , any):(any)
+        __mul : function(any , any):(any)
 
         __mod : function(any , any):(any)
 
         __add : function(any , any):(any)
 
-        __unm : function(any):(any)
-
         __div : function(any , any):(any)
-
-        __mul : function(any , any):(any)
 
     end
     
@@ -6071,19 +5719,19 @@ global record CoreBevyAPI
 
         from_array : function({integer}):(LuaI64Vec2)
 
+        __eq : function(any , any):(any)
+
+        __unm : function(any):(any)
+
         __sub : function(any , any):(any)
 
-        __eq : function(any , any):(any)
+        __mul : function(any , any):(any)
 
         __mod : function(any , any):(any)
 
         __add : function(any , any):(any)
 
-        __unm : function(any):(any)
-
         __div : function(any , any):(any)
-
-        __mul : function(any , any):(any)
 
     end
     
@@ -6093,12 +5741,6 @@ global record CoreBevyAPI
         userdata
     
     --
-
-        x : integer
-
-        y : integer
-
-        z : integer
 
         x : integer
 
@@ -6214,19 +5856,19 @@ global record CoreBevyAPI
 
         __tostring : function(self:LuaI64Vec3):(string)
 
-        __sub : function(any , any):(any)
+        __add : function(any , any):(any)
 
         __unm : function(any):(any)
 
         __div : function(any , any):(any)
 
-        __eq : function(any , any):(any)
+        __mul : function(any , any):(any)
 
         __mod : function(any , any):(any)
 
-        __mul : function(any , any):(any)
+        __sub : function(any , any):(any)
 
-        __add : function(any , any):(any)
+        __eq : function(any , any):(any)
 
     end
     
@@ -6245,19 +5887,19 @@ global record CoreBevyAPI
 
         from_array : function({integer}):(LuaI64Vec3)
 
-        __sub : function(any , any):(any)
+        __add : function(any , any):(any)
 
         __unm : function(any):(any)
 
         __div : function(any , any):(any)
 
-        __eq : function(any , any):(any)
+        __mul : function(any , any):(any)
 
         __mod : function(any , any):(any)
 
-        __mul : function(any , any):(any)
+        __sub : function(any , any):(any)
 
-        __add : function(any , any):(any)
+        __eq : function(any , any):(any)
 
     end
     
@@ -6268,12 +5910,6 @@ global record CoreBevyAPI
     
     --
 
-        x : integer
-
-        y : integer
-
-        z : integer
-
         w : integer
 
         x : integer
@@ -6281,8 +5917,6 @@ global record CoreBevyAPI
         y : integer
 
         z : integer
-
-        w : integer
 
         to_array : function(self:LuaI64Vec4):({integer})
 
@@ -6390,17 +6024,17 @@ global record CoreBevyAPI
 
         __sub : function(any , any):(any)
 
-        __mod : function(any , any):(any)
-
         __eq : function(any , any):(any)
 
-        __div : function(any , any):(any)
+        __mod : function(any , any):(any)
 
-        __unm : function(any):(any)
+        __add : function(any , any):(any)
 
         __mul : function(any , any):(any)
 
-        __add : function(any , any):(any)
+        __unm : function(any):(any)
+
+        __div : function(any , any):(any)
 
     end
     
@@ -6421,17 +6055,17 @@ global record CoreBevyAPI
 
         __sub : function(any , any):(any)
 
-        __mod : function(any , any):(any)
-
         __eq : function(any , any):(any)
 
-        __div : function(any , any):(any)
+        __mod : function(any , any):(any)
 
-        __unm : function(any):(any)
+        __add : function(any , any):(any)
 
         __mul : function(any , any):(any)
 
-        __add : function(any , any):(any)
+        __unm : function(any):(any)
+
+        __div : function(any , any):(any)
 
     end
     
@@ -6441,10 +6075,6 @@ global record CoreBevyAPI
         userdata
     
     --
-
-        x : integer
-
-        y : integer
 
         x : integer
 
@@ -6538,17 +6168,17 @@ global record CoreBevyAPI
 
         __newindex : function(self:LuaUVec2 , integer , integer)
 
-        __mul : function(any , any):(any)
+        __sub : function(any , any):(any)
+
+        __mod : function(any , any):(any)
 
         __add : function(any , any):(any)
 
         __eq : function(any , any):(any)
 
+        __mul : function(any , any):(any)
+
         __div : function(any , any):(any)
-
-        __sub : function(any , any):(any)
-
-        __mod : function(any , any):(any)
 
     end
     
@@ -6567,17 +6197,17 @@ global record CoreBevyAPI
 
         from_array : function({integer}):(LuaUVec2)
 
-        __mul : function(any , any):(any)
+        __sub : function(any , any):(any)
+
+        __mod : function(any , any):(any)
 
         __add : function(any , any):(any)
 
         __eq : function(any , any):(any)
 
+        __mul : function(any , any):(any)
+
         __div : function(any , any):(any)
-
-        __sub : function(any , any):(any)
-
-        __mod : function(any , any):(any)
 
     end
     
@@ -6587,12 +6217,6 @@ global record CoreBevyAPI
         userdata
     
     --
-
-        x : integer
-
-        y : integer
-
-        z : integer
 
         x : integer
 
@@ -6696,17 +6320,17 @@ global record CoreBevyAPI
 
         __newindex : function(self:LuaUVec3 , integer , integer)
 
-        __sub : function(any , any):(any)
+        __eq : function(any , any):(any)
 
         __mul : function(any , any):(any)
 
-        __add : function(any , any):(any)
-
-        __div : function(any , any):(any)
+        __sub : function(any , any):(any)
 
         __mod : function(any , any):(any)
 
-        __eq : function(any , any):(any)
+        __div : function(any , any):(any)
+
+        __add : function(any , any):(any)
 
     end
     
@@ -6725,17 +6349,17 @@ global record CoreBevyAPI
 
         from_array : function({integer}):(LuaUVec3)
 
-        __sub : function(any , any):(any)
+        __eq : function(any , any):(any)
 
         __mul : function(any , any):(any)
 
-        __add : function(any , any):(any)
-
-        __div : function(any , any):(any)
+        __sub : function(any , any):(any)
 
         __mod : function(any , any):(any)
 
-        __eq : function(any , any):(any)
+        __div : function(any , any):(any)
+
+        __add : function(any , any):(any)
 
     end
     
@@ -6746,12 +6370,6 @@ global record CoreBevyAPI
     
     --
 
-        x : integer
-
-        y : integer
-
-        z : integer
-
         w : integer
 
         x : integer
@@ -6759,8 +6377,6 @@ global record CoreBevyAPI
         y : integer
 
         z : integer
-
-        w : integer
 
         clone : function(self:LuaUVec4):(LuaUVec4)
 
@@ -6854,17 +6470,17 @@ global record CoreBevyAPI
 
         __newindex : function(self:LuaUVec4 , integer , integer)
 
-        __eq : function(any , any):(any)
+        __mod : function(any , any):(any)
 
         __mul : function(any , any):(any)
 
-        __add : function(any , any):(any)
-
         __div : function(any , any):(any)
 
-        __sub : function(any , any):(any)
+        __add : function(any , any):(any)
 
-        __mod : function(any , any):(any)
+        __eq : function(any , any):(any)
+
+        __sub : function(any , any):(any)
 
     end
     
@@ -6883,17 +6499,17 @@ global record CoreBevyAPI
 
         from_array : function({integer}):(LuaUVec4)
 
-        __eq : function(any , any):(any)
+        __mod : function(any , any):(any)
 
         __mul : function(any , any):(any)
 
-        __add : function(any , any):(any)
-
         __div : function(any , any):(any)
 
-        __sub : function(any , any):(any)
+        __add : function(any , any):(any)
 
-        __mod : function(any , any):(any)
+        __eq : function(any , any):(any)
+
+        __sub : function(any , any):(any)
 
     end
     
@@ -6903,10 +6519,6 @@ global record CoreBevyAPI
         userdata
     
     --
-
-        x : integer
-
-        y : integer
 
         x : integer
 
@@ -6998,11 +6610,11 @@ global record CoreBevyAPI
 
         __div : function(any , any):(any)
 
+        __add : function(any , any):(any)
+
         __mul : function(any , any):(any)
 
         __eq : function(any , any):(any)
-
-        __add : function(any , any):(any)
 
         __sub : function(any , any):(any)
 
@@ -7027,11 +6639,11 @@ global record CoreBevyAPI
 
         __div : function(any , any):(any)
 
+        __add : function(any , any):(any)
+
         __mul : function(any , any):(any)
 
         __eq : function(any , any):(any)
-
-        __add : function(any , any):(any)
 
         __sub : function(any , any):(any)
 
@@ -7045,12 +6657,6 @@ global record CoreBevyAPI
         userdata
     
     --
-
-        x : integer
-
-        y : integer
-
-        z : integer
 
         x : integer
 
@@ -7150,17 +6756,17 @@ global record CoreBevyAPI
 
         __tostring : function(self:LuaU64Vec3):(string)
 
-        __sub : function(any , any):(any)
-
-        __mod : function(any , any):(any)
-
         __eq : function(any , any):(any)
+
+        __sub : function(any , any):(any)
 
         __div : function(any , any):(any)
 
+        __add : function(any , any):(any)
+
         __mul : function(any , any):(any)
 
-        __add : function(any , any):(any)
+        __mod : function(any , any):(any)
 
     end
     
@@ -7179,17 +6785,17 @@ global record CoreBevyAPI
 
         from_array : function({integer}):(LuaU64Vec3)
 
-        __sub : function(any , any):(any)
-
-        __mod : function(any , any):(any)
-
         __eq : function(any , any):(any)
+
+        __sub : function(any , any):(any)
 
         __div : function(any , any):(any)
 
+        __add : function(any , any):(any)
+
         __mul : function(any , any):(any)
 
-        __add : function(any , any):(any)
+        __mod : function(any , any):(any)
 
     end
     
@@ -7200,12 +6806,6 @@ global record CoreBevyAPI
     
     --
 
-        x : integer
-
-        y : integer
-
-        z : integer
-
         w : integer
 
         x : integer
@@ -7213,8 +6813,6 @@ global record CoreBevyAPI
         y : integer
 
         z : integer
-
-        w : integer
 
         clone : function(self:LuaU64Vec4):(LuaU64Vec4)
 
@@ -7304,17 +6902,17 @@ global record CoreBevyAPI
 
         __tostring : function(self:LuaU64Vec4):(string)
 
-        __mul : function(any , any):(any)
-
-        __div : function(any , any):(any)
+        __add : function(any , any):(any)
 
         __mod : function(any , any):(any)
 
         __eq : function(any , any):(any)
 
-        __add : function(any , any):(any)
-
         __sub : function(any , any):(any)
+
+        __div : function(any , any):(any)
+
+        __mul : function(any , any):(any)
 
     end
     
@@ -7333,17 +6931,17 @@ global record CoreBevyAPI
 
         from_array : function({integer}):(LuaU64Vec4)
 
-        __mul : function(any , any):(any)
-
-        __div : function(any , any):(any)
+        __add : function(any , any):(any)
 
         __mod : function(any , any):(any)
 
         __eq : function(any , any):(any)
 
-        __add : function(any , any):(any)
-
         __sub : function(any , any):(any)
+
+        __div : function(any , any):(any)
+
+        __mul : function(any , any):(any)
 
     end
     
@@ -7353,10 +6951,6 @@ global record CoreBevyAPI
         userdata
     
     --
-
-        x : number
-
-        y : number
 
         x : number
 
@@ -7516,17 +7110,17 @@ global record CoreBevyAPI
 
         __newindex : function(self:LuaVec2 , integer , number)
 
-        __div : function(any , any):(any)
-
         __unm : function(any):(any)
-
-        __mul : function(any , any):(any)
-
-        __mod : function(any , any):(any)
 
         __sub : function(any , any):(any)
 
+        __mod : function(any , any):(any)
+
         __add : function(any , any):(any)
+
+        __mul : function(any , any):(any)
+
+        __div : function(any , any):(any)
 
         __eq : function(any , any):(any)
 
@@ -7549,17 +7143,17 @@ global record CoreBevyAPI
 
         from_angle : function(number):(LuaVec2)
 
-        __div : function(any , any):(any)
-
         __unm : function(any):(any)
-
-        __mul : function(any , any):(any)
-
-        __mod : function(any , any):(any)
 
         __sub : function(any , any):(any)
 
+        __mod : function(any , any):(any)
+
         __add : function(any , any):(any)
+
+        __mul : function(any , any):(any)
+
+        __div : function(any , any):(any)
 
         __eq : function(any , any):(any)
 
@@ -7728,17 +7322,17 @@ global record CoreBevyAPI
 
         __div : function(any , any):(any)
 
-        __mod : function(any , any):(any)
-
-        __unm : function(any):(any)
-
-        __sub : function(any , any):(any)
+        __eq : function(any , any):(any)
 
         __mul : function(any , any):(any)
 
+        __unm : function(any):(any)
+
+        __mod : function(any , any):(any)
+
         __add : function(any , any):(any)
 
-        __eq : function(any , any):(any)
+        __sub : function(any , any):(any)
 
     end
     
@@ -7759,17 +7353,17 @@ global record CoreBevyAPI
 
         __div : function(any , any):(any)
 
-        __mod : function(any , any):(any)
-
-        __unm : function(any):(any)
-
-        __sub : function(any , any):(any)
+        __eq : function(any , any):(any)
 
         __mul : function(any , any):(any)
 
+        __unm : function(any):(any)
+
+        __mod : function(any , any):(any)
+
         __add : function(any , any):(any)
 
-        __eq : function(any , any):(any)
+        __sub : function(any , any):(any)
 
     end
     
@@ -7926,11 +7520,11 @@ global record CoreBevyAPI
 
         __newindex : function(self:LuaVec4 , integer , number)
 
-        __add : function(any , any):(any)
-
         __mul : function(any , any):(any)
 
-        __unm : function(any):(any)
+        __sub : function(any , any):(any)
+
+        __add : function(any , any):(any)
 
         __mod : function(any , any):(any)
 
@@ -7938,7 +7532,7 @@ global record CoreBevyAPI
 
         __div : function(any , any):(any)
 
-        __sub : function(any , any):(any)
+        __unm : function(any):(any)
 
     end
     
@@ -7957,11 +7551,11 @@ global record CoreBevyAPI
 
         from_array : function({number}):(LuaVec4)
 
-        __add : function(any , any):(any)
-
         __mul : function(any , any):(any)
 
-        __unm : function(any):(any)
+        __sub : function(any , any):(any)
+
+        __add : function(any , any):(any)
 
         __mod : function(any , any):(any)
 
@@ -7969,7 +7563,7 @@ global record CoreBevyAPI
 
         __div : function(any , any):(any)
 
-        __sub : function(any , any):(any)
+        __unm : function(any):(any)
 
     end
     
@@ -7979,10 +7573,6 @@ global record CoreBevyAPI
         userdata
     
     --
-
-        x : boolean
-
-        y : boolean
 
         x : boolean
 
@@ -8044,12 +7634,6 @@ global record CoreBevyAPI
 
         z : boolean
 
-        x : boolean
-
-        y : boolean
-
-        z : boolean
-
         clone : function(self:LuaBVec3):(LuaBVec3)
 
         bitmask : function(self:LuaBVec3):(integer)
@@ -8100,12 +7684,6 @@ global record CoreBevyAPI
     
     --
 
-        x : boolean
-
-        y : boolean
-
-        z : boolean
-
         w : boolean
 
         x : boolean
@@ -8113,8 +7691,6 @@ global record CoreBevyAPI
         y : boolean
 
         z : boolean
-
-        w : boolean
 
         clone : function(self:LuaBVec4):(LuaBVec4)
 
@@ -8165,10 +7741,6 @@ global record CoreBevyAPI
         userdata
     
     --
-
-        x : number
-
-        y : number
 
         x : number
 
@@ -8330,17 +7902,17 @@ global record CoreBevyAPI
 
         __div : function(any , any):(any)
 
-        __unm : function(any):(any)
-
-        __add : function(any , any):(any)
-
-        __mul : function(any , any):(any)
+        __sub : function(any , any):(any)
 
         __eq : function(any , any):(any)
 
-        __sub : function(any , any):(any)
+        __mul : function(any , any):(any)
+
+        __add : function(any , any):(any)
 
         __mod : function(any , any):(any)
+
+        __unm : function(any):(any)
 
     end
     
@@ -8363,17 +7935,17 @@ global record CoreBevyAPI
 
         __div : function(any , any):(any)
 
-        __unm : function(any):(any)
-
-        __add : function(any , any):(any)
-
-        __mul : function(any , any):(any)
+        __sub : function(any , any):(any)
 
         __eq : function(any , any):(any)
 
-        __sub : function(any , any):(any)
+        __mul : function(any , any):(any)
+
+        __add : function(any , any):(any)
 
         __mod : function(any , any):(any)
+
+        __unm : function(any):(any)
 
     end
     
@@ -8383,12 +7955,6 @@ global record CoreBevyAPI
         userdata
     
     --
-
-        x : number
-
-        y : number
-
-        z : number
 
         x : number
 
@@ -8552,19 +8118,19 @@ global record CoreBevyAPI
 
         __newindex : function(self:LuaDVec3 , integer , number)
 
+        __unm : function(any):(any)
+
         __mod : function(any , any):(any)
-
-        __mul : function(any , any):(any)
-
-        __add : function(any , any):(any)
 
         __div : function(any , any):(any)
 
-        __eq : function(any , any):(any)
-
-        __unm : function(any):(any)
+        __mul : function(any , any):(any)
 
         __sub : function(any , any):(any)
+
+        __add : function(any , any):(any)
+
+        __eq : function(any , any):(any)
 
     end
     
@@ -8583,19 +8149,19 @@ global record CoreBevyAPI
 
         from_array : function({number}):(LuaDVec3)
 
+        __unm : function(any):(any)
+
         __mod : function(any , any):(any)
-
-        __mul : function(any , any):(any)
-
-        __add : function(any , any):(any)
 
         __div : function(any , any):(any)
 
-        __eq : function(any , any):(any)
-
-        __unm : function(any):(any)
+        __mul : function(any , any):(any)
 
         __sub : function(any , any):(any)
+
+        __add : function(any , any):(any)
+
+        __eq : function(any , any):(any)
 
     end
     
@@ -8606,12 +8172,6 @@ global record CoreBevyAPI
     
     --
 
-        x : number
-
-        y : number
-
-        z : number
-
         w : number
 
         x : number
@@ -8619,8 +8179,6 @@ global record CoreBevyAPI
         y : number
 
         z : number
-
-        w : number
 
         clone : function(self:LuaDVec4):(LuaDVec4)
 
@@ -8770,17 +8328,17 @@ global record CoreBevyAPI
 
         __mul : function(any , any):(any)
 
+        __mod : function(any , any):(any)
+
         __eq : function(any , any):(any)
+
+        __unm : function(any):(any)
+
+        __sub : function(any , any):(any)
 
         __add : function(any , any):(any)
 
         __div : function(any , any):(any)
-
-        __sub : function(any , any):(any)
-
-        __unm : function(any):(any)
-
-        __mod : function(any , any):(any)
 
     end
     
@@ -8801,17 +8359,17 @@ global record CoreBevyAPI
 
         __mul : function(any , any):(any)
 
+        __mod : function(any , any):(any)
+
         __eq : function(any , any):(any)
+
+        __unm : function(any):(any)
+
+        __sub : function(any , any):(any)
 
         __add : function(any , any):(any)
 
         __div : function(any , any):(any)
-
-        __sub : function(any , any):(any)
-
-        __unm : function(any):(any)
-
-        __mod : function(any , any):(any)
 
     end
     
@@ -8876,17 +8434,17 @@ global record CoreBevyAPI
 
         __index : function(self:LuaMat2 , integer):(LuaVec2)
 
-        __mul : function(any , any):(any)
-
-        __div : function(any , any):(any)
-
         __sub : function(any , any):(any)
 
-        __unm : function(any):(any)
+        __eq : function(any , any):(any)
 
         __add : function(any , any):(any)
 
-        __eq : function(any , any):(any)
+        __unm : function(any):(any)
+
+        __div : function(any , any):(any)
+
+        __mul : function(any , any):(any)
 
     end
     
@@ -8909,17 +8467,17 @@ global record CoreBevyAPI
 
         from_mat3a : function(LuaMat3A):(LuaMat2)
 
-        __mul : function(any , any):(any)
-
-        __div : function(any , any):(any)
-
         __sub : function(any , any):(any)
 
-        __unm : function(any):(any)
+        __eq : function(any , any):(any)
 
         __add : function(any , any):(any)
 
-        __eq : function(any , any):(any)
+        __unm : function(any):(any)
+
+        __div : function(any , any):(any)
+
+        __mul : function(any , any):(any)
 
     end
     
@@ -8929,12 +8487,6 @@ global record CoreBevyAPI
         userdata
     
     --
-
-        x_axis : LuaVec3
-
-        y_axis : LuaVec3
-
-        z_axis : LuaVec3
 
         x_axis : LuaVec3
 
@@ -9018,17 +8570,17 @@ global record CoreBevyAPI
 
         __index : function(self:LuaMat3 , integer):(LuaVec3)
 
-        __sub : function(any , any):(any)
-
-        __div : function(any , any):(any)
-
-        __eq : function(any , any):(any)
+        __add : function(any , any):(any)
 
         __unm : function(any):(any)
 
-        __add : function(any , any):(any)
-
         __mul : function(any , any):(any)
+
+        __eq : function(any , any):(any)
+
+        __div : function(any , any):(any)
+
+        __sub : function(any , any):(any)
 
     end
     
@@ -9067,17 +8619,17 @@ global record CoreBevyAPI
 
         from_mat2 : function(LuaMat2):(LuaMat3)
 
-        __sub : function(any , any):(any)
-
-        __div : function(any , any):(any)
-
-        __eq : function(any , any):(any)
+        __add : function(any , any):(any)
 
         __unm : function(any):(any)
 
-        __add : function(any , any):(any)
-
         __mul : function(any , any):(any)
+
+        __eq : function(any , any):(any)
+
+        __div : function(any , any):(any)
+
+        __sub : function(any , any):(any)
 
     end
     
@@ -9087,12 +8639,6 @@ global record CoreBevyAPI
         userdata
     
     --
-
-        x_axis : LuaVec3A
-
-        y_axis : LuaVec3A
-
-        z_axis : LuaVec3A
 
         x_axis : LuaVec3A
 
@@ -9176,17 +8722,17 @@ global record CoreBevyAPI
 
         __index : function(self:LuaMat3A , integer):(LuaVec3A)
 
-        __div : function(any , any):(any)
-
         __unm : function(any):(any)
-
-        __sub : function(any , any):(any)
-
-        __eq : function(any , any):(any)
 
         __mul : function(any , any):(any)
 
         __add : function(any , any):(any)
+
+        __sub : function(any , any):(any)
+
+        __div : function(any , any):(any)
+
+        __eq : function(any , any):(any)
 
     end
     
@@ -9225,17 +8771,17 @@ global record CoreBevyAPI
 
         from_mat2 : function(LuaMat2):(LuaMat3A)
 
-        __div : function(any , any):(any)
-
         __unm : function(any):(any)
-
-        __sub : function(any , any):(any)
-
-        __eq : function(any , any):(any)
 
         __mul : function(any , any):(any)
 
         __add : function(any , any):(any)
+
+        __sub : function(any , any):(any)
+
+        __div : function(any , any):(any)
+
+        __eq : function(any , any):(any)
 
     end
     
@@ -9246,12 +8792,6 @@ global record CoreBevyAPI
     
     --
 
-        x_axis : LuaVec4
-
-        y_axis : LuaVec4
-
-        z_axis : LuaVec4
-
         w_axis : LuaVec4
 
         x_axis : LuaVec4
@@ -9259,8 +8799,6 @@ global record CoreBevyAPI
         y_axis : LuaVec4
 
         z_axis : LuaVec4
-
-        w_axis : LuaVec4
 
         clone : function(self:LuaMat4):(LuaMat4)
 
@@ -9370,17 +8908,17 @@ global record CoreBevyAPI
 
         __index : function(self:LuaMat4 , integer):(LuaVec4)
 
-        __mul : function(any , any):(any)
-
-        __unm : function(any):(any)
-
         __add : function(any , any):(any)
 
         __sub : function(any , any):(any)
 
+        __unm : function(any):(any)
+
         __eq : function(any , any):(any)
 
         __div : function(any , any):(any)
+
+        __mul : function(any , any):(any)
 
     end
     
@@ -9447,17 +8985,17 @@ global record CoreBevyAPI
 
         orthographic_rh : function(number , number , number , number , number , number):(LuaMat4)
 
-        __mul : function(any , any):(any)
-
-        __unm : function(any):(any)
-
         __add : function(any , any):(any)
 
         __sub : function(any , any):(any)
 
+        __unm : function(any):(any)
+
         __eq : function(any , any):(any)
 
         __div : function(any , any):(any)
+
+        __mul : function(any , any):(any)
 
     end
     
@@ -9467,10 +9005,6 @@ global record CoreBevyAPI
         userdata
     
     --
-
-        x_axis : LuaDVec2
-
-        y_axis : LuaDVec2
 
         x_axis : LuaDVec2
 
@@ -9528,17 +9062,17 @@ global record CoreBevyAPI
 
         __index : function(self:LuaDMat2 , integer):(LuaDVec2)
 
-        __eq : function(any , any):(any)
-
-        __unm : function(any):(any)
+        __add : function(any , any):(any)
 
         __div : function(any , any):(any)
 
-        __mul : function(any , any):(any)
-
-        __add : function(any , any):(any)
+        __unm : function(any):(any)
 
         __sub : function(any , any):(any)
+
+        __eq : function(any , any):(any)
+
+        __mul : function(any , any):(any)
 
     end
     
@@ -9559,17 +9093,17 @@ global record CoreBevyAPI
 
         from_mat3 : function(LuaDMat3):(LuaDMat2)
 
-        __eq : function(any , any):(any)
-
-        __unm : function(any):(any)
+        __add : function(any , any):(any)
 
         __div : function(any , any):(any)
 
-        __mul : function(any , any):(any)
-
-        __add : function(any , any):(any)
+        __unm : function(any):(any)
 
         __sub : function(any , any):(any)
+
+        __eq : function(any , any):(any)
+
+        __mul : function(any , any):(any)
 
     end
     
@@ -9579,12 +9113,6 @@ global record CoreBevyAPI
         userdata
     
     --
-
-        x_axis : LuaDVec3
-
-        y_axis : LuaDVec3
-
-        z_axis : LuaDVec3
 
         x_axis : LuaDVec3
 
@@ -9668,15 +9196,15 @@ global record CoreBevyAPI
 
         __add : function(any , any):(any)
 
-        __sub : function(any , any):(any)
-
-        __div : function(any , any):(any)
-
         __unm : function(any):(any)
+
+        __mul : function(any , any):(any)
 
         __eq : function(any , any):(any)
 
-        __mul : function(any , any):(any)
+        __sub : function(any , any):(any)
+
+        __div : function(any , any):(any)
 
     end
     
@@ -9717,15 +9245,15 @@ global record CoreBevyAPI
 
         __add : function(any , any):(any)
 
-        __sub : function(any , any):(any)
-
-        __div : function(any , any):(any)
-
         __unm : function(any):(any)
+
+        __mul : function(any , any):(any)
 
         __eq : function(any , any):(any)
 
-        __mul : function(any , any):(any)
+        __sub : function(any , any):(any)
+
+        __div : function(any , any):(any)
 
     end
     
@@ -9736,12 +9264,6 @@ global record CoreBevyAPI
     
     --
 
-        x_axis : LuaDVec4
-
-        y_axis : LuaDVec4
-
-        z_axis : LuaDVec4
-
         w_axis : LuaDVec4
 
         x_axis : LuaDVec4
@@ -9749,8 +9271,6 @@ global record CoreBevyAPI
         y_axis : LuaDVec4
 
         z_axis : LuaDVec4
-
-        w_axis : LuaDVec4
 
         clone : function(self:LuaDMat4):(LuaDMat4)
 
@@ -9854,17 +9374,17 @@ global record CoreBevyAPI
 
         __index : function(self:LuaDMat4 , integer):(LuaDVec4)
 
+        __div : function(any , any):(any)
+
         __add : function(any , any):(any)
 
         __unm : function(any):(any)
 
-        __sub : function(any , any):(any)
-
         __mul : function(any , any):(any)
 
-        __eq : function(any , any):(any)
+        __sub : function(any , any):(any)
 
-        __div : function(any , any):(any)
+        __eq : function(any , any):(any)
 
     end
     
@@ -9929,17 +9449,17 @@ global record CoreBevyAPI
 
         orthographic_rh : function(number , number , number , number , number , number):(LuaDMat4)
 
+        __div : function(any , any):(any)
+
         __add : function(any , any):(any)
 
         __unm : function(any):(any)
 
-        __sub : function(any , any):(any)
-
         __mul : function(any , any):(any)
 
-        __eq : function(any , any):(any)
+        __sub : function(any , any):(any)
 
-        __div : function(any , any):(any)
+        __eq : function(any , any):(any)
 
     end
     
@@ -9949,10 +9469,6 @@ global record CoreBevyAPI
         userdata
     
     --
-
-        matrix2 : LuaMat2
-
-        translation : LuaVec2
 
         matrix2 : LuaMat2
 
@@ -9998,9 +9514,9 @@ global record CoreBevyAPI
 
         __tostring : function(self:LuaAffine2):(string)
 
-        __eq : function(any , any):(any)
-
         __mul : function(any , any):(any)
+
+        __eq : function(any , any):(any)
 
     end
     
@@ -10031,9 +9547,9 @@ global record CoreBevyAPI
 
         from_mat3a : function(LuaMat3A):(LuaAffine2)
 
-        __eq : function(any , any):(any)
-
         __mul : function(any , any):(any)
+
+        __eq : function(any , any):(any)
 
     end
     
@@ -10043,10 +9559,6 @@ global record CoreBevyAPI
         userdata
     
     --
-
-        matrix3 : LuaMat3A
-
-        translation : LuaVec3A
 
         matrix3 : LuaMat3A
 
@@ -10174,10 +9686,6 @@ global record CoreBevyAPI
 
         translation : LuaDVec2
 
-        matrix2 : LuaDMat2
-
-        translation : LuaDVec2
-
         to_cols_array : function(self:LuaDAffine2):({number})
 
         to_cols_array_2d : function(self:LuaDAffine2):({{number}})
@@ -10259,10 +9767,6 @@ global record CoreBevyAPI
         userdata
     
     --
-
-        matrix3 : LuaDMat3
-
-        translation : LuaDVec3
 
         matrix3 : LuaDMat3
 
@@ -10382,12 +9886,6 @@ global record CoreBevyAPI
     
     --
 
-        x : number
-
-        y : number
-
-        z : number
-
         w : number
 
         x : number
@@ -10395,8 +9893,6 @@ global record CoreBevyAPI
         y : number
 
         z : number
-
-        w : number
 
         to_scaled_axis : function(self:LuaDQuat):(LuaDVec3)
 
@@ -10482,13 +9978,13 @@ global record CoreBevyAPI
 
         __unm : function(any):(any)
 
-        __mul : function(any , any):(any)
-
         __add : function(any , any):(any)
+
+        __eq : function(any , any):(any)
 
         __div : function(any , any):(any)
 
-        __eq : function(any , any):(any)
+        __mul : function(any , any):(any)
 
     end
     
@@ -10533,13 +10029,13 @@ global record CoreBevyAPI
 
         __unm : function(any):(any)
 
-        __mul : function(any , any):(any)
-
         __add : function(any , any):(any)
+
+        __eq : function(any , any):(any)
 
         __div : function(any , any):(any)
 
-        __eq : function(any , any):(any)
+        __mul : function(any , any):(any)
 
     end
     
@@ -10710,7 +10206,7 @@ global record CoreBevyAPI
 
         encode_buffer : function():({integer})
 
-        nil : function():(LuaUuid)
+        ["nil"] : function():(LuaUuid)
 
         max : function():(LuaUuid)
 
@@ -10741,7 +10237,7 @@ global record CoreBevyAPI
 
         encode_buffer : function():({integer})
 
-        nil : function():(LuaUuid)
+        ["nil"] : function():(LuaUuid)
 
         max : function():(LuaUuid)
 
