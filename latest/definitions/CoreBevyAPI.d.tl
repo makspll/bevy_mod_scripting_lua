@@ -98,6 +98,12 @@ global record CoreBevyAPI
 
         despawn : function(self:LuaWorld , LuaEntity):(boolean)
 
+        --Creates a LuaQueryBuilder, querying for the passed components types.
+        --
+        --Can be iterated over using `LuaQueryBuilder:iter()`
+
+        query : function(self:LuaWorld , ...:LuaTypeRegistration):(LuaQueryBuilder)
+
         --Removes the given component from the given entity, does nothing if it doesn't exist on the entity.
 
         remove_component : function(self:LuaWorld , LuaEntity , LuaTypeRegistration)
@@ -200,6 +206,29 @@ global record CoreBevyAPI
     end
     
     
+    record LuaQueryBuilder
+
+        userdata
+    
+    --
+
+        --A Builder object which allows for filtering and iterating over components and entities in the world.
+        --
+        --Filters out entities without any of the components passed
+
+        with : function(self:LuaQueryBuilder , ...:LuaTypeRegistration):(LuaQueryBuilder)
+
+        --Filters out entities with any components passed
+
+        without : function(self:LuaQueryBuilder , ...:LuaTypeRegistration):(LuaQueryBuilder)
+
+        --Queries the world and returns an iterator over the entity and components.
+
+        iter : function(self:LuaQueryBuilder):(function():(LuaEntity , ReflectedValue...))
+
+    end
+    
+    
     record LuaEntity
 
         userdata
@@ -240,17 +269,44 @@ global record CoreBevyAPI
     end
     
     
+    record LuaOnAdd
+
+        userdata
+    
+    --
+
+    end
+    
+    
+    record LuaOnInsert
+
+        userdata
+    
+    --
+
+    end
+    
+    
+    record LuaOnRemove
+
+        userdata
+    
+    --
+
+    end
+    
+    
     record LuaComponentId
 
         userdata
     
     --
 
-        assert_receiver_is_total_eq : function(self:LuaComponentId)
-
         index : function(self:LuaComponentId):(integer)
 
         clone : function(self:LuaComponentId):(LuaComponentId)
+
+        assert_receiver_is_total_eq : function(self:LuaComponentId)
 
         new : function(integer):(LuaComponentId)
 
@@ -280,11 +336,11 @@ global record CoreBevyAPI
     
     --
 
+        clone : function(self:LuaTick):(LuaTick)
+
         get : function(self:LuaTick):(integer)
 
         is_newer_than : function(self:LuaTick , LuaTick , LuaTick):(boolean)
-
-        clone : function(self:LuaTick):(LuaTick)
 
         assert_receiver_is_total_eq : function(self:LuaTick)
 
@@ -318,6 +374,8 @@ global record CoreBevyAPI
     
     --
 
+        clone : function(self:LuaComponentTicks):(LuaComponentTicks)
+
         is_added : function(self:LuaComponentTicks , LuaTick , LuaTick):(boolean)
 
         is_changed : function(self:LuaComponentTicks , LuaTick , LuaTick):(boolean)
@@ -326,11 +384,45 @@ global record CoreBevyAPI
 
         added_tick : function(self:LuaComponentTicks):(LuaTick)
 
-        clone : function(self:LuaComponentTicks):(LuaComponentTicks)
-
         set_changed : function(self:LuaComponentTicks , LuaTick)
 
         __tostring : function(self:LuaComponentTicks):(string)
+
+    end
+    
+    
+    record LuaIdentifier
+
+        userdata
+    
+    --
+
+        clone : function(self:LuaIdentifier):(LuaIdentifier)
+
+        low : function(self:LuaIdentifier):(integer)
+
+        masked_high : function(self:LuaIdentifier):(integer)
+
+        to_bits : function(self:LuaIdentifier):(integer)
+
+        from_bits : function(integer):(LuaIdentifier)
+
+        __tostring : function(self:LuaIdentifier):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record ClassLuaIdentifier
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        from_bits : function(integer):(LuaIdentifier)
+
+        __eq : function(any , any):(any)
 
     end
     
@@ -362,17 +454,17 @@ global record CoreBevyAPI
 
         reparented_to : function(self:LuaGlobalTransform , LuaGlobalTransform):(LuaTransform)
 
-        right : function(self:LuaGlobalTransform):(LuaVec3)
+        right : function(self:LuaGlobalTransform):(LuaDir3)
 
-        left : function(self:LuaGlobalTransform):(LuaVec3)
+        left : function(self:LuaGlobalTransform):(LuaDir3)
 
-        up : function(self:LuaGlobalTransform):(LuaVec3)
+        up : function(self:LuaGlobalTransform):(LuaDir3)
 
-        down : function(self:LuaGlobalTransform):(LuaVec3)
+        down : function(self:LuaGlobalTransform):(LuaDir3)
 
-        back : function(self:LuaGlobalTransform):(LuaVec3)
+        back : function(self:LuaGlobalTransform):(LuaDir3)
 
-        forward : function(self:LuaGlobalTransform):(LuaVec3)
+        forward : function(self:LuaGlobalTransform):(LuaDir3)
 
         translation : function(self:LuaGlobalTransform):(LuaVec3)
 
@@ -394,9 +486,9 @@ global record CoreBevyAPI
 
         __tostring : function(self:LuaGlobalTransform):(string)
 
-        __eq : function(any , any):(any)
-
         __mul : function(any , any):(any)
+
+        __eq : function(any , any):(any)
 
     end
     
@@ -415,9 +507,9 @@ global record CoreBevyAPI
 
         from_scale : function(LuaVec3):(LuaGlobalTransform)
 
-        __eq : function(any , any):(any)
-
         __mul : function(any , any):(any)
+
+        __eq : function(any , any):(any)
 
     end
     
@@ -442,10 +534,6 @@ global record CoreBevyAPI
 
         clone : function(self:LuaTransform):(LuaTransform)
 
-        looking_at : function(self:LuaTransform , LuaVec3 , LuaVec3):(LuaTransform)
-
-        looking_to : function(self:LuaTransform , LuaVec3 , LuaVec3):(LuaTransform)
-
         with_translation : function(self:LuaTransform , LuaVec3):(LuaTransform)
 
         with_rotation : function(self:LuaTransform , LuaQuat):(LuaTransform)
@@ -456,6 +544,24 @@ global record CoreBevyAPI
 
         compute_affine : function(self:LuaTransform):(LuaAffine3A)
 
+        local_x : function(self:LuaTransform):(LuaDir3)
+
+        left : function(self:LuaTransform):(LuaDir3)
+
+        right : function(self:LuaTransform):(LuaDir3)
+
+        local_y : function(self:LuaTransform):(LuaDir3)
+
+        up : function(self:LuaTransform):(LuaDir3)
+
+        down : function(self:LuaTransform):(LuaDir3)
+
+        local_z : function(self:LuaTransform):(LuaDir3)
+
+        forward : function(self:LuaTransform):(LuaDir3)
+
+        back : function(self:LuaTransform):(LuaDir3)
+
         mul_transform : function(self:LuaTransform , LuaTransform):(LuaTransform)
 
         transform_point : function(self:LuaTransform , LuaVec3):(LuaVec3)
@@ -464,7 +570,7 @@ global record CoreBevyAPI
 
         rotate : function(self:LuaTransform , LuaQuat)
 
-        rotate_axis : function(self:LuaTransform , LuaVec3 , number)
+        rotate_axis : function(self:LuaTransform , LuaDir3 , number)
 
         rotate_x : function(self:LuaTransform , number)
 
@@ -474,7 +580,7 @@ global record CoreBevyAPI
 
         rotate_local : function(self:LuaTransform , LuaQuat)
 
-        rotate_local_axis : function(self:LuaTransform , LuaVec3 , number)
+        rotate_local_axis : function(self:LuaTransform , LuaDir3 , number)
 
         rotate_local_x : function(self:LuaTransform , number)
 
@@ -485,10 +591,6 @@ global record CoreBevyAPI
         translate_around : function(self:LuaTransform , LuaVec3 , LuaQuat)
 
         rotate_around : function(self:LuaTransform , LuaVec3 , LuaQuat)
-
-        look_at : function(self:LuaTransform , LuaVec3 , LuaVec3)
-
-        look_to : function(self:LuaTransform , LuaVec3 , LuaVec3)
 
         from_xyz : function(number , number , number):(LuaTransform)
 
@@ -502,9 +604,9 @@ global record CoreBevyAPI
 
         __tostring : function(self:LuaTransform):(string)
 
-        __eq : function(any , any):(any)
-
         __mul : function(any , any):(any)
+
+        __eq : function(any , any):(any)
 
     end
     
@@ -525,9 +627,2132 @@ global record CoreBevyAPI
 
         from_scale : function(LuaVec3):(LuaTransform)
 
+        __mul : function(any , any):(any)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaCompassOctant
+
+        userdata
+    
+    --
+
+        assert_receiver_is_total_eq : function(self:LuaCompassOctant)
+
+        clone : function(self:LuaCompassOctant):(LuaCompassOctant)
+
+        __tostring : function(self:LuaCompassOctant):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaCompassQuadrant
+
+        userdata
+    
+    --
+
+        clone : function(self:LuaCompassQuadrant):(LuaCompassQuadrant)
+
+        assert_receiver_is_total_eq : function(self:LuaCompassQuadrant)
+
+        __tostring : function(self:LuaCompassQuadrant):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaAspectRatio
+
+        userdata
+    
+    --
+
+        clone : function(self:LuaAspectRatio):(LuaAspectRatio)
+
+        new : function(number , number):(LuaAspectRatio)
+
+        from_pixels : function(integer , integer):(LuaAspectRatio)
+
+        __tostring : function(self:LuaAspectRatio):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record ClassLuaAspectRatio
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new : function(number , number):(LuaAspectRatio)
+
+        from_pixels : function(integer , integer):(LuaAspectRatio)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaRay2d
+
+        userdata
+    
+    --
+
+        origin : LuaVec2
+
+        direction : LuaDir2
+
+        origin : LuaVec2
+
+        direction : LuaDir2
+
+        get_point : function(self:LuaRay2d , number):(LuaVec2)
+
+        intersect_plane : function(self:LuaRay2d , LuaVec2 , LuaPlane2d):(number)
+
+        clone : function(self:LuaRay2d):(LuaRay2d)
+
+        new : function(LuaVec2 , LuaVec2):(LuaRay2d)
+
+        __tostring : function(self:LuaRay2d):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record ClassLuaRay2d
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new : function(LuaVec2 , LuaVec2):(LuaRay2d)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaRay3d
+
+        userdata
+    
+    --
+
+        origin : LuaVec3
+
+        direction : LuaDir3
+
+        origin : LuaVec3
+
+        direction : LuaDir3
+
+        clone : function(self:LuaRay3d):(LuaRay3d)
+
+        get_point : function(self:LuaRay3d , number):(LuaVec3)
+
+        intersect_plane : function(self:LuaRay3d , LuaVec3 , LuaInfinitePlane3d):(number)
+
+        new : function(LuaVec3 , LuaVec3):(LuaRay3d)
+
+        __tostring : function(self:LuaRay3d):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record ClassLuaRay3d
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new : function(LuaVec3 , LuaVec3):(LuaRay3d)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaRot2
+
+        userdata
+    
+    --
+
+        cos : number
+
+        sin : number
+
+        cos : number
+
+        sin : number
+
+        clone : function(self:LuaRot2):(LuaRot2)
+
+        as_radians : function(self:LuaRot2):(number)
+
+        as_degrees : function(self:LuaRot2):(number)
+
+        sin_cos : function(self:LuaRot2):(number , number)
+
+        length : function(self:LuaRot2):(number)
+
+        length_squared : function(self:LuaRot2):(number)
+
+        length_recip : function(self:LuaRot2):(number)
+
+        normalize : function(self:LuaRot2):(LuaRot2)
+
+        is_finite : function(self:LuaRot2):(boolean)
+
+        is_nan : function(self:LuaRot2):(boolean)
+
+        is_normalized : function(self:LuaRot2):(boolean)
+
+        is_near_identity : function(self:LuaRot2):(boolean)
+
+        angle_between : function(self:LuaRot2 , LuaRot2):(number)
+
+        inverse : function(self:LuaRot2):(LuaRot2)
+
+        nlerp : function(self:LuaRot2 , LuaRot2 , number):(LuaRot2)
+
+        slerp : function(self:LuaRot2 , LuaRot2 , number):(LuaRot2)
+
+        radians : function(number):(LuaRot2)
+
+        degrees : function(number):(LuaRot2)
+
+        from_sin_cos : function(number , number):(LuaRot2)
+
+        __tostring : function(self:LuaRot2):(string)
+
         __eq : function(any , any):(any)
 
         __mul : function(any , any):(any)
+
+    end
+    
+    
+    record ClassLuaRot2
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        radians : function(number):(LuaRot2)
+
+        degrees : function(number):(LuaRot2)
+
+        from_sin_cos : function(number , number):(LuaRot2)
+
+        __eq : function(any , any):(any)
+
+        __mul : function(any , any):(any)
+
+    end
+    
+    
+    record LuaDir2
+
+        userdata
+    
+    --
+
+        as_vec2 : function(self:LuaDir2):(LuaVec2)
+
+        slerp : function(self:LuaDir2 , LuaDir2 , number):(LuaDir2)
+
+        rotation_to : function(self:LuaDir2 , LuaDir2):(LuaRot2)
+
+        rotation_from : function(self:LuaDir2 , LuaDir2):(LuaRot2)
+
+        rotation_from_x : function(self:LuaDir2):(LuaRot2)
+
+        rotation_to_x : function(self:LuaDir2):(LuaRot2)
+
+        rotation_from_y : function(self:LuaDir2):(LuaRot2)
+
+        rotation_to_y : function(self:LuaDir2):(LuaRot2)
+
+        clone : function(self:LuaDir2):(LuaDir2)
+
+        new_unchecked : function(LuaVec2):(LuaDir2)
+
+        __tostring : function(self:LuaDir2):(string)
+
+        __unm : function(any):(any)
+
+        __eq : function(any , any):(any)
+
+        __mul : function(any , any):(any)
+
+    end
+    
+    
+    record ClassLuaDir2
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new_unchecked : function(LuaVec2):(LuaDir2)
+
+        __unm : function(any):(any)
+
+        __eq : function(any , any):(any)
+
+        __mul : function(any , any):(any)
+
+    end
+    
+    
+    record LuaDir3
+
+        userdata
+    
+    --
+
+        as_vec3 : function(self:LuaDir3):(LuaVec3)
+
+        slerp : function(self:LuaDir3 , LuaDir3 , number):(LuaDir3)
+
+        clone : function(self:LuaDir3):(LuaDir3)
+
+        new_unchecked : function(LuaVec3):(LuaDir3)
+
+        __tostring : function(self:LuaDir3):(string)
+
+        __mul : function(any , any):(any)
+
+        __unm : function(any):(any)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record ClassLuaDir3
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new_unchecked : function(LuaVec3):(LuaDir3)
+
+        __mul : function(any , any):(any)
+
+        __unm : function(any):(any)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaDir3A
+
+        userdata
+    
+    --
+
+        clone : function(self:LuaDir3A):(LuaDir3A)
+
+        as_vec3a : function(self:LuaDir3A):(LuaVec3A)
+
+        slerp : function(self:LuaDir3A , LuaDir3A , number):(LuaDir3A)
+
+        new_unchecked : function(LuaVec3A):(LuaDir3A)
+
+        __tostring : function(self:LuaDir3A):(string)
+
+        __mul : function(any , any):(any)
+
+        __eq : function(any , any):(any)
+
+        __unm : function(any):(any)
+
+    end
+    
+    
+    record ClassLuaDir3A
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new_unchecked : function(LuaVec3A):(LuaDir3A)
+
+        __mul : function(any , any):(any)
+
+        __eq : function(any , any):(any)
+
+        __unm : function(any):(any)
+
+    end
+    
+    
+    record LuaIRect
+
+        userdata
+    
+    --
+
+        min : LuaIVec2
+
+        max : LuaIVec2
+
+        min : LuaIVec2
+
+        max : LuaIVec2
+
+        is_empty : function(self:LuaIRect):(boolean)
+
+        width : function(self:LuaIRect):(integer)
+
+        height : function(self:LuaIRect):(integer)
+
+        size : function(self:LuaIRect):(LuaIVec2)
+
+        half_size : function(self:LuaIRect):(LuaIVec2)
+
+        center : function(self:LuaIRect):(LuaIVec2)
+
+        contains : function(self:LuaIRect , LuaIVec2):(boolean)
+
+        union : function(self:LuaIRect , LuaIRect):(LuaIRect)
+
+        union_point : function(self:LuaIRect , LuaIVec2):(LuaIRect)
+
+        intersect : function(self:LuaIRect , LuaIRect):(LuaIRect)
+
+        inflate : function(self:LuaIRect , integer):(LuaIRect)
+
+        as_rect : function(self:LuaIRect):(LuaRect)
+
+        as_urect : function(self:LuaIRect):(LuaURect)
+
+        assert_receiver_is_total_eq : function(self:LuaIRect)
+
+        clone : function(self:LuaIRect):(LuaIRect)
+
+        new : function(integer , integer , integer , integer):(LuaIRect)
+
+        from_corners : function(LuaIVec2 , LuaIVec2):(LuaIRect)
+
+        from_center_size : function(LuaIVec2 , LuaIVec2):(LuaIRect)
+
+        from_center_half_size : function(LuaIVec2 , LuaIVec2):(LuaIRect)
+
+        __tostring : function(self:LuaIRect):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record ClassLuaIRect
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new : function(integer , integer , integer , integer):(LuaIRect)
+
+        from_corners : function(LuaIVec2 , LuaIVec2):(LuaIRect)
+
+        from_center_size : function(LuaIVec2 , LuaIVec2):(LuaIRect)
+
+        from_center_half_size : function(LuaIVec2 , LuaIVec2):(LuaIRect)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaRect
+
+        userdata
+    
+    --
+
+        min : LuaVec2
+
+        max : LuaVec2
+
+        min : LuaVec2
+
+        max : LuaVec2
+
+        is_empty : function(self:LuaRect):(boolean)
+
+        width : function(self:LuaRect):(number)
+
+        height : function(self:LuaRect):(number)
+
+        size : function(self:LuaRect):(LuaVec2)
+
+        half_size : function(self:LuaRect):(LuaVec2)
+
+        center : function(self:LuaRect):(LuaVec2)
+
+        contains : function(self:LuaRect , LuaVec2):(boolean)
+
+        union : function(self:LuaRect , LuaRect):(LuaRect)
+
+        union_point : function(self:LuaRect , LuaVec2):(LuaRect)
+
+        intersect : function(self:LuaRect , LuaRect):(LuaRect)
+
+        inflate : function(self:LuaRect , number):(LuaRect)
+
+        normalize : function(self:LuaRect , LuaRect):(LuaRect)
+
+        as_irect : function(self:LuaRect):(LuaIRect)
+
+        as_urect : function(self:LuaRect):(LuaURect)
+
+        clone : function(self:LuaRect):(LuaRect)
+
+        new : function(number , number , number , number):(LuaRect)
+
+        from_corners : function(LuaVec2 , LuaVec2):(LuaRect)
+
+        from_center_size : function(LuaVec2 , LuaVec2):(LuaRect)
+
+        from_center_half_size : function(LuaVec2 , LuaVec2):(LuaRect)
+
+        __tostring : function(self:LuaRect):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record ClassLuaRect
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new : function(number , number , number , number):(LuaRect)
+
+        from_corners : function(LuaVec2 , LuaVec2):(LuaRect)
+
+        from_center_size : function(LuaVec2 , LuaVec2):(LuaRect)
+
+        from_center_half_size : function(LuaVec2 , LuaVec2):(LuaRect)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaURect
+
+        userdata
+    
+    --
+
+        min : LuaUVec2
+
+        max : LuaUVec2
+
+        min : LuaUVec2
+
+        max : LuaUVec2
+
+        is_empty : function(self:LuaURect):(boolean)
+
+        width : function(self:LuaURect):(integer)
+
+        height : function(self:LuaURect):(integer)
+
+        size : function(self:LuaURect):(LuaUVec2)
+
+        half_size : function(self:LuaURect):(LuaUVec2)
+
+        center : function(self:LuaURect):(LuaUVec2)
+
+        contains : function(self:LuaURect , LuaUVec2):(boolean)
+
+        union : function(self:LuaURect , LuaURect):(LuaURect)
+
+        union_point : function(self:LuaURect , LuaUVec2):(LuaURect)
+
+        intersect : function(self:LuaURect , LuaURect):(LuaURect)
+
+        inflate : function(self:LuaURect , integer):(LuaURect)
+
+        as_rect : function(self:LuaURect):(LuaRect)
+
+        as_irect : function(self:LuaURect):(LuaIRect)
+
+        clone : function(self:LuaURect):(LuaURect)
+
+        assert_receiver_is_total_eq : function(self:LuaURect)
+
+        new : function(integer , integer , integer , integer):(LuaURect)
+
+        from_corners : function(LuaUVec2 , LuaUVec2):(LuaURect)
+
+        from_center_size : function(LuaUVec2 , LuaUVec2):(LuaURect)
+
+        from_center_half_size : function(LuaUVec2 , LuaUVec2):(LuaURect)
+
+        __tostring : function(self:LuaURect):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record ClassLuaURect
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new : function(integer , integer , integer , integer):(LuaURect)
+
+        from_corners : function(LuaUVec2 , LuaUVec2):(LuaURect)
+
+        from_center_size : function(LuaUVec2 , LuaUVec2):(LuaURect)
+
+        from_center_half_size : function(LuaUVec2 , LuaUVec2):(LuaURect)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaAffine3
+
+        userdata
+    
+    --
+
+        matrix3 : LuaMat3
+
+        translation : LuaVec3
+
+        matrix3 : LuaMat3
+
+        translation : LuaVec3
+
+    end
+    
+    
+    record LuaAabb2d
+
+        userdata
+    
+    --
+
+        min : LuaVec2
+
+        max : LuaVec2
+
+        min : LuaVec2
+
+        max : LuaVec2
+
+        bounding_circle : function(self:LuaAabb2d):(LuaBoundingCircle)
+
+        closest_point : function(self:LuaAabb2d , LuaVec2):(LuaVec2)
+
+        clone : function(self:LuaAabb2d):(LuaAabb2d)
+
+        new : function(LuaVec2 , LuaVec2):(LuaAabb2d)
+
+        __tostring : function(self:LuaAabb2d):(string)
+
+    end
+    
+    
+    record ClassLuaAabb2d
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new : function(LuaVec2 , LuaVec2):(LuaAabb2d)
+
+    end
+    
+    
+    record LuaBoundingCircle
+
+        userdata
+    
+    --
+
+        center : LuaVec2
+
+        circle : LuaCircle
+
+        center : LuaVec2
+
+        circle : LuaCircle
+
+        clone : function(self:LuaBoundingCircle):(LuaBoundingCircle)
+
+        radius : function(self:LuaBoundingCircle):(number)
+
+        aabb_2d : function(self:LuaBoundingCircle):(LuaAabb2d)
+
+        closest_point : function(self:LuaBoundingCircle , LuaVec2):(LuaVec2)
+
+        new : function(LuaVec2 , number):(LuaBoundingCircle)
+
+        __tostring : function(self:LuaBoundingCircle):(string)
+
+    end
+    
+    
+    record ClassLuaBoundingCircle
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new : function(LuaVec2 , number):(LuaBoundingCircle)
+
+    end
+    
+    
+    record LuaCircle
+
+        userdata
+    
+    --
+
+        radius : number
+
+        clone : function(self:LuaCircle):(LuaCircle)
+
+        diameter : function(self:LuaCircle):(number)
+
+        closest_point : function(self:LuaCircle , LuaVec2):(LuaVec2)
+
+        new : function(number):(LuaCircle)
+
+        __tostring : function(self:LuaCircle):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record ClassLuaCircle
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new : function(number):(LuaCircle)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaArc2d
+
+        userdata
+    
+    --
+
+        radius : number
+
+        half_angle : number
+
+        radius : number
+
+        half_angle : number
+
+        clone : function(self:LuaArc2d):(LuaArc2d)
+
+        angle : function(self:LuaArc2d):(number)
+
+        length : function(self:LuaArc2d):(number)
+
+        right_endpoint : function(self:LuaArc2d):(LuaVec2)
+
+        left_endpoint : function(self:LuaArc2d):(LuaVec2)
+
+        midpoint : function(self:LuaArc2d):(LuaVec2)
+
+        half_chord_length : function(self:LuaArc2d):(number)
+
+        chord_length : function(self:LuaArc2d):(number)
+
+        chord_midpoint : function(self:LuaArc2d):(LuaVec2)
+
+        apothem : function(self:LuaArc2d):(number)
+
+        sagitta : function(self:LuaArc2d):(number)
+
+        is_minor : function(self:LuaArc2d):(boolean)
+
+        is_major : function(self:LuaArc2d):(boolean)
+
+        new : function(number , number):(LuaArc2d)
+
+        from_radians : function(number , number):(LuaArc2d)
+
+        from_degrees : function(number , number):(LuaArc2d)
+
+        from_turns : function(number , number):(LuaArc2d)
+
+        __tostring : function(self:LuaArc2d):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record ClassLuaArc2d
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new : function(number , number):(LuaArc2d)
+
+        from_radians : function(number , number):(LuaArc2d)
+
+        from_degrees : function(number , number):(LuaArc2d)
+
+        from_turns : function(number , number):(LuaArc2d)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaCapsule2d
+
+        userdata
+    
+    --
+
+        radius : number
+
+        half_length : number
+
+        radius : number
+
+        half_length : number
+
+        clone : function(self:LuaCapsule2d):(LuaCapsule2d)
+
+        new : function(number , number):(LuaCapsule2d)
+
+        __tostring : function(self:LuaCapsule2d):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record ClassLuaCapsule2d
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new : function(number , number):(LuaCapsule2d)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaCircularSector
+
+        userdata
+    
+    --
+
+        arc : LuaArc2d
+
+        clone : function(self:LuaCircularSector):(LuaCircularSector)
+
+        half_angle : function(self:LuaCircularSector):(number)
+
+        angle : function(self:LuaCircularSector):(number)
+
+        radius : function(self:LuaCircularSector):(number)
+
+        arc_length : function(self:LuaCircularSector):(number)
+
+        half_chord_length : function(self:LuaCircularSector):(number)
+
+        chord_length : function(self:LuaCircularSector):(number)
+
+        chord_midpoint : function(self:LuaCircularSector):(LuaVec2)
+
+        apothem : function(self:LuaCircularSector):(number)
+
+        sagitta : function(self:LuaCircularSector):(number)
+
+        area : function(self:LuaCircularSector):(number)
+
+        new : function(number , number):(LuaCircularSector)
+
+        from_radians : function(number , number):(LuaCircularSector)
+
+        from_degrees : function(number , number):(LuaCircularSector)
+
+        from_turns : function(number , number):(LuaCircularSector)
+
+        __tostring : function(self:LuaCircularSector):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record ClassLuaCircularSector
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new : function(number , number):(LuaCircularSector)
+
+        from_radians : function(number , number):(LuaCircularSector)
+
+        from_degrees : function(number , number):(LuaCircularSector)
+
+        from_turns : function(number , number):(LuaCircularSector)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaCircularSegment
+
+        userdata
+    
+    --
+
+        arc : LuaArc2d
+
+        clone : function(self:LuaCircularSegment):(LuaCircularSegment)
+
+        half_angle : function(self:LuaCircularSegment):(number)
+
+        angle : function(self:LuaCircularSegment):(number)
+
+        radius : function(self:LuaCircularSegment):(number)
+
+        arc_length : function(self:LuaCircularSegment):(number)
+
+        half_chord_length : function(self:LuaCircularSegment):(number)
+
+        chord_length : function(self:LuaCircularSegment):(number)
+
+        chord_midpoint : function(self:LuaCircularSegment):(LuaVec2)
+
+        apothem : function(self:LuaCircularSegment):(number)
+
+        sagitta : function(self:LuaCircularSegment):(number)
+
+        area : function(self:LuaCircularSegment):(number)
+
+        new : function(number , number):(LuaCircularSegment)
+
+        from_radians : function(number , number):(LuaCircularSegment)
+
+        from_degrees : function(number , number):(LuaCircularSegment)
+
+        from_turns : function(number , number):(LuaCircularSegment)
+
+        __tostring : function(self:LuaCircularSegment):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record ClassLuaCircularSegment
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new : function(number , number):(LuaCircularSegment)
+
+        from_radians : function(number , number):(LuaCircularSegment)
+
+        from_degrees : function(number , number):(LuaCircularSegment)
+
+        from_turns : function(number , number):(LuaCircularSegment)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaEllipse
+
+        userdata
+    
+    --
+
+        half_size : LuaVec2
+
+        eccentricity : function(self:LuaEllipse):(number)
+
+        focal_length : function(self:LuaEllipse):(number)
+
+        semi_major : function(self:LuaEllipse):(number)
+
+        semi_minor : function(self:LuaEllipse):(number)
+
+        clone : function(self:LuaEllipse):(LuaEllipse)
+
+        new : function(number , number):(LuaEllipse)
+
+        from_size : function(LuaVec2):(LuaEllipse)
+
+        __tostring : function(self:LuaEllipse):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record ClassLuaEllipse
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new : function(number , number):(LuaEllipse)
+
+        from_size : function(LuaVec2):(LuaEllipse)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaLine2d
+
+        userdata
+    
+    --
+
+        direction : LuaDir2
+
+        clone : function(self:LuaLine2d):(LuaLine2d)
+
+        __tostring : function(self:LuaLine2d):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaPlane2d
+
+        userdata
+    
+    --
+
+        normal : LuaDir2
+
+        clone : function(self:LuaPlane2d):(LuaPlane2d)
+
+        new : function(LuaVec2):(LuaPlane2d)
+
+        __tostring : function(self:LuaPlane2d):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record ClassLuaPlane2d
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new : function(LuaVec2):(LuaPlane2d)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaRectangle
+
+        userdata
+    
+    --
+
+        half_size : LuaVec2
+
+        size : function(self:LuaRectangle):(LuaVec2)
+
+        closest_point : function(self:LuaRectangle , LuaVec2):(LuaVec2)
+
+        clone : function(self:LuaRectangle):(LuaRectangle)
+
+        new : function(number , number):(LuaRectangle)
+
+        from_size : function(LuaVec2):(LuaRectangle)
+
+        from_corners : function(LuaVec2 , LuaVec2):(LuaRectangle)
+
+        from_length : function(number):(LuaRectangle)
+
+        __tostring : function(self:LuaRectangle):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record ClassLuaRectangle
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new : function(number , number):(LuaRectangle)
+
+        from_size : function(LuaVec2):(LuaRectangle)
+
+        from_corners : function(LuaVec2 , LuaVec2):(LuaRectangle)
+
+        from_length : function(number):(LuaRectangle)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaRegularPolygon
+
+        userdata
+    
+    --
+
+        circumcircle : LuaCircle
+
+        sides : integer
+
+        circumcircle : LuaCircle
+
+        sides : integer
+
+        clone : function(self:LuaRegularPolygon):(LuaRegularPolygon)
+
+        circumradius : function(self:LuaRegularPolygon):(number)
+
+        inradius : function(self:LuaRegularPolygon):(number)
+
+        side_length : function(self:LuaRegularPolygon):(number)
+
+        internal_angle_degrees : function(self:LuaRegularPolygon):(number)
+
+        internal_angle_radians : function(self:LuaRegularPolygon):(number)
+
+        external_angle_degrees : function(self:LuaRegularPolygon):(number)
+
+        external_angle_radians : function(self:LuaRegularPolygon):(number)
+
+        new : function(number , integer):(LuaRegularPolygon)
+
+        __tostring : function(self:LuaRegularPolygon):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record ClassLuaRegularPolygon
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new : function(number , integer):(LuaRegularPolygon)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaRhombus
+
+        userdata
+    
+    --
+
+        half_diagonals : LuaVec2
+
+        clone : function(self:LuaRhombus):(LuaRhombus)
+
+        side : function(self:LuaRhombus):(number)
+
+        circumradius : function(self:LuaRhombus):(number)
+
+        inradius : function(self:LuaRhombus):(number)
+
+        closest_point : function(self:LuaRhombus , LuaVec2):(LuaVec2)
+
+        new : function(number , number):(LuaRhombus)
+
+        from_side : function(number):(LuaRhombus)
+
+        from_inradius : function(number):(LuaRhombus)
+
+        __tostring : function(self:LuaRhombus):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record ClassLuaRhombus
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new : function(number , number):(LuaRhombus)
+
+        from_side : function(number):(LuaRhombus)
+
+        from_inradius : function(number):(LuaRhombus)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaSegment2d
+
+        userdata
+    
+    --
+
+        direction : LuaDir2
+
+        half_length : number
+
+        direction : LuaDir2
+
+        half_length : number
+
+        point1 : function(self:LuaSegment2d):(LuaVec2)
+
+        point2 : function(self:LuaSegment2d):(LuaVec2)
+
+        clone : function(self:LuaSegment2d):(LuaSegment2d)
+
+        new : function(LuaDir2 , number):(LuaSegment2d)
+
+        __tostring : function(self:LuaSegment2d):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record ClassLuaSegment2d
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new : function(LuaDir2 , number):(LuaSegment2d)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaTriangle2d
+
+        userdata
+    
+    --
+
+        vertices : ReflectedValue
+
+        clone : function(self:LuaTriangle2d):(LuaTriangle2d)
+
+        is_degenerate : function(self:LuaTriangle2d):(boolean)
+
+        is_acute : function(self:LuaTriangle2d):(boolean)
+
+        is_obtuse : function(self:LuaTriangle2d):(boolean)
+
+        reversed : function(self:LuaTriangle2d):(LuaTriangle2d)
+
+        reverse : function(self:LuaTriangle2d)
+
+        new : function(LuaVec2 , LuaVec2 , LuaVec2):(LuaTriangle2d)
+
+        __tostring : function(self:LuaTriangle2d):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record ClassLuaTriangle2d
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new : function(LuaVec2 , LuaVec2 , LuaVec2):(LuaTriangle2d)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaAabb3d
+
+        userdata
+    
+    --
+
+        min : LuaVec3A
+
+        max : LuaVec3A
+
+        min : LuaVec3A
+
+        max : LuaVec3A
+
+        bounding_sphere : function(self:LuaAabb3d):(LuaBoundingSphere)
+
+        clone : function(self:LuaAabb3d):(LuaAabb3d)
+
+        __tostring : function(self:LuaAabb3d):(string)
+
+    end
+    
+    
+    record LuaBoundingSphere
+
+        userdata
+    
+    --
+
+        center : LuaVec3A
+
+        sphere : LuaSphere
+
+        center : LuaVec3A
+
+        sphere : LuaSphere
+
+        radius : function(self:LuaBoundingSphere):(number)
+
+        aabb_3d : function(self:LuaBoundingSphere):(LuaAabb3d)
+
+        clone : function(self:LuaBoundingSphere):(LuaBoundingSphere)
+
+        __tostring : function(self:LuaBoundingSphere):(string)
+
+    end
+    
+    
+    record LuaSphere
+
+        userdata
+    
+    --
+
+        radius : number
+
+        diameter : function(self:LuaSphere):(number)
+
+        closest_point : function(self:LuaSphere , LuaVec3):(LuaVec3)
+
+        clone : function(self:LuaSphere):(LuaSphere)
+
+        new : function(number):(LuaSphere)
+
+        __tostring : function(self:LuaSphere):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record ClassLuaSphere
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new : function(number):(LuaSphere)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaCuboid
+
+        userdata
+    
+    --
+
+        half_size : LuaVec3
+
+        size : function(self:LuaCuboid):(LuaVec3)
+
+        closest_point : function(self:LuaCuboid , LuaVec3):(LuaVec3)
+
+        clone : function(self:LuaCuboid):(LuaCuboid)
+
+        new : function(number , number , number):(LuaCuboid)
+
+        from_size : function(LuaVec3):(LuaCuboid)
+
+        from_corners : function(LuaVec3 , LuaVec3):(LuaCuboid)
+
+        from_length : function(number):(LuaCuboid)
+
+        __tostring : function(self:LuaCuboid):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record ClassLuaCuboid
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new : function(number , number , number):(LuaCuboid)
+
+        from_size : function(LuaVec3):(LuaCuboid)
+
+        from_corners : function(LuaVec3 , LuaVec3):(LuaCuboid)
+
+        from_length : function(number):(LuaCuboid)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaCylinder
+
+        userdata
+    
+    --
+
+        radius : number
+
+        half_height : number
+
+        radius : number
+
+        half_height : number
+
+        clone : function(self:LuaCylinder):(LuaCylinder)
+
+        base : function(self:LuaCylinder):(LuaCircle)
+
+        lateral_area : function(self:LuaCylinder):(number)
+
+        base_area : function(self:LuaCylinder):(number)
+
+        new : function(number , number):(LuaCylinder)
+
+        __tostring : function(self:LuaCylinder):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record ClassLuaCylinder
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new : function(number , number):(LuaCylinder)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaCapsule3d
+
+        userdata
+    
+    --
+
+        radius : number
+
+        half_length : number
+
+        radius : number
+
+        half_length : number
+
+        to_cylinder : function(self:LuaCapsule3d):(LuaCylinder)
+
+        clone : function(self:LuaCapsule3d):(LuaCapsule3d)
+
+        new : function(number , number):(LuaCapsule3d)
+
+        __tostring : function(self:LuaCapsule3d):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record ClassLuaCapsule3d
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new : function(number , number):(LuaCapsule3d)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaCone
+
+        userdata
+    
+    --
+
+        radius : number
+
+        height : number
+
+        radius : number
+
+        height : number
+
+        clone : function(self:LuaCone):(LuaCone)
+
+        base : function(self:LuaCone):(LuaCircle)
+
+        slant_height : function(self:LuaCone):(number)
+
+        lateral_area : function(self:LuaCone):(number)
+
+        base_area : function(self:LuaCone):(number)
+
+        __tostring : function(self:LuaCone):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaConicalFrustum
+
+        userdata
+    
+    --
+
+        radius_top : number
+
+        radius_bottom : number
+
+        height : number
+
+        radius_top : number
+
+        radius_bottom : number
+
+        height : number
+
+        clone : function(self:LuaConicalFrustum):(LuaConicalFrustum)
+
+        __tostring : function(self:LuaConicalFrustum):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaInfinitePlane3d
+
+        userdata
+    
+    --
+
+        normal : LuaDir3
+
+        clone : function(self:LuaInfinitePlane3d):(LuaInfinitePlane3d)
+
+        __tostring : function(self:LuaInfinitePlane3d):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaLine3d
+
+        userdata
+    
+    --
+
+        direction : LuaDir3
+
+        clone : function(self:LuaLine3d):(LuaLine3d)
+
+        __tostring : function(self:LuaLine3d):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaSegment3d
+
+        userdata
+    
+    --
+
+        direction : LuaDir3
+
+        half_length : number
+
+        direction : LuaDir3
+
+        half_length : number
+
+        point1 : function(self:LuaSegment3d):(LuaVec3)
+
+        point2 : function(self:LuaSegment3d):(LuaVec3)
+
+        clone : function(self:LuaSegment3d):(LuaSegment3d)
+
+        new : function(LuaDir3 , number):(LuaSegment3d)
+
+        __tostring : function(self:LuaSegment3d):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record ClassLuaSegment3d
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new : function(LuaDir3 , number):(LuaSegment3d)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaTorus
+
+        userdata
+    
+    --
+
+        minor_radius : number
+
+        major_radius : number
+
+        minor_radius : number
+
+        major_radius : number
+
+        inner_radius : function(self:LuaTorus):(number)
+
+        outer_radius : function(self:LuaTorus):(number)
+
+        clone : function(self:LuaTorus):(LuaTorus)
+
+        new : function(number , number):(LuaTorus)
+
+        __tostring : function(self:LuaTorus):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record ClassLuaTorus
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new : function(number , number):(LuaTorus)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaTriangle3d
+
+        userdata
+    
+    --
+
+        vertices : ReflectedValue
+
+        clone : function(self:LuaTriangle3d):(LuaTriangle3d)
+
+        is_degenerate : function(self:LuaTriangle3d):(boolean)
+
+        is_acute : function(self:LuaTriangle3d):(boolean)
+
+        is_obtuse : function(self:LuaTriangle3d):(boolean)
+
+        reversed : function(self:LuaTriangle3d):(LuaTriangle3d)
+
+        centroid : function(self:LuaTriangle3d):(LuaVec3)
+
+        circumcenter : function(self:LuaTriangle3d):(LuaVec3)
+
+        reverse : function(self:LuaTriangle3d)
+
+        new : function(LuaVec3 , LuaVec3 , LuaVec3):(LuaTriangle3d)
+
+        __tostring : function(self:LuaTriangle3d):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record ClassLuaTriangle3d
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new : function(LuaVec3 , LuaVec3 , LuaVec3):(LuaTriangle3d)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaRayCast2d
+
+        userdata
+    
+    --
+
+        ray : LuaRay2d
+
+        max : number
+
+        ray : LuaRay2d
+
+        max : number
+
+        clone : function(self:LuaRayCast2d):(LuaRayCast2d)
+
+        direction_recip : function(self:LuaRayCast2d):(LuaVec2)
+
+        aabb_intersection_at : function(self:LuaRayCast2d , LuaAabb2d):(number)
+
+        circle_intersection_at : function(self:LuaRayCast2d , LuaBoundingCircle):(number)
+
+        new : function(LuaVec2 , LuaDir2 , number):(LuaRayCast2d)
+
+        from_ray : function(LuaRay2d , number):(LuaRayCast2d)
+
+        __tostring : function(self:LuaRayCast2d):(string)
+
+    end
+    
+    
+    record ClassLuaRayCast2d
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new : function(LuaVec2 , LuaDir2 , number):(LuaRayCast2d)
+
+        from_ray : function(LuaRay2d , number):(LuaRayCast2d)
+
+    end
+    
+    
+    record LuaAabbCast2d
+
+        userdata
+    
+    --
+
+        ray : LuaRayCast2d
+
+        aabb : LuaAabb2d
+
+        ray : LuaRayCast2d
+
+        aabb : LuaAabb2d
+
+        clone : function(self:LuaAabbCast2d):(LuaAabbCast2d)
+
+        aabb_collision_at : function(self:LuaAabbCast2d , LuaAabb2d):(number)
+
+        new : function(LuaAabb2d , LuaVec2 , LuaDir2 , number):(LuaAabbCast2d)
+
+        from_ray : function(LuaAabb2d , LuaRay2d , number):(LuaAabbCast2d)
+
+        __tostring : function(self:LuaAabbCast2d):(string)
+
+    end
+    
+    
+    record ClassLuaAabbCast2d
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new : function(LuaAabb2d , LuaVec2 , LuaDir2 , number):(LuaAabbCast2d)
+
+        from_ray : function(LuaAabb2d , LuaRay2d , number):(LuaAabbCast2d)
+
+    end
+    
+    
+    record LuaBoundingCircleCast
+
+        userdata
+    
+    --
+
+        ray : LuaRayCast2d
+
+        circle : LuaBoundingCircle
+
+        ray : LuaRayCast2d
+
+        circle : LuaBoundingCircle
+
+        circle_collision_at : function(self:LuaBoundingCircleCast , LuaBoundingCircle):(number)
+
+        clone : function(self:LuaBoundingCircleCast):(LuaBoundingCircleCast)
+
+        new : function(LuaBoundingCircle , LuaVec2 , LuaDir2 , number):(LuaBoundingCircleCast)
+
+        from_ray : function(LuaBoundingCircle , LuaRay2d , number):(LuaBoundingCircleCast)
+
+        __tostring : function(self:LuaBoundingCircleCast):(string)
+
+    end
+    
+    
+    record ClassLuaBoundingCircleCast
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new : function(LuaBoundingCircle , LuaVec2 , LuaDir2 , number):(LuaBoundingCircleCast)
+
+        from_ray : function(LuaBoundingCircle , LuaRay2d , number):(LuaBoundingCircleCast)
+
+    end
+    
+    
+    record LuaRayCast3d
+
+        userdata
+    
+    --
+
+        origin : LuaVec3A
+
+        direction : LuaDir3A
+
+        max : number
+
+        origin : LuaVec3A
+
+        direction : LuaDir3A
+
+        max : number
+
+        direction_recip : function(self:LuaRayCast3d):(LuaVec3A)
+
+        aabb_intersection_at : function(self:LuaRayCast3d , LuaAabb3d):(number)
+
+        sphere_intersection_at : function(self:LuaRayCast3d , LuaBoundingSphere):(number)
+
+        clone : function(self:LuaRayCast3d):(LuaRayCast3d)
+
+        from_ray : function(LuaRay3d , number):(LuaRayCast3d)
+
+        __tostring : function(self:LuaRayCast3d):(string)
+
+    end
+    
+    
+    record ClassLuaRayCast3d
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        from_ray : function(LuaRay3d , number):(LuaRayCast3d)
+
+    end
+    
+    
+    record LuaAabbCast3d
+
+        userdata
+    
+    --
+
+        ray : LuaRayCast3d
+
+        aabb : LuaAabb3d
+
+        ray : LuaRayCast3d
+
+        aabb : LuaAabb3d
+
+        aabb_collision_at : function(self:LuaAabbCast3d , LuaAabb3d):(number)
+
+        clone : function(self:LuaAabbCast3d):(LuaAabbCast3d)
+
+        from_ray : function(LuaAabb3d , LuaRay3d , number):(LuaAabbCast3d)
+
+        __tostring : function(self:LuaAabbCast3d):(string)
+
+    end
+    
+    
+    record ClassLuaAabbCast3d
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        from_ray : function(LuaAabb3d , LuaRay3d , number):(LuaAabbCast3d)
+
+    end
+    
+    
+    record LuaBoundingSphereCast
+
+        userdata
+    
+    --
+
+        ray : LuaRayCast3d
+
+        sphere : LuaBoundingSphere
+
+        ray : LuaRayCast3d
+
+        sphere : LuaBoundingSphere
+
+        clone : function(self:LuaBoundingSphereCast):(LuaBoundingSphereCast)
+
+        sphere_collision_at : function(self:LuaBoundingSphereCast , LuaBoundingSphere):(number)
+
+        from_ray : function(LuaBoundingSphere , LuaRay3d , number):(LuaBoundingSphereCast)
+
+        __tostring : function(self:LuaBoundingSphereCast):(string)
+
+    end
+    
+    
+    record ClassLuaBoundingSphereCast
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        from_ray : function(LuaBoundingSphere , LuaRay3d , number):(LuaBoundingSphereCast)
+
+    end
+    
+    
+    record LuaFloatOrd
+
+        userdata
+    
+    --
+
+        _0 : number
+
+        lt : function(self:LuaFloatOrd , LuaFloatOrd):(boolean)
+
+        le : function(self:LuaFloatOrd , LuaFloatOrd):(boolean)
+
+        gt : function(self:LuaFloatOrd , LuaFloatOrd):(boolean)
+
+        ge : function(self:LuaFloatOrd , LuaFloatOrd):(boolean)
+
+        clone : function(self:LuaFloatOrd):(LuaFloatOrd)
+
+        __tostring : function(self:LuaFloatOrd):(string)
+
+        __eq : function(any , any):(any)
+
+        __unm : function(any):(any)
+
+    end
+    
+    
+    record LuaAnnulus
+
+        userdata
+    
+    --
+
+        inner_circle : LuaCircle
+
+        outer_circle : LuaCircle
+
+        inner_circle : LuaCircle
+
+        outer_circle : LuaCircle
+
+        diameter : function(self:LuaAnnulus):(number)
+
+        thickness : function(self:LuaAnnulus):(number)
+
+        closest_point : function(self:LuaAnnulus , LuaVec2):(LuaVec2)
+
+        clone : function(self:LuaAnnulus):(LuaAnnulus)
+
+        new : function(number , number):(LuaAnnulus)
+
+        __tostring : function(self:LuaAnnulus):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record ClassLuaAnnulus
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new : function(number , number):(LuaAnnulus)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaPlane3d
+
+        userdata
+    
+    --
+
+        normal : LuaDir3
+
+        half_size : LuaVec2
+
+        normal : LuaDir3
+
+        half_size : LuaVec2
+
+        clone : function(self:LuaPlane3d):(LuaPlane3d)
+
+        new : function(LuaVec3 , LuaVec2):(LuaPlane3d)
+
+        __tostring : function(self:LuaPlane3d):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record ClassLuaPlane3d
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new : function(LuaVec3 , LuaVec2):(LuaPlane3d)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaTetrahedron
+
+        userdata
+    
+    --
+
+        vertices : ReflectedValue
+
+        clone : function(self:LuaTetrahedron):(LuaTetrahedron)
+
+        signed_volume : function(self:LuaTetrahedron):(number)
+
+        centroid : function(self:LuaTetrahedron):(LuaVec3)
+
+        new : function(LuaVec3 , LuaVec3 , LuaVec3 , LuaVec3):(LuaTetrahedron)
+
+        __tostring : function(self:LuaTetrahedron):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record ClassLuaTetrahedron
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new : function(LuaVec3 , LuaVec3 , LuaVec3 , LuaVec3):(LuaTetrahedron)
+
+        __eq : function(any , any):(any)
 
     end
     
@@ -580,9 +2805,9 @@ global record CoreBevyAPI
 
         axis_type : LuaGamepadAxisType
 
-        assert_receiver_is_total_eq : function(self:LuaGamepadAxis)
-
         clone : function(self:LuaGamepadAxis):(LuaGamepadAxis)
+
+        assert_receiver_is_total_eq : function(self:LuaGamepadAxis)
 
         new : function(LuaGamepad , LuaGamepadAxisType):(LuaGamepadAxis)
 
@@ -612,9 +2837,9 @@ global record CoreBevyAPI
     
     --
 
-        clone : function(self:LuaGamepadAxisType):(LuaGamepadAxisType)
-
         assert_receiver_is_total_eq : function(self:LuaGamepadAxisType)
+
+        clone : function(self:LuaGamepadAxisType):(LuaGamepadAxisType)
 
         __tostring : function(self:LuaGamepadAxisType):(string)
 
@@ -637,9 +2862,9 @@ global record CoreBevyAPI
 
         button_type : LuaGamepadButtonType
 
-        clone : function(self:LuaGamepadButton):(LuaGamepadButton)
-
         assert_receiver_is_total_eq : function(self:LuaGamepadButton)
+
+        clone : function(self:LuaGamepadButton):(LuaGamepadButton)
 
         new : function(LuaGamepad , LuaGamepadButtonType):(LuaGamepadButton)
 
@@ -686,9 +2911,9 @@ global record CoreBevyAPI
     
     --
 
-        clone : function(self:LuaKeyCode):(LuaKeyCode)
-
         assert_receiver_is_total_eq : function(self:LuaKeyCode)
+
+        clone : function(self:LuaKeyCode):(LuaKeyCode)
 
         __tostring : function(self:LuaKeyCode):(string)
 
@@ -703,9 +2928,9 @@ global record CoreBevyAPI
     
     --
 
-        assert_receiver_is_total_eq : function(self:LuaMouseButton)
-
         clone : function(self:LuaMouseButton):(LuaMouseButton)
+
+        assert_receiver_is_total_eq : function(self:LuaMouseButton)
 
         __tostring : function(self:LuaMouseButton):(string)
 
@@ -749,17 +2974,17 @@ global record CoreBevyAPI
     end
     
     
-    record LuaKey
+    record LuaKeyboardFocusLost
 
         userdata
     
     --
 
-        clone : function(self:LuaKey):(LuaKey)
+        clone : function(self:LuaKeyboardFocusLost):(LuaKeyboardFocusLost)
 
-        assert_receiver_is_total_eq : function(self:LuaKey)
+        assert_receiver_is_total_eq : function(self:LuaKeyboardFocusLost)
 
-        __tostring : function(self:LuaKey):(string)
+        __tostring : function(self:LuaKeyboardFocusLost):(string)
 
         __eq : function(any , any):(any)
 
@@ -793,40 +3018,6 @@ global record CoreBevyAPI
         clone : function(self:LuaKeyboardInput):(LuaKeyboardInput)
 
         __tostring : function(self:LuaKeyboardInput):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaNativeKey
-
-        userdata
-    
-    --
-
-        assert_receiver_is_total_eq : function(self:LuaNativeKey)
-
-        clone : function(self:LuaNativeKey):(LuaNativeKey)
-
-        __tostring : function(self:LuaNativeKey):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaNativeKeyCode
-
-        userdata
-    
-    --
-
-        clone : function(self:LuaNativeKeyCode):(LuaNativeKeyCode)
-
-        assert_receiver_is_total_eq : function(self:LuaNativeKeyCode)
-
-        __tostring : function(self:LuaNativeKeyCode):(string)
 
         __eq : function(any , any):(any)
 
@@ -879,23 +3070,6 @@ global record CoreBevyAPI
     end
     
     
-    record LuaMouseScrollUnit
-
-        userdata
-    
-    --
-
-        assert_receiver_is_total_eq : function(self:LuaMouseScrollUnit)
-
-        clone : function(self:LuaMouseScrollUnit):(LuaMouseScrollUnit)
-
-        __tostring : function(self:LuaMouseScrollUnit):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
     record LuaMouseWheel
 
         userdata
@@ -923,163 +3097,6 @@ global record CoreBevyAPI
         __tostring : function(self:LuaMouseWheel):(string)
 
         __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaForceTouch
-
-        userdata
-    
-    --
-
-        clone : function(self:LuaForceTouch):(LuaForceTouch)
-
-        __tostring : function(self:LuaForceTouch):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaTouchPhase
-
-        userdata
-    
-    --
-
-        assert_receiver_is_total_eq : function(self:LuaTouchPhase)
-
-        clone : function(self:LuaTouchPhase):(LuaTouchPhase)
-
-        __tostring : function(self:LuaTouchPhase):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaTouchpadMagnify
-
-        userdata
-    
-    --
-
-        _0 : number
-
-        clone : function(self:LuaTouchpadMagnify):(LuaTouchpadMagnify)
-
-        __tostring : function(self:LuaTouchpadMagnify):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaTouchpadRotate
-
-        userdata
-    
-    --
-
-        _0 : number
-
-        clone : function(self:LuaTouchpadRotate):(LuaTouchpadRotate)
-
-        __tostring : function(self:LuaTouchpadRotate):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaAxisSettings
-
-        userdata
-    
-    --
-
-        livezone_upperbound : function(self:LuaAxisSettings):(number)
-
-        deadzone_upperbound : function(self:LuaAxisSettings):(number)
-
-        livezone_lowerbound : function(self:LuaAxisSettings):(number)
-
-        deadzone_lowerbound : function(self:LuaAxisSettings):(number)
-
-        threshold : function(self:LuaAxisSettings):(number)
-
-        clamp : function(self:LuaAxisSettings , number):(number)
-
-        filter : function(self:LuaAxisSettings , number , number):(number)
-
-        clone : function(self:LuaAxisSettings):(LuaAxisSettings)
-
-        set_livezone_upperbound : function(self:LuaAxisSettings , number):(number)
-
-        set_deadzone_upperbound : function(self:LuaAxisSettings , number):(number)
-
-        set_livezone_lowerbound : function(self:LuaAxisSettings , number):(number)
-
-        set_deadzone_lowerbound : function(self:LuaAxisSettings , number):(number)
-
-        set_threshold : function(self:LuaAxisSettings , number):(number)
-
-        __tostring : function(self:LuaAxisSettings):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaButtonAxisSettings
-
-        userdata
-    
-    --
-
-        high : number
-
-        low : number
-
-        threshold : number
-
-        high : number
-
-        low : number
-
-        threshold : number
-
-        clone : function(self:LuaButtonAxisSettings):(LuaButtonAxisSettings)
-
-        filter : function(self:LuaButtonAxisSettings , number , number):(number)
-
-        __tostring : function(self:LuaButtonAxisSettings):(string)
-
-    end
-    
-    
-    record LuaButtonSettings
-
-        userdata
-    
-    --
-
-        is_pressed : function(self:LuaButtonSettings , number):(boolean)
-
-        is_released : function(self:LuaButtonSettings , number):(boolean)
-
-        press_threshold : function(self:LuaButtonSettings):(number)
-
-        release_threshold : function(self:LuaButtonSettings):(number)
-
-        clone : function(self:LuaButtonSettings):(LuaButtonSettings)
-
-        set_press_threshold : function(self:LuaButtonSettings , number):(number)
-
-        set_release_threshold : function(self:LuaButtonSettings , number):(number)
-
-        __tostring : function(self:LuaButtonSettings):(string)
 
     end
     
@@ -1193,21 +3210,6 @@ global record CoreBevyAPI
     end
     
     
-    record LuaGamepadConnection
-
-        userdata
-    
-    --
-
-        clone : function(self:LuaGamepadConnection):(LuaGamepadConnection)
-
-        __tostring : function(self:LuaGamepadConnection):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
     record LuaGamepadConnectionEvent
 
         userdata
@@ -1222,11 +3224,11 @@ global record CoreBevyAPI
 
         connection : LuaGamepadConnection
 
+        clone : function(self:LuaGamepadConnectionEvent):(LuaGamepadConnectionEvent)
+
         connected : function(self:LuaGamepadConnectionEvent):(boolean)
 
         disconnected : function(self:LuaGamepadConnectionEvent):(boolean)
-
-        clone : function(self:LuaGamepadConnectionEvent):(LuaGamepadConnectionEvent)
 
         new : function(LuaGamepad , LuaGamepadConnection):(LuaGamepadConnectionEvent)
 
@@ -1300,6 +3302,72 @@ global record CoreBevyAPI
     end
     
     
+    record LuaPinchGesture
+
+        userdata
+    
+    --
+
+        _0 : number
+
+        clone : function(self:LuaPinchGesture):(LuaPinchGesture)
+
+        __tostring : function(self:LuaPinchGesture):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaRotationGesture
+
+        userdata
+    
+    --
+
+        _0 : number
+
+        clone : function(self:LuaRotationGesture):(LuaRotationGesture)
+
+        __tostring : function(self:LuaRotationGesture):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaDoubleTapGesture
+
+        userdata
+    
+    --
+
+        clone : function(self:LuaDoubleTapGesture):(LuaDoubleTapGesture)
+
+        __tostring : function(self:LuaDoubleTapGesture):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaPanGesture
+
+        userdata
+    
+    --
+
+        _0 : LuaVec2
+
+        clone : function(self:LuaPanGesture):(LuaPanGesture)
+
+        __tostring : function(self:LuaPanGesture):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
     record LuaButtonState
 
         userdata
@@ -1308,9 +3376,9 @@ global record CoreBevyAPI
 
         clone : function(self:LuaButtonState):(LuaButtonState)
 
-        is_pressed : function(self:LuaButtonState):(boolean)
-
         assert_receiver_is_total_eq : function(self:LuaButtonState)
+
+        is_pressed : function(self:LuaButtonState):(boolean)
 
         __tostring : function(self:LuaButtonState):(string)
 
@@ -1327,11 +3395,217 @@ global record CoreBevyAPI
 
         name : string
 
-        clone : function(self:LuaGamepadInfo):(LuaGamepadInfo)
-
         assert_receiver_is_total_eq : function(self:LuaGamepadInfo)
 
+        clone : function(self:LuaGamepadInfo):(LuaGamepadInfo)
+
         __tostring : function(self:LuaGamepadInfo):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaButtonSettings
+
+        userdata
+    
+    --
+
+        is_pressed : function(self:LuaButtonSettings , number):(boolean)
+
+        is_released : function(self:LuaButtonSettings , number):(boolean)
+
+        press_threshold : function(self:LuaButtonSettings):(number)
+
+        release_threshold : function(self:LuaButtonSettings):(number)
+
+        clone : function(self:LuaButtonSettings):(LuaButtonSettings)
+
+        set_press_threshold : function(self:LuaButtonSettings , number):(number)
+
+        set_release_threshold : function(self:LuaButtonSettings , number):(number)
+
+        __tostring : function(self:LuaButtonSettings):(string)
+
+    end
+    
+    
+    record LuaAxisSettings
+
+        userdata
+    
+    --
+
+        clone : function(self:LuaAxisSettings):(LuaAxisSettings)
+
+        livezone_upperbound : function(self:LuaAxisSettings):(number)
+
+        deadzone_upperbound : function(self:LuaAxisSettings):(number)
+
+        livezone_lowerbound : function(self:LuaAxisSettings):(number)
+
+        deadzone_lowerbound : function(self:LuaAxisSettings):(number)
+
+        threshold : function(self:LuaAxisSettings):(number)
+
+        clamp : function(self:LuaAxisSettings , number):(number)
+
+        filter : function(self:LuaAxisSettings , number , number):(number)
+
+        set_livezone_upperbound : function(self:LuaAxisSettings , number):(number)
+
+        set_deadzone_upperbound : function(self:LuaAxisSettings , number):(number)
+
+        set_livezone_lowerbound : function(self:LuaAxisSettings , number):(number)
+
+        set_deadzone_lowerbound : function(self:LuaAxisSettings , number):(number)
+
+        set_threshold : function(self:LuaAxisSettings , number):(number)
+
+        __tostring : function(self:LuaAxisSettings):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaButtonAxisSettings
+
+        userdata
+    
+    --
+
+        high : number
+
+        low : number
+
+        threshold : number
+
+        high : number
+
+        low : number
+
+        threshold : number
+
+        filter : function(self:LuaButtonAxisSettings , number , number):(number)
+
+        clone : function(self:LuaButtonAxisSettings):(LuaButtonAxisSettings)
+
+        __tostring : function(self:LuaButtonAxisSettings):(string)
+
+    end
+    
+    
+    record LuaGamepadConnection
+
+        userdata
+    
+    --
+
+        clone : function(self:LuaGamepadConnection):(LuaGamepadConnection)
+
+        __tostring : function(self:LuaGamepadConnection):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaKey
+
+        userdata
+    
+    --
+
+        assert_receiver_is_total_eq : function(self:LuaKey)
+
+        clone : function(self:LuaKey):(LuaKey)
+
+        __tostring : function(self:LuaKey):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaNativeKeyCode
+
+        userdata
+    
+    --
+
+        clone : function(self:LuaNativeKeyCode):(LuaNativeKeyCode)
+
+        assert_receiver_is_total_eq : function(self:LuaNativeKeyCode)
+
+        __tostring : function(self:LuaNativeKeyCode):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaNativeKey
+
+        userdata
+    
+    --
+
+        clone : function(self:LuaNativeKey):(LuaNativeKey)
+
+        assert_receiver_is_total_eq : function(self:LuaNativeKey)
+
+        __tostring : function(self:LuaNativeKey):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaMouseScrollUnit
+
+        userdata
+    
+    --
+
+        assert_receiver_is_total_eq : function(self:LuaMouseScrollUnit)
+
+        clone : function(self:LuaMouseScrollUnit):(LuaMouseScrollUnit)
+
+        __tostring : function(self:LuaMouseScrollUnit):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaTouchPhase
+
+        userdata
+    
+    --
+
+        assert_receiver_is_total_eq : function(self:LuaTouchPhase)
+
+        clone : function(self:LuaTouchPhase):(LuaTouchPhase)
+
+        __tostring : function(self:LuaTouchPhase):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaForceTouch
+
+        userdata
+    
+    --
+
+        clone : function(self:LuaForceTouch):(LuaForceTouch)
+
+        __tostring : function(self:LuaForceTouch):(string)
 
         __eq : function(any , any):(any)
 
@@ -1548,9 +3822,9 @@ global record CoreBevyAPI
     
     --
 
-        assert_receiver_is_total_eq : function(self:LuaParent)
-
         get : function(self:LuaParent):(LuaEntity)
+
+        assert_receiver_is_total_eq : function(self:LuaParent)
 
         __tostring : function(self:LuaParent):(string)
 
@@ -1584,9 +3858,9 @@ global record CoreBevyAPI
     
     --
 
-        assert_receiver_is_total_eq : function(self:LuaCursorIcon)
-
         clone : function(self:LuaCursorIcon):(LuaCursorIcon)
+
+        assert_receiver_is_total_eq : function(self:LuaCursorIcon)
 
         __tostring : function(self:LuaCursorIcon):(string)
 
@@ -1603,9 +3877,9 @@ global record CoreBevyAPI
 
         window : LuaEntity
 
-        assert_receiver_is_total_eq : function(self:LuaCursorLeft)
-
         clone : function(self:LuaCursorLeft):(LuaCursorLeft)
+
+        assert_receiver_is_total_eq : function(self:LuaCursorLeft)
 
         __tostring : function(self:LuaCursorLeft):(string)
 
@@ -1755,6 +4029,8 @@ global record CoreBevyAPI
 
         canvas : string
 
+        fit_canvas_to_parent : boolean
+
         prevent_default_event_handling : boolean
 
         internal : LuaInternalWindowState
@@ -1766,6 +4042,18 @@ global record CoreBevyAPI
         window_theme : ReflectedValue
 
         visible : boolean
+
+        skip_taskbar : boolean
+
+        desired_maximum_frame_latency : ReflectedValue
+
+        recognize_pinch_gesture : boolean
+
+        recognize_rotation_gesture : boolean
+
+        recognize_doubletap_gesture : boolean
+
+        recognize_pan_gesture : ReflectedValue
 
         cursor : LuaCursor
 
@@ -1799,6 +4087,8 @@ global record CoreBevyAPI
 
         canvas : string
 
+        fit_canvas_to_parent : boolean
+
         prevent_default_event_handling : boolean
 
         internal : LuaInternalWindowState
@@ -1811,17 +4101,33 @@ global record CoreBevyAPI
 
         visible : boolean
 
+        skip_taskbar : boolean
+
+        desired_maximum_frame_latency : ReflectedValue
+
+        recognize_pinch_gesture : boolean
+
+        recognize_rotation_gesture : boolean
+
+        recognize_doubletap_gesture : boolean
+
+        recognize_pan_gesture : ReflectedValue
+
+        clone : function(self:LuaWindow):(LuaWindow)
+
         width : function(self:LuaWindow):(number)
 
         height : function(self:LuaWindow):(number)
+
+        size : function(self:LuaWindow):(LuaVec2)
 
         physical_width : function(self:LuaWindow):(integer)
 
         physical_height : function(self:LuaWindow):(integer)
 
-        scale_factor : function(self:LuaWindow):(number)
+        physical_size : function(self:LuaWindow):(LuaUVec2)
 
-        clone : function(self:LuaWindow):(LuaWindow)
+        scale_factor : function(self:LuaWindow):(number)
 
         set_maximized : function(self:LuaWindow , boolean)
 
@@ -1913,9 +4219,9 @@ global record CoreBevyAPI
 
         max_height : number
 
-        check_constraints : function(self:LuaWindowResizeConstraints):(LuaWindowResizeConstraints)
-
         clone : function(self:LuaWindowResizeConstraints):(LuaWindowResizeConstraints)
+
+        check_constraints : function(self:LuaWindowResizeConstraints):(LuaWindowResizeConstraints)
 
         __tostring : function(self:LuaWindowResizeConstraints):(string)
 
@@ -1959,11 +4265,30 @@ global record CoreBevyAPI
 
         window : LuaEntity
 
-        clone : function(self:LuaWindowCreated):(LuaWindowCreated)
-
         assert_receiver_is_total_eq : function(self:LuaWindowCreated)
 
+        clone : function(self:LuaWindowCreated):(LuaWindowCreated)
+
         __tostring : function(self:LuaWindowCreated):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaWindowClosing
+
+        userdata
+    
+    --
+
+        window : LuaEntity
+
+        clone : function(self:LuaWindowClosing):(LuaWindowClosing)
+
+        assert_receiver_is_total_eq : function(self:LuaWindowClosing)
+
+        __tostring : function(self:LuaWindowClosing):(string)
 
         __eq : function(any , any):(any)
 
@@ -1978,9 +4303,9 @@ global record CoreBevyAPI
 
         window : LuaEntity
 
-        assert_receiver_is_total_eq : function(self:LuaWindowClosed)
-
         clone : function(self:LuaWindowClosed):(LuaWindowClosed)
+
+        assert_receiver_is_total_eq : function(self:LuaWindowClosed)
 
         __tostring : function(self:LuaWindowClosed):(string)
 
@@ -1997,9 +4322,9 @@ global record CoreBevyAPI
 
         window : LuaEntity
 
-        clone : function(self:LuaWindowCloseRequested):(LuaWindowCloseRequested)
-
         assert_receiver_is_total_eq : function(self:LuaWindowCloseRequested)
+
+        clone : function(self:LuaWindowCloseRequested):(LuaWindowCloseRequested)
 
         __tostring : function(self:LuaWindowCloseRequested):(string)
 
@@ -2033,9 +4358,9 @@ global record CoreBevyAPI
     
     --
 
-        clone : function(self:LuaRequestRedraw):(LuaRequestRedraw)
-
         assert_receiver_is_total_eq : function(self:LuaRequestRedraw)
+
+        clone : function(self:LuaRequestRedraw):(LuaRequestRedraw)
 
         __tostring : function(self:LuaRequestRedraw):(string)
 
@@ -2154,9 +4479,9 @@ global record CoreBevyAPI
 
         theme : LuaWindowTheme
 
-        clone : function(self:LuaWindowThemeChanged):(LuaWindowThemeChanged)
-
         assert_receiver_is_total_eq : function(self:LuaWindowThemeChanged)
+
+        clone : function(self:LuaWindowThemeChanged):(LuaWindowThemeChanged)
 
         __tostring : function(self:LuaWindowThemeChanged):(string)
 
@@ -2165,17 +4490,19 @@ global record CoreBevyAPI
     end
     
     
-    record LuaApplicationLifetime
+    record LuaAppLifecycle
 
         userdata
     
     --
 
-        clone : function(self:LuaApplicationLifetime):(LuaApplicationLifetime)
+        clone : function(self:LuaAppLifecycle):(LuaAppLifecycle)
 
-        assert_receiver_is_total_eq : function(self:LuaApplicationLifetime)
+        assert_receiver_is_total_eq : function(self:LuaAppLifecycle)
 
-        __tostring : function(self:LuaApplicationLifetime):(string)
+        is_active : function(self:LuaAppLifecycle):(boolean)
+
+        __tostring : function(self:LuaAppLifecycle):(string)
 
         __eq : function(any , any):(any)
 
@@ -2188,198 +4515,11 @@ global record CoreBevyAPI
     
     --
 
-        clone : function(self:LuaPrimaryWindow):(LuaPrimaryWindow)
-
         assert_receiver_is_total_eq : function(self:LuaPrimaryWindow)
 
+        clone : function(self:LuaPrimaryWindow):(LuaPrimaryWindow)
+
         __tostring : function(self:LuaPrimaryWindow):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaCursor
-
-        userdata
-    
-    --
-
-        icon : LuaCursorIcon
-
-        visible : boolean
-
-        grab_mode : LuaCursorGrabMode
-
-        hit_test : boolean
-
-        icon : LuaCursorIcon
-
-        visible : boolean
-
-        grab_mode : LuaCursorGrabMode
-
-        hit_test : boolean
-
-        clone : function(self:LuaCursor):(LuaCursor)
-
-        __tostring : function(self:LuaCursor):(string)
-
-    end
-    
-    
-    record LuaCursorGrabMode
-
-        userdata
-    
-    --
-
-        assert_receiver_is_total_eq : function(self:LuaCursorGrabMode)
-
-        clone : function(self:LuaCursorGrabMode):(LuaCursorGrabMode)
-
-        __tostring : function(self:LuaCursorGrabMode):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaCompositeAlphaMode
-
-        userdata
-    
-    --
-
-        assert_receiver_is_total_eq : function(self:LuaCompositeAlphaMode)
-
-        clone : function(self:LuaCompositeAlphaMode):(LuaCompositeAlphaMode)
-
-        __tostring : function(self:LuaCompositeAlphaMode):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaWindowResolution
-
-        userdata
-    
-    --
-
-        with_scale_factor_override : function(self:LuaWindowResolution , number):(LuaWindowResolution)
-
-        width : function(self:LuaWindowResolution):(number)
-
-        height : function(self:LuaWindowResolution):(number)
-
-        physical_width : function(self:LuaWindowResolution):(integer)
-
-        physical_height : function(self:LuaWindowResolution):(integer)
-
-        scale_factor : function(self:LuaWindowResolution):(number)
-
-        base_scale_factor : function(self:LuaWindowResolution):(number)
-
-        scale_factor_override : function(self:LuaWindowResolution):(number)
-
-        clone : function(self:LuaWindowResolution):(LuaWindowResolution)
-
-        set : function(self:LuaWindowResolution , number , number)
-
-        set_physical_resolution : function(self:LuaWindowResolution , integer , integer)
-
-        set_scale_factor : function(self:LuaWindowResolution , number)
-
-        set_scale_factor_override : function(self:LuaWindowResolution , number)
-
-        new : function(number , number):(LuaWindowResolution)
-
-        __tostring : function(self:LuaWindowResolution):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record ClassLuaWindowResolution
-
-        userdata
-    
-    --Collection of static methods for [``].
-
-        new : function(number , number):(LuaWindowResolution)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaWindowMode
-
-        userdata
-    
-    --
-
-        assert_receiver_is_total_eq : function(self:LuaWindowMode)
-
-        clone : function(self:LuaWindowMode):(LuaWindowMode)
-
-        __tostring : function(self:LuaWindowMode):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaWindowLevel
-
-        userdata
-    
-    --
-
-        clone : function(self:LuaWindowLevel):(LuaWindowLevel)
-
-        assert_receiver_is_total_eq : function(self:LuaWindowLevel)
-
-        __tostring : function(self:LuaWindowLevel):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaPresentMode
-
-        userdata
-    
-    --
-
-        assert_receiver_is_total_eq : function(self:LuaPresentMode)
-
-        clone : function(self:LuaPresentMode):(LuaPresentMode)
-
-        __tostring : function(self:LuaPresentMode):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaInternalWindowState
-
-        userdata
-    
-    --
-
-        clone : function(self:LuaInternalWindowState):(LuaInternalWindowState)
-
-        take_maximize_request : function(self:LuaInternalWindowState):(boolean)
-
-        take_minimize_request : function(self:LuaInternalWindowState):(boolean)
-
-        __tostring : function(self:LuaInternalWindowState):(string)
 
         __eq : function(any , any):(any)
 
@@ -2397,33 +4537,6 @@ global record CoreBevyAPI
         assert_receiver_is_total_eq : function(self:LuaWindowTheme)
 
         __tostring : function(self:LuaWindowTheme):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaEnabledButtons
-
-        userdata
-    
-    --
-
-        minimize : boolean
-
-        maximize : boolean
-
-        close : boolean
-
-        minimize : boolean
-
-        maximize : boolean
-
-        close : boolean
-
-        clone : function(self:LuaEnabledButtons):(LuaEnabledButtons)
-
-        __tostring : function(self:LuaEnabledButtons):(string)
 
         __eq : function(any , any):(any)
 
@@ -2462,15 +4575,231 @@ global record CoreBevyAPI
     end
     
     
-    record LuaDuration
+    record LuaCursor
 
         userdata
     
     --
 
-        assert_receiver_is_total_eq : function(self:LuaDuration)
+        icon : LuaCursorIcon
 
-        clone : function(self:LuaDuration):(LuaDuration)
+        visible : boolean
+
+        grab_mode : LuaCursorGrabMode
+
+        hit_test : boolean
+
+        icon : LuaCursorIcon
+
+        visible : boolean
+
+        grab_mode : LuaCursorGrabMode
+
+        hit_test : boolean
+
+        clone : function(self:LuaCursor):(LuaCursor)
+
+        __tostring : function(self:LuaCursor):(string)
+
+    end
+    
+    
+    record LuaPresentMode
+
+        userdata
+    
+    --
+
+        clone : function(self:LuaPresentMode):(LuaPresentMode)
+
+        assert_receiver_is_total_eq : function(self:LuaPresentMode)
+
+        __tostring : function(self:LuaPresentMode):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaWindowMode
+
+        userdata
+    
+    --
+
+        assert_receiver_is_total_eq : function(self:LuaWindowMode)
+
+        clone : function(self:LuaWindowMode):(LuaWindowMode)
+
+        __tostring : function(self:LuaWindowMode):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaWindowResolution
+
+        userdata
+    
+    --
+
+        clone : function(self:LuaWindowResolution):(LuaWindowResolution)
+
+        with_scale_factor_override : function(self:LuaWindowResolution , number):(LuaWindowResolution)
+
+        width : function(self:LuaWindowResolution):(number)
+
+        height : function(self:LuaWindowResolution):(number)
+
+        size : function(self:LuaWindowResolution):(LuaVec2)
+
+        physical_width : function(self:LuaWindowResolution):(integer)
+
+        physical_height : function(self:LuaWindowResolution):(integer)
+
+        physical_size : function(self:LuaWindowResolution):(LuaUVec2)
+
+        scale_factor : function(self:LuaWindowResolution):(number)
+
+        base_scale_factor : function(self:LuaWindowResolution):(number)
+
+        scale_factor_override : function(self:LuaWindowResolution):(number)
+
+        set : function(self:LuaWindowResolution , number , number)
+
+        set_physical_resolution : function(self:LuaWindowResolution , integer , integer)
+
+        set_scale_factor : function(self:LuaWindowResolution , number)
+
+        set_scale_factor_and_apply_to_physical_size : function(self:LuaWindowResolution , number)
+
+        set_scale_factor_override : function(self:LuaWindowResolution , number)
+
+        new : function(number , number):(LuaWindowResolution)
+
+        __tostring : function(self:LuaWindowResolution):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record ClassLuaWindowResolution
+
+        userdata
+    
+    --Collection of static methods for [``].
+
+        new : function(number , number):(LuaWindowResolution)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaCompositeAlphaMode
+
+        userdata
+    
+    --
+
+        assert_receiver_is_total_eq : function(self:LuaCompositeAlphaMode)
+
+        clone : function(self:LuaCompositeAlphaMode):(LuaCompositeAlphaMode)
+
+        __tostring : function(self:LuaCompositeAlphaMode):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaEnabledButtons
+
+        userdata
+    
+    --
+
+        minimize : boolean
+
+        maximize : boolean
+
+        close : boolean
+
+        minimize : boolean
+
+        maximize : boolean
+
+        close : boolean
+
+        clone : function(self:LuaEnabledButtons):(LuaEnabledButtons)
+
+        __tostring : function(self:LuaEnabledButtons):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaWindowLevel
+
+        userdata
+    
+    --
+
+        assert_receiver_is_total_eq : function(self:LuaWindowLevel)
+
+        clone : function(self:LuaWindowLevel):(LuaWindowLevel)
+
+        __tostring : function(self:LuaWindowLevel):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaInternalWindowState
+
+        userdata
+    
+    --
+
+        clone : function(self:LuaInternalWindowState):(LuaInternalWindowState)
+
+        take_maximize_request : function(self:LuaInternalWindowState):(boolean)
+
+        take_minimize_request : function(self:LuaInternalWindowState):(boolean)
+
+        __tostring : function(self:LuaInternalWindowState):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaCursorGrabMode
+
+        userdata
+    
+    --
+
+        clone : function(self:LuaCursorGrabMode):(LuaCursorGrabMode)
+
+        assert_receiver_is_total_eq : function(self:LuaCursorGrabMode)
+
+        __tostring : function(self:LuaCursorGrabMode):(string)
+
+        __eq : function(any , any):(any)
+
+    end
+    
+    
+    record LuaDuration
+
+        userdata
+    
+    --
 
         is_zero : function(self:LuaDuration):(boolean)
 
@@ -2506,6 +4835,10 @@ global record CoreBevyAPI
 
         div_f32 : function(self:LuaDuration , number):(LuaDuration)
 
+        clone : function(self:LuaDuration):(LuaDuration)
+
+        assert_receiver_is_total_eq : function(self:LuaDuration)
+
         new : function(integer , integer):(LuaDuration)
 
         from_secs : function(integer):(LuaDuration)
@@ -2522,15 +4855,15 @@ global record CoreBevyAPI
 
         __tostring : function(self:LuaDuration):(string)
 
-        __eq : function(any , any):(any)
+        __mul : function(any , any):(any)
+
+        __add : function(any , any):(any)
 
         __div : function(any , any):(any)
 
         __sub : function(any , any):(any)
 
-        __mul : function(any , any):(any)
-
-        __add : function(any , any):(any)
+        __eq : function(any , any):(any)
 
     end
     
@@ -2555,15 +4888,15 @@ global record CoreBevyAPI
 
         from_secs_f32 : function(number):(LuaDuration)
 
-        __eq : function(any , any):(any)
+        __mul : function(any , any):(any)
+
+        __add : function(any , any):(any)
 
         __div : function(any , any):(any)
 
         __sub : function(any , any):(any)
 
-        __mul : function(any , any):(any)
-
-        __add : function(any , any):(any)
+        __eq : function(any , any):(any)
 
     end
     
@@ -2574,9 +4907,9 @@ global record CoreBevyAPI
     
     --
 
-        assert_receiver_is_total_eq : function(self:LuaInstant)
-
         clone : function(self:LuaInstant):(LuaInstant)
+
+        assert_receiver_is_total_eq : function(self:LuaInstant)
 
         duration_since : function(self:LuaInstant , LuaInstant):(LuaDuration)
 
@@ -2588,9 +4921,9 @@ global record CoreBevyAPI
 
         __tostring : function(self:LuaInstant):(string)
 
-        __sub : function(any , any):(any)
-
         __eq : function(any , any):(any)
+
+        __sub : function(any , any):(any)
 
         __add : function(any , any):(any)
 
@@ -2605,621 +4938,11 @@ global record CoreBevyAPI
 
         now : function():(LuaInstant)
 
+        __eq : function(any , any):(any)
+
         __sub : function(any , any):(any)
 
-        __eq : function(any , any):(any)
-
         __add : function(any , any):(any)
-
-    end
-    
-    
-    record LuaNonZeroI128
-
-        userdata
-    
-    --
-
-        clone : function(self:LuaNonZeroI128):(LuaNonZeroI128)
-
-        get : function(self:LuaNonZeroI128):(integer)
-
-        leading_zeros : function(self:LuaNonZeroI128):(integer)
-
-        trailing_zeros : function(self:LuaNonZeroI128):(integer)
-
-        abs : function(self:LuaNonZeroI128):(LuaNonZeroI128)
-
-        saturating_abs : function(self:LuaNonZeroI128):(LuaNonZeroI128)
-
-        wrapping_abs : function(self:LuaNonZeroI128):(LuaNonZeroI128)
-
-        unsigned_abs : function(self:LuaNonZeroI128):(LuaNonZeroU128)
-
-        is_positive : function(self:LuaNonZeroI128):(boolean)
-
-        is_negative : function(self:LuaNonZeroI128):(boolean)
-
-        saturating_neg : function(self:LuaNonZeroI128):(LuaNonZeroI128)
-
-        wrapping_neg : function(self:LuaNonZeroI128):(LuaNonZeroI128)
-
-        saturating_mul : function(self:LuaNonZeroI128 , LuaNonZeroI128):(LuaNonZeroI128)
-
-        saturating_pow : function(self:LuaNonZeroI128 , integer):(LuaNonZeroI128)
-
-        assert_receiver_is_total_eq : function(self:LuaNonZeroI128)
-
-        new_unchecked : function(integer):(LuaNonZeroI128)
-
-        __tostring : function(self:LuaNonZeroI128):(string)
-
-        __eq : function(any , any):(any)
-
-        __unm : function(any):(any)
-
-    end
-    
-    
-    record ClassLuaNonZeroI128
-
-        userdata
-    
-    --Collection of static methods for [``].
-
-        new_unchecked : function(integer):(LuaNonZeroI128)
-
-        __eq : function(any , any):(any)
-
-        __unm : function(any):(any)
-
-    end
-    
-    
-    record LuaNonZeroI16
-
-        userdata
-    
-    --
-
-        clone : function(self:LuaNonZeroI16):(LuaNonZeroI16)
-
-        assert_receiver_is_total_eq : function(self:LuaNonZeroI16)
-
-        get : function(self:LuaNonZeroI16):(integer)
-
-        leading_zeros : function(self:LuaNonZeroI16):(integer)
-
-        trailing_zeros : function(self:LuaNonZeroI16):(integer)
-
-        abs : function(self:LuaNonZeroI16):(LuaNonZeroI16)
-
-        saturating_abs : function(self:LuaNonZeroI16):(LuaNonZeroI16)
-
-        wrapping_abs : function(self:LuaNonZeroI16):(LuaNonZeroI16)
-
-        unsigned_abs : function(self:LuaNonZeroI16):(LuaNonZeroU16)
-
-        is_positive : function(self:LuaNonZeroI16):(boolean)
-
-        is_negative : function(self:LuaNonZeroI16):(boolean)
-
-        saturating_neg : function(self:LuaNonZeroI16):(LuaNonZeroI16)
-
-        wrapping_neg : function(self:LuaNonZeroI16):(LuaNonZeroI16)
-
-        saturating_mul : function(self:LuaNonZeroI16 , LuaNonZeroI16):(LuaNonZeroI16)
-
-        saturating_pow : function(self:LuaNonZeroI16 , integer):(LuaNonZeroI16)
-
-        new_unchecked : function(integer):(LuaNonZeroI16)
-
-        __tostring : function(self:LuaNonZeroI16):(string)
-
-        __unm : function(any):(any)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record ClassLuaNonZeroI16
-
-        userdata
-    
-    --Collection of static methods for [``].
-
-        new_unchecked : function(integer):(LuaNonZeroI16)
-
-        __unm : function(any):(any)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaNonZeroI32
-
-        userdata
-    
-    --
-
-        get : function(self:LuaNonZeroI32):(integer)
-
-        leading_zeros : function(self:LuaNonZeroI32):(integer)
-
-        trailing_zeros : function(self:LuaNonZeroI32):(integer)
-
-        abs : function(self:LuaNonZeroI32):(LuaNonZeroI32)
-
-        saturating_abs : function(self:LuaNonZeroI32):(LuaNonZeroI32)
-
-        wrapping_abs : function(self:LuaNonZeroI32):(LuaNonZeroI32)
-
-        unsigned_abs : function(self:LuaNonZeroI32):(LuaNonZeroU32)
-
-        is_positive : function(self:LuaNonZeroI32):(boolean)
-
-        is_negative : function(self:LuaNonZeroI32):(boolean)
-
-        saturating_neg : function(self:LuaNonZeroI32):(LuaNonZeroI32)
-
-        wrapping_neg : function(self:LuaNonZeroI32):(LuaNonZeroI32)
-
-        saturating_mul : function(self:LuaNonZeroI32 , LuaNonZeroI32):(LuaNonZeroI32)
-
-        saturating_pow : function(self:LuaNonZeroI32 , integer):(LuaNonZeroI32)
-
-        clone : function(self:LuaNonZeroI32):(LuaNonZeroI32)
-
-        assert_receiver_is_total_eq : function(self:LuaNonZeroI32)
-
-        new_unchecked : function(integer):(LuaNonZeroI32)
-
-        __tostring : function(self:LuaNonZeroI32):(string)
-
-        __eq : function(any , any):(any)
-
-        __unm : function(any):(any)
-
-    end
-    
-    
-    record ClassLuaNonZeroI32
-
-        userdata
-    
-    --Collection of static methods for [``].
-
-        new_unchecked : function(integer):(LuaNonZeroI32)
-
-        __eq : function(any , any):(any)
-
-        __unm : function(any):(any)
-
-    end
-    
-    
-    record LuaNonZeroI64
-
-        userdata
-    
-    --
-
-        get : function(self:LuaNonZeroI64):(integer)
-
-        leading_zeros : function(self:LuaNonZeroI64):(integer)
-
-        trailing_zeros : function(self:LuaNonZeroI64):(integer)
-
-        abs : function(self:LuaNonZeroI64):(LuaNonZeroI64)
-
-        saturating_abs : function(self:LuaNonZeroI64):(LuaNonZeroI64)
-
-        wrapping_abs : function(self:LuaNonZeroI64):(LuaNonZeroI64)
-
-        unsigned_abs : function(self:LuaNonZeroI64):(LuaNonZeroU64)
-
-        is_positive : function(self:LuaNonZeroI64):(boolean)
-
-        is_negative : function(self:LuaNonZeroI64):(boolean)
-
-        saturating_neg : function(self:LuaNonZeroI64):(LuaNonZeroI64)
-
-        wrapping_neg : function(self:LuaNonZeroI64):(LuaNonZeroI64)
-
-        saturating_mul : function(self:LuaNonZeroI64 , LuaNonZeroI64):(LuaNonZeroI64)
-
-        saturating_pow : function(self:LuaNonZeroI64 , integer):(LuaNonZeroI64)
-
-        clone : function(self:LuaNonZeroI64):(LuaNonZeroI64)
-
-        assert_receiver_is_total_eq : function(self:LuaNonZeroI64)
-
-        new_unchecked : function(integer):(LuaNonZeroI64)
-
-        __tostring : function(self:LuaNonZeroI64):(string)
-
-        __unm : function(any):(any)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record ClassLuaNonZeroI64
-
-        userdata
-    
-    --Collection of static methods for [``].
-
-        new_unchecked : function(integer):(LuaNonZeroI64)
-
-        __unm : function(any):(any)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaNonZeroI8
-
-        userdata
-    
-    --
-
-        assert_receiver_is_total_eq : function(self:LuaNonZeroI8)
-
-        clone : function(self:LuaNonZeroI8):(LuaNonZeroI8)
-
-        get : function(self:LuaNonZeroI8):(integer)
-
-        leading_zeros : function(self:LuaNonZeroI8):(integer)
-
-        trailing_zeros : function(self:LuaNonZeroI8):(integer)
-
-        abs : function(self:LuaNonZeroI8):(LuaNonZeroI8)
-
-        saturating_abs : function(self:LuaNonZeroI8):(LuaNonZeroI8)
-
-        wrapping_abs : function(self:LuaNonZeroI8):(LuaNonZeroI8)
-
-        unsigned_abs : function(self:LuaNonZeroI8):(LuaNonZeroU8)
-
-        is_positive : function(self:LuaNonZeroI8):(boolean)
-
-        is_negative : function(self:LuaNonZeroI8):(boolean)
-
-        saturating_neg : function(self:LuaNonZeroI8):(LuaNonZeroI8)
-
-        wrapping_neg : function(self:LuaNonZeroI8):(LuaNonZeroI8)
-
-        saturating_mul : function(self:LuaNonZeroI8 , LuaNonZeroI8):(LuaNonZeroI8)
-
-        saturating_pow : function(self:LuaNonZeroI8 , integer):(LuaNonZeroI8)
-
-        new_unchecked : function(integer):(LuaNonZeroI8)
-
-        __tostring : function(self:LuaNonZeroI8):(string)
-
-        __unm : function(any):(any)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record ClassLuaNonZeroI8
-
-        userdata
-    
-    --Collection of static methods for [``].
-
-        new_unchecked : function(integer):(LuaNonZeroI8)
-
-        __unm : function(any):(any)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaNonZeroU128
-
-        userdata
-    
-    --
-
-        clone : function(self:LuaNonZeroU128):(LuaNonZeroU128)
-
-        assert_receiver_is_total_eq : function(self:LuaNonZeroU128)
-
-        get : function(self:LuaNonZeroU128):(integer)
-
-        leading_zeros : function(self:LuaNonZeroU128):(integer)
-
-        trailing_zeros : function(self:LuaNonZeroU128):(integer)
-
-        saturating_add : function(self:LuaNonZeroU128 , integer):(LuaNonZeroU128)
-
-        ilog2 : function(self:LuaNonZeroU128):(integer)
-
-        ilog10 : function(self:LuaNonZeroU128):(integer)
-
-        is_power_of_two : function(self:LuaNonZeroU128):(boolean)
-
-        saturating_mul : function(self:LuaNonZeroU128 , LuaNonZeroU128):(LuaNonZeroU128)
-
-        saturating_pow : function(self:LuaNonZeroU128 , integer):(LuaNonZeroU128)
-
-        new_unchecked : function(integer):(LuaNonZeroU128)
-
-        __tostring : function(self:LuaNonZeroU128):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record ClassLuaNonZeroU128
-
-        userdata
-    
-    --Collection of static methods for [``].
-
-        new_unchecked : function(integer):(LuaNonZeroU128)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaNonZeroU16
-
-        userdata
-    
-    --
-
-        get : function(self:LuaNonZeroU16):(integer)
-
-        leading_zeros : function(self:LuaNonZeroU16):(integer)
-
-        trailing_zeros : function(self:LuaNonZeroU16):(integer)
-
-        saturating_add : function(self:LuaNonZeroU16 , integer):(LuaNonZeroU16)
-
-        ilog2 : function(self:LuaNonZeroU16):(integer)
-
-        ilog10 : function(self:LuaNonZeroU16):(integer)
-
-        is_power_of_two : function(self:LuaNonZeroU16):(boolean)
-
-        saturating_mul : function(self:LuaNonZeroU16 , LuaNonZeroU16):(LuaNonZeroU16)
-
-        saturating_pow : function(self:LuaNonZeroU16 , integer):(LuaNonZeroU16)
-
-        assert_receiver_is_total_eq : function(self:LuaNonZeroU16)
-
-        clone : function(self:LuaNonZeroU16):(LuaNonZeroU16)
-
-        new_unchecked : function(integer):(LuaNonZeroU16)
-
-        __tostring : function(self:LuaNonZeroU16):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record ClassLuaNonZeroU16
-
-        userdata
-    
-    --Collection of static methods for [``].
-
-        new_unchecked : function(integer):(LuaNonZeroU16)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaNonZeroU32
-
-        userdata
-    
-    --
-
-        assert_receiver_is_total_eq : function(self:LuaNonZeroU32)
-
-        get : function(self:LuaNonZeroU32):(integer)
-
-        leading_zeros : function(self:LuaNonZeroU32):(integer)
-
-        trailing_zeros : function(self:LuaNonZeroU32):(integer)
-
-        saturating_add : function(self:LuaNonZeroU32 , integer):(LuaNonZeroU32)
-
-        ilog2 : function(self:LuaNonZeroU32):(integer)
-
-        ilog10 : function(self:LuaNonZeroU32):(integer)
-
-        is_power_of_two : function(self:LuaNonZeroU32):(boolean)
-
-        saturating_mul : function(self:LuaNonZeroU32 , LuaNonZeroU32):(LuaNonZeroU32)
-
-        saturating_pow : function(self:LuaNonZeroU32 , integer):(LuaNonZeroU32)
-
-        clone : function(self:LuaNonZeroU32):(LuaNonZeroU32)
-
-        new_unchecked : function(integer):(LuaNonZeroU32)
-
-        __tostring : function(self:LuaNonZeroU32):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record ClassLuaNonZeroU32
-
-        userdata
-    
-    --Collection of static methods for [``].
-
-        new_unchecked : function(integer):(LuaNonZeroU32)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaNonZeroU64
-
-        userdata
-    
-    --
-
-        get : function(self:LuaNonZeroU64):(integer)
-
-        leading_zeros : function(self:LuaNonZeroU64):(integer)
-
-        trailing_zeros : function(self:LuaNonZeroU64):(integer)
-
-        saturating_add : function(self:LuaNonZeroU64 , integer):(LuaNonZeroU64)
-
-        ilog2 : function(self:LuaNonZeroU64):(integer)
-
-        ilog10 : function(self:LuaNonZeroU64):(integer)
-
-        is_power_of_two : function(self:LuaNonZeroU64):(boolean)
-
-        saturating_mul : function(self:LuaNonZeroU64 , LuaNonZeroU64):(LuaNonZeroU64)
-
-        saturating_pow : function(self:LuaNonZeroU64 , integer):(LuaNonZeroU64)
-
-        clone : function(self:LuaNonZeroU64):(LuaNonZeroU64)
-
-        assert_receiver_is_total_eq : function(self:LuaNonZeroU64)
-
-        new_unchecked : function(integer):(LuaNonZeroU64)
-
-        __tostring : function(self:LuaNonZeroU64):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record ClassLuaNonZeroU64
-
-        userdata
-    
-    --Collection of static methods for [``].
-
-        new_unchecked : function(integer):(LuaNonZeroU64)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaNonZeroU8
-
-        userdata
-    
-    --
-
-        assert_receiver_is_total_eq : function(self:LuaNonZeroU8)
-
-        clone : function(self:LuaNonZeroU8):(LuaNonZeroU8)
-
-        get : function(self:LuaNonZeroU8):(integer)
-
-        leading_zeros : function(self:LuaNonZeroU8):(integer)
-
-        trailing_zeros : function(self:LuaNonZeroU8):(integer)
-
-        saturating_add : function(self:LuaNonZeroU8 , integer):(LuaNonZeroU8)
-
-        ilog2 : function(self:LuaNonZeroU8):(integer)
-
-        ilog10 : function(self:LuaNonZeroU8):(integer)
-
-        is_power_of_two : function(self:LuaNonZeroU8):(boolean)
-
-        saturating_mul : function(self:LuaNonZeroU8 , LuaNonZeroU8):(LuaNonZeroU8)
-
-        saturating_pow : function(self:LuaNonZeroU8 , integer):(LuaNonZeroU8)
-
-        new_unchecked : function(integer):(LuaNonZeroU8)
-
-        __tostring : function(self:LuaNonZeroU8):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record ClassLuaNonZeroU8
-
-        userdata
-    
-    --Collection of static methods for [``].
-
-        new_unchecked : function(integer):(LuaNonZeroU8)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaNonZeroUsize
-
-        userdata
-    
-    --
-
-        assert_receiver_is_total_eq : function(self:LuaNonZeroUsize)
-
-        get : function(self:LuaNonZeroUsize):(integer)
-
-        leading_zeros : function(self:LuaNonZeroUsize):(integer)
-
-        trailing_zeros : function(self:LuaNonZeroUsize):(integer)
-
-        saturating_add : function(self:LuaNonZeroUsize , integer):(LuaNonZeroUsize)
-
-        ilog2 : function(self:LuaNonZeroUsize):(integer)
-
-        ilog10 : function(self:LuaNonZeroUsize):(integer)
-
-        is_power_of_two : function(self:LuaNonZeroUsize):(boolean)
-
-        saturating_mul : function(self:LuaNonZeroUsize , LuaNonZeroUsize):(LuaNonZeroUsize)
-
-        saturating_pow : function(self:LuaNonZeroUsize , integer):(LuaNonZeroUsize)
-
-        clone : function(self:LuaNonZeroUsize):(LuaNonZeroUsize)
-
-        new_unchecked : function(integer):(LuaNonZeroUsize)
-
-        __tostring : function(self:LuaNonZeroUsize):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record ClassLuaNonZeroUsize
-
-        userdata
-    
-    --Collection of static methods for [``].
-
-        new_unchecked : function(integer):(LuaNonZeroUsize)
-
-        __eq : function(any , any):(any)
 
     end
     
@@ -3280,9 +5003,9 @@ global record CoreBevyAPI
     
     --
 
-        clone : function(self:LuaRangeFull):(LuaRangeFull)
-
         assert_receiver_is_total_eq : function(self:LuaRangeFull)
+
+        clone : function(self:LuaRangeFull):(LuaRangeFull)
 
         __tostring : function(self:LuaRangeFull):(string)
 
@@ -3383,8 +5106,6 @@ global record CoreBevyAPI
 
         __sub : function(any , any):(any)
 
-        __div : function(any , any):(any)
-
         __unm : function(any):(any)
 
         __mul : function(any , any):(any)
@@ -3392,6 +5113,8 @@ global record CoreBevyAPI
         __add : function(any , any):(any)
 
         __eq : function(any , any):(any)
+
+        __div : function(any , any):(any)
 
     end
     
@@ -3436,8 +5159,6 @@ global record CoreBevyAPI
 
         __sub : function(any , any):(any)
 
-        __div : function(any , any):(any)
-
         __unm : function(any):(any)
 
         __mul : function(any , any):(any)
@@ -3445,6 +5166,8 @@ global record CoreBevyAPI
         __add : function(any , any):(any)
 
         __eq : function(any , any):(any)
+
+        __div : function(any , any):(any)
 
     end
     
@@ -3467,13 +5190,17 @@ global record CoreBevyAPI
 
         z : number
 
-        clone : function(self:LuaVec3):(LuaVec3)
-
         to_array : function(self:LuaVec3):({number})
 
         extend : function(self:LuaVec3 , number):(LuaVec4)
 
         truncate : function(self:LuaVec3):(LuaVec2)
+
+        with_x : function(self:LuaVec3 , number):(LuaVec3)
+
+        with_y : function(self:LuaVec3 , number):(LuaVec3)
+
+        with_z : function(self:LuaVec3 , number):(LuaVec3)
 
         dot : function(self:LuaVec3 , LuaVec3):(number)
 
@@ -3490,6 +5217,10 @@ global record CoreBevyAPI
         min_element : function(self:LuaVec3):(number)
 
         max_element : function(self:LuaVec3):(number)
+
+        element_sum : function(self:LuaVec3):(number)
+
+        element_product : function(self:LuaVec3):(number)
 
         cmpeq : function(self:LuaVec3 , LuaVec3):(LuaBVec3)
 
@@ -3533,6 +5264,8 @@ global record CoreBevyAPI
 
         normalize : function(self:LuaVec3):(LuaVec3)
 
+        normalize_or : function(self:LuaVec3 , LuaVec3):(LuaVec3)
+
         normalize_or_zero : function(self:LuaVec3):(LuaVec3)
 
         is_normalized : function(self:LuaVec3):(boolean)
@@ -3555,6 +5288,8 @@ global record CoreBevyAPI
 
         fract : function(self:LuaVec3):(LuaVec3)
 
+        fract_gl : function(self:LuaVec3):(LuaVec3)
+
         exp : function(self:LuaVec3):(LuaVec3)
 
         powf : function(self:LuaVec3 , number):(LuaVec3)
@@ -3562,6 +5297,10 @@ global record CoreBevyAPI
         recip : function(self:LuaVec3):(LuaVec3)
 
         lerp : function(self:LuaVec3 , LuaVec3 , number):(LuaVec3)
+
+        move_towards : function(self:LuaVec3 , LuaVec3 , number):(LuaVec3)
+
+        midpoint : function(self:LuaVec3 , LuaVec3):(LuaVec3)
 
         abs_diff_eq : function(self:LuaVec3 , LuaVec3 , number):(boolean)
 
@@ -3589,6 +5328,8 @@ global record CoreBevyAPI
 
         as_u64vec3 : function(self:LuaVec3):(LuaU64Vec3)
 
+        clone : function(self:LuaVec3):(LuaVec3)
+
         new : function(number , number , number):(LuaVec3)
 
         splat : function(number):(LuaVec3)
@@ -3603,19 +5344,19 @@ global record CoreBevyAPI
 
         __newindex : function(self:LuaVec3 , integer , number)
 
-        __mod : function(any , any):(any)
+        __sub : function(any , any):(any)
+
+        __mul : function(any , any):(any)
 
         __div : function(any , any):(any)
 
-        __sub : function(any , any):(any)
-
         __add : function(any , any):(any)
 
-        __unm : function(any):(any)
+        __mod : function(any , any):(any)
 
         __eq : function(any , any):(any)
 
-        __mul : function(any , any):(any)
+        __unm : function(any):(any)
 
     end
     
@@ -3634,19 +5375,19 @@ global record CoreBevyAPI
 
         from_array : function({number}):(LuaVec3)
 
-        __mod : function(any , any):(any)
+        __sub : function(any , any):(any)
+
+        __mul : function(any , any):(any)
 
         __div : function(any , any):(any)
 
-        __sub : function(any , any):(any)
-
         __add : function(any , any):(any)
 
-        __unm : function(any):(any)
+        __mod : function(any , any):(any)
 
         __eq : function(any , any):(any)
 
-        __mul : function(any , any):(any)
+        __unm : function(any):(any)
 
     end
     
@@ -3665,11 +5406,13 @@ global record CoreBevyAPI
 
         y : integer
 
-        clone : function(self:LuaIVec2):(LuaIVec2)
-
         to_array : function(self:LuaIVec2):({integer})
 
         extend : function(self:LuaIVec2 , integer):(LuaIVec3)
+
+        with_x : function(self:LuaIVec2 , integer):(LuaIVec2)
+
+        with_y : function(self:LuaIVec2 , integer):(LuaIVec2)
 
         dot : function(self:LuaIVec2 , LuaIVec2):(integer)
 
@@ -3684,6 +5427,10 @@ global record CoreBevyAPI
         min_element : function(self:LuaIVec2):(integer)
 
         max_element : function(self:LuaIVec2):(integer)
+
+        element_sum : function(self:LuaIVec2):(integer)
+
+        element_product : function(self:LuaIVec2):(integer)
 
         cmpeq : function(self:LuaIVec2 , LuaIVec2):(LuaBVec2)
 
@@ -3743,6 +5490,16 @@ global record CoreBevyAPI
 
         saturating_div : function(self:LuaIVec2 , LuaIVec2):(LuaIVec2)
 
+        wrapping_add_unsigned : function(self:LuaIVec2 , LuaUVec2):(LuaIVec2)
+
+        wrapping_sub_unsigned : function(self:LuaIVec2 , LuaUVec2):(LuaIVec2)
+
+        saturating_add_unsigned : function(self:LuaIVec2 , LuaUVec2):(LuaIVec2)
+
+        saturating_sub_unsigned : function(self:LuaIVec2 , LuaUVec2):(LuaIVec2)
+
+        clone : function(self:LuaIVec2):(LuaIVec2)
+
         assert_receiver_is_total_eq : function(self:LuaIVec2)
 
         new : function(integer , integer):(LuaIVec2)
@@ -3759,19 +5516,19 @@ global record CoreBevyAPI
 
         __newindex : function(self:LuaIVec2 , integer , integer)
 
-        __mul : function(any , any):(any)
-
         __add : function(any , any):(any)
+
+        __unm : function(any):(any)
 
         __eq : function(any , any):(any)
 
-        __div : function(any , any):(any)
-
         __sub : function(any , any):(any)
 
-        __mod : function(any , any):(any)
+        __mul : function(any , any):(any)
 
-        __unm : function(any):(any)
+        __div : function(any , any):(any)
+
+        __mod : function(any , any):(any)
 
     end
     
@@ -3790,19 +5547,19 @@ global record CoreBevyAPI
 
         from_array : function({integer}):(LuaIVec2)
 
-        __mul : function(any , any):(any)
-
         __add : function(any , any):(any)
+
+        __unm : function(any):(any)
 
         __eq : function(any , any):(any)
 
-        __div : function(any , any):(any)
-
         __sub : function(any , any):(any)
 
-        __mod : function(any , any):(any)
+        __mul : function(any , any):(any)
 
-        __unm : function(any):(any)
+        __div : function(any , any):(any)
+
+        __mod : function(any , any):(any)
 
     end
     
@@ -3825,8 +5582,6 @@ global record CoreBevyAPI
 
         z : integer
 
-        assert_receiver_is_total_eq : function(self:LuaIVec3)
-
         clone : function(self:LuaIVec3):(LuaIVec3)
 
         to_array : function(self:LuaIVec3):({integer})
@@ -3834,6 +5589,12 @@ global record CoreBevyAPI
         extend : function(self:LuaIVec3 , integer):(LuaIVec4)
 
         truncate : function(self:LuaIVec3):(LuaIVec2)
+
+        with_x : function(self:LuaIVec3 , integer):(LuaIVec3)
+
+        with_y : function(self:LuaIVec3 , integer):(LuaIVec3)
+
+        with_z : function(self:LuaIVec3 , integer):(LuaIVec3)
 
         dot : function(self:LuaIVec3 , LuaIVec3):(integer)
 
@@ -3850,6 +5611,10 @@ global record CoreBevyAPI
         min_element : function(self:LuaIVec3):(integer)
 
         max_element : function(self:LuaIVec3):(integer)
+
+        element_sum : function(self:LuaIVec3):(integer)
+
+        element_product : function(self:LuaIVec3):(integer)
 
         cmpeq : function(self:LuaIVec3 , LuaIVec3):(LuaBVec3)
 
@@ -3905,6 +5670,16 @@ global record CoreBevyAPI
 
         saturating_div : function(self:LuaIVec3 , LuaIVec3):(LuaIVec3)
 
+        wrapping_add_unsigned : function(self:LuaIVec3 , LuaUVec3):(LuaIVec3)
+
+        wrapping_sub_unsigned : function(self:LuaIVec3 , LuaUVec3):(LuaIVec3)
+
+        saturating_add_unsigned : function(self:LuaIVec3 , LuaUVec3):(LuaIVec3)
+
+        saturating_sub_unsigned : function(self:LuaIVec3 , LuaUVec3):(LuaIVec3)
+
+        assert_receiver_is_total_eq : function(self:LuaIVec3)
+
         new : function(integer , integer , integer):(LuaIVec3)
 
         splat : function(integer):(LuaIVec3)
@@ -3919,19 +5694,19 @@ global record CoreBevyAPI
 
         __newindex : function(self:LuaIVec3 , integer , integer)
 
-        __unm : function(any):(any)
-
         __add : function(any , any):(any)
 
         __sub : function(any , any):(any)
+
+        __mod : function(any , any):(any)
 
         __mul : function(any , any):(any)
 
         __div : function(any , any):(any)
 
-        __mod : function(any , any):(any)
-
         __eq : function(any , any):(any)
+
+        __unm : function(any):(any)
 
     end
     
@@ -3950,19 +5725,19 @@ global record CoreBevyAPI
 
         from_array : function({integer}):(LuaIVec3)
 
-        __unm : function(any):(any)
-
         __add : function(any , any):(any)
 
         __sub : function(any , any):(any)
+
+        __mod : function(any , any):(any)
 
         __mul : function(any , any):(any)
 
         __div : function(any , any):(any)
 
-        __mod : function(any , any):(any)
-
         __eq : function(any , any):(any)
+
+        __unm : function(any):(any)
 
     end
     
@@ -3993,6 +5768,14 @@ global record CoreBevyAPI
 
         truncate : function(self:LuaIVec4):(LuaIVec3)
 
+        with_x : function(self:LuaIVec4 , integer):(LuaIVec4)
+
+        with_y : function(self:LuaIVec4 , integer):(LuaIVec4)
+
+        with_z : function(self:LuaIVec4 , integer):(LuaIVec4)
+
+        with_w : function(self:LuaIVec4 , integer):(LuaIVec4)
+
         dot : function(self:LuaIVec4 , LuaIVec4):(integer)
 
         dot_into_vec : function(self:LuaIVec4 , LuaIVec4):(LuaIVec4)
@@ -4006,6 +5789,10 @@ global record CoreBevyAPI
         min_element : function(self:LuaIVec4):(integer)
 
         max_element : function(self:LuaIVec4):(integer)
+
+        element_sum : function(self:LuaIVec4):(integer)
+
+        element_product : function(self:LuaIVec4):(integer)
 
         cmpeq : function(self:LuaIVec4 , LuaIVec4):(LuaBVec4)
 
@@ -4059,9 +5846,17 @@ global record CoreBevyAPI
 
         saturating_div : function(self:LuaIVec4 , LuaIVec4):(LuaIVec4)
 
-        assert_receiver_is_total_eq : function(self:LuaIVec4)
+        wrapping_add_unsigned : function(self:LuaIVec4 , LuaUVec4):(LuaIVec4)
+
+        wrapping_sub_unsigned : function(self:LuaIVec4 , LuaUVec4):(LuaIVec4)
+
+        saturating_add_unsigned : function(self:LuaIVec4 , LuaUVec4):(LuaIVec4)
+
+        saturating_sub_unsigned : function(self:LuaIVec4 , LuaUVec4):(LuaIVec4)
 
         clone : function(self:LuaIVec4):(LuaIVec4)
+
+        assert_receiver_is_total_eq : function(self:LuaIVec4)
 
         new : function(integer , integer , integer , integer):(LuaIVec4)
 
@@ -4077,19 +5872,19 @@ global record CoreBevyAPI
 
         __newindex : function(self:LuaIVec4 , integer , integer)
 
-        __mul : function(any , any):(any)
-
-        __unm : function(any):(any)
-
-        __add : function(any , any):(any)
+        __div : function(any , any):(any)
 
         __mod : function(any , any):(any)
 
-        __eq : function(any , any):(any)
+        __mul : function(any , any):(any)
 
-        __div : function(any , any):(any)
+        __add : function(any , any):(any)
 
         __sub : function(any , any):(any)
+
+        __eq : function(any , any):(any)
+
+        __unm : function(any):(any)
 
     end
     
@@ -4108,19 +5903,19 @@ global record CoreBevyAPI
 
         from_array : function({integer}):(LuaIVec4)
 
-        __mul : function(any , any):(any)
-
-        __unm : function(any):(any)
-
-        __add : function(any , any):(any)
+        __div : function(any , any):(any)
 
         __mod : function(any , any):(any)
 
-        __eq : function(any , any):(any)
+        __mul : function(any , any):(any)
 
-        __div : function(any , any):(any)
+        __add : function(any , any):(any)
 
         __sub : function(any , any):(any)
+
+        __eq : function(any , any):(any)
+
+        __unm : function(any):(any)
 
     end
     
@@ -4139,13 +5934,15 @@ global record CoreBevyAPI
 
         y : integer
 
-        assert_receiver_is_total_eq : function(self:LuaI64Vec2)
-
         clone : function(self:LuaI64Vec2):(LuaI64Vec2)
 
         to_array : function(self:LuaI64Vec2):({integer})
 
         extend : function(self:LuaI64Vec2 , integer):(LuaI64Vec3)
+
+        with_x : function(self:LuaI64Vec2 , integer):(LuaI64Vec2)
+
+        with_y : function(self:LuaI64Vec2 , integer):(LuaI64Vec2)
 
         dot : function(self:LuaI64Vec2 , LuaI64Vec2):(integer)
 
@@ -4160,6 +5957,10 @@ global record CoreBevyAPI
         min_element : function(self:LuaI64Vec2):(integer)
 
         max_element : function(self:LuaI64Vec2):(integer)
+
+        element_sum : function(self:LuaI64Vec2):(integer)
+
+        element_product : function(self:LuaI64Vec2):(integer)
 
         cmpeq : function(self:LuaI64Vec2 , LuaI64Vec2):(LuaBVec2)
 
@@ -4219,6 +6020,16 @@ global record CoreBevyAPI
 
         saturating_div : function(self:LuaI64Vec2 , LuaI64Vec2):(LuaI64Vec2)
 
+        wrapping_add_unsigned : function(self:LuaI64Vec2 , LuaU64Vec2):(LuaI64Vec2)
+
+        wrapping_sub_unsigned : function(self:LuaI64Vec2 , LuaU64Vec2):(LuaI64Vec2)
+
+        saturating_add_unsigned : function(self:LuaI64Vec2 , LuaU64Vec2):(LuaI64Vec2)
+
+        saturating_sub_unsigned : function(self:LuaI64Vec2 , LuaU64Vec2):(LuaI64Vec2)
+
+        assert_receiver_is_total_eq : function(self:LuaI64Vec2)
+
         new : function(integer , integer):(LuaI64Vec2)
 
         splat : function(integer):(LuaI64Vec2)
@@ -4229,19 +6040,19 @@ global record CoreBevyAPI
 
         __tostring : function(self:LuaI64Vec2):(string)
 
-        __mod : function(any , any):(any)
-
         __sub : function(any , any):(any)
-
-        __unm : function(any):(any)
-
-        __add : function(any , any):(any)
 
         __eq : function(any , any):(any)
 
-        __mul : function(any , any):(any)
+        __mod : function(any , any):(any)
+
+        __add : function(any , any):(any)
+
+        __unm : function(any):(any)
 
         __div : function(any , any):(any)
+
+        __mul : function(any , any):(any)
 
     end
     
@@ -4260,19 +6071,19 @@ global record CoreBevyAPI
 
         from_array : function({integer}):(LuaI64Vec2)
 
-        __mod : function(any , any):(any)
-
         __sub : function(any , any):(any)
-
-        __unm : function(any):(any)
-
-        __add : function(any , any):(any)
 
         __eq : function(any , any):(any)
 
-        __mul : function(any , any):(any)
+        __mod : function(any , any):(any)
+
+        __add : function(any , any):(any)
+
+        __unm : function(any):(any)
 
         __div : function(any , any):(any)
+
+        __mul : function(any , any):(any)
 
     end
     
@@ -4295,11 +6106,21 @@ global record CoreBevyAPI
 
         z : integer
 
+        clone : function(self:LuaI64Vec3):(LuaI64Vec3)
+
+        assert_receiver_is_total_eq : function(self:LuaI64Vec3)
+
         to_array : function(self:LuaI64Vec3):({integer})
 
         extend : function(self:LuaI64Vec3 , integer):(LuaI64Vec4)
 
         truncate : function(self:LuaI64Vec3):(LuaI64Vec2)
+
+        with_x : function(self:LuaI64Vec3 , integer):(LuaI64Vec3)
+
+        with_y : function(self:LuaI64Vec3 , integer):(LuaI64Vec3)
+
+        with_z : function(self:LuaI64Vec3 , integer):(LuaI64Vec3)
 
         dot : function(self:LuaI64Vec3 , LuaI64Vec3):(integer)
 
@@ -4316,6 +6137,10 @@ global record CoreBevyAPI
         min_element : function(self:LuaI64Vec3):(integer)
 
         max_element : function(self:LuaI64Vec3):(integer)
+
+        element_sum : function(self:LuaI64Vec3):(integer)
+
+        element_product : function(self:LuaI64Vec3):(integer)
 
         cmpeq : function(self:LuaI64Vec3 , LuaI64Vec3):(LuaBVec3)
 
@@ -4371,9 +6196,13 @@ global record CoreBevyAPI
 
         saturating_div : function(self:LuaI64Vec3 , LuaI64Vec3):(LuaI64Vec3)
 
-        assert_receiver_is_total_eq : function(self:LuaI64Vec3)
+        wrapping_add_unsigned : function(self:LuaI64Vec3 , LuaU64Vec3):(LuaI64Vec3)
 
-        clone : function(self:LuaI64Vec3):(LuaI64Vec3)
+        wrapping_sub_unsigned : function(self:LuaI64Vec3 , LuaU64Vec3):(LuaI64Vec3)
+
+        saturating_add_unsigned : function(self:LuaI64Vec3 , LuaU64Vec3):(LuaI64Vec3)
+
+        saturating_sub_unsigned : function(self:LuaI64Vec3 , LuaU64Vec3):(LuaI64Vec3)
 
         new : function(integer , integer , integer):(LuaI64Vec3)
 
@@ -4389,15 +6218,15 @@ global record CoreBevyAPI
 
         __unm : function(any):(any)
 
-        __add : function(any , any):(any)
-
-        __mul : function(any , any):(any)
-
-        __mod : function(any , any):(any)
+        __div : function(any , any):(any)
 
         __eq : function(any , any):(any)
 
-        __div : function(any , any):(any)
+        __mod : function(any , any):(any)
+
+        __mul : function(any , any):(any)
+
+        __add : function(any , any):(any)
 
     end
     
@@ -4420,15 +6249,15 @@ global record CoreBevyAPI
 
         __unm : function(any):(any)
 
-        __add : function(any , any):(any)
-
-        __mul : function(any , any):(any)
-
-        __mod : function(any , any):(any)
+        __div : function(any , any):(any)
 
         __eq : function(any , any):(any)
 
-        __div : function(any , any):(any)
+        __mod : function(any , any):(any)
+
+        __mul : function(any , any):(any)
+
+        __add : function(any , any):(any)
 
     end
     
@@ -4455,13 +6284,17 @@ global record CoreBevyAPI
 
         w : integer
 
-        assert_receiver_is_total_eq : function(self:LuaI64Vec4)
-
-        clone : function(self:LuaI64Vec4):(LuaI64Vec4)
-
         to_array : function(self:LuaI64Vec4):({integer})
 
         truncate : function(self:LuaI64Vec4):(LuaI64Vec3)
+
+        with_x : function(self:LuaI64Vec4 , integer):(LuaI64Vec4)
+
+        with_y : function(self:LuaI64Vec4 , integer):(LuaI64Vec4)
+
+        with_z : function(self:LuaI64Vec4 , integer):(LuaI64Vec4)
+
+        with_w : function(self:LuaI64Vec4 , integer):(LuaI64Vec4)
 
         dot : function(self:LuaI64Vec4 , LuaI64Vec4):(integer)
 
@@ -4476,6 +6309,10 @@ global record CoreBevyAPI
         min_element : function(self:LuaI64Vec4):(integer)
 
         max_element : function(self:LuaI64Vec4):(integer)
+
+        element_sum : function(self:LuaI64Vec4):(integer)
+
+        element_product : function(self:LuaI64Vec4):(integer)
 
         cmpeq : function(self:LuaI64Vec4 , LuaI64Vec4):(LuaBVec4)
 
@@ -4529,6 +6366,18 @@ global record CoreBevyAPI
 
         saturating_div : function(self:LuaI64Vec4 , LuaI64Vec4):(LuaI64Vec4)
 
+        wrapping_add_unsigned : function(self:LuaI64Vec4 , LuaU64Vec4):(LuaI64Vec4)
+
+        wrapping_sub_unsigned : function(self:LuaI64Vec4 , LuaU64Vec4):(LuaI64Vec4)
+
+        saturating_add_unsigned : function(self:LuaI64Vec4 , LuaU64Vec4):(LuaI64Vec4)
+
+        saturating_sub_unsigned : function(self:LuaI64Vec4 , LuaU64Vec4):(LuaI64Vec4)
+
+        assert_receiver_is_total_eq : function(self:LuaI64Vec4)
+
+        clone : function(self:LuaI64Vec4):(LuaI64Vec4)
+
         new : function(integer , integer , integer , integer):(LuaI64Vec4)
 
         splat : function(integer):(LuaI64Vec4)
@@ -4539,19 +6388,19 @@ global record CoreBevyAPI
 
         __tostring : function(self:LuaI64Vec4):(string)
 
-        __mod : function(any , any):(any)
+        __sub : function(any , any):(any)
 
-        __mul : function(any , any):(any)
+        __mod : function(any , any):(any)
 
         __eq : function(any , any):(any)
 
-        __unm : function(any):(any)
-
         __div : function(any , any):(any)
 
-        __add : function(any , any):(any)
+        __unm : function(any):(any)
 
-        __sub : function(any , any):(any)
+        __mul : function(any , any):(any)
+
+        __add : function(any , any):(any)
 
     end
     
@@ -4570,19 +6419,19 @@ global record CoreBevyAPI
 
         from_array : function({integer}):(LuaI64Vec4)
 
-        __mod : function(any , any):(any)
+        __sub : function(any , any):(any)
 
-        __mul : function(any , any):(any)
+        __mod : function(any , any):(any)
 
         __eq : function(any , any):(any)
 
-        __unm : function(any):(any)
-
         __div : function(any , any):(any)
 
-        __add : function(any , any):(any)
+        __unm : function(any):(any)
 
-        __sub : function(any , any):(any)
+        __mul : function(any , any):(any)
+
+        __add : function(any , any):(any)
 
     end
     
@@ -4607,6 +6456,10 @@ global record CoreBevyAPI
 
         extend : function(self:LuaUVec2 , integer):(LuaUVec3)
 
+        with_x : function(self:LuaUVec2 , integer):(LuaUVec2)
+
+        with_y : function(self:LuaUVec2 , integer):(LuaUVec2)
+
         dot : function(self:LuaUVec2 , LuaUVec2):(integer)
 
         dot_into_vec : function(self:LuaUVec2 , LuaUVec2):(LuaUVec2)
@@ -4620,6 +6473,10 @@ global record CoreBevyAPI
         min_element : function(self:LuaUVec2):(integer)
 
         max_element : function(self:LuaUVec2):(integer)
+
+        element_sum : function(self:LuaUVec2):(integer)
+
+        element_product : function(self:LuaUVec2):(integer)
 
         cmpeq : function(self:LuaUVec2 , LuaUVec2):(LuaBVec2)
 
@@ -4661,6 +6518,10 @@ global record CoreBevyAPI
 
         saturating_div : function(self:LuaUVec2 , LuaUVec2):(LuaUVec2)
 
+        wrapping_add_signed : function(self:LuaUVec2 , LuaIVec2):(LuaUVec2)
+
+        saturating_add_signed : function(self:LuaUVec2 , LuaIVec2):(LuaUVec2)
+
         clone : function(self:LuaUVec2):(LuaUVec2)
 
         new : function(integer , integer):(LuaUVec2)
@@ -4677,17 +6538,17 @@ global record CoreBevyAPI
 
         __newindex : function(self:LuaUVec2 , integer , integer)
 
-        __mod : function(any , any):(any)
-
-        __sub : function(any , any):(any)
+        __mul : function(any , any):(any)
 
         __add : function(any , any):(any)
-
-        __mul : function(any , any):(any)
 
         __eq : function(any , any):(any)
 
         __div : function(any , any):(any)
+
+        __sub : function(any , any):(any)
+
+        __mod : function(any , any):(any)
 
     end
     
@@ -4706,17 +6567,17 @@ global record CoreBevyAPI
 
         from_array : function({integer}):(LuaUVec2)
 
-        __mod : function(any , any):(any)
-
-        __sub : function(any , any):(any)
+        __mul : function(any , any):(any)
 
         __add : function(any , any):(any)
-
-        __mul : function(any , any):(any)
 
         __eq : function(any , any):(any)
 
         __div : function(any , any):(any)
+
+        __sub : function(any , any):(any)
+
+        __mod : function(any , any):(any)
 
     end
     
@@ -4739,6 +6600,8 @@ global record CoreBevyAPI
 
         z : integer
 
+        clone : function(self:LuaUVec3):(LuaUVec3)
+
         assert_receiver_is_total_eq : function(self:LuaUVec3)
 
         to_array : function(self:LuaUVec3):({integer})
@@ -4746,6 +6609,12 @@ global record CoreBevyAPI
         extend : function(self:LuaUVec3 , integer):(LuaUVec4)
 
         truncate : function(self:LuaUVec3):(LuaUVec2)
+
+        with_x : function(self:LuaUVec3 , integer):(LuaUVec3)
+
+        with_y : function(self:LuaUVec3 , integer):(LuaUVec3)
+
+        with_z : function(self:LuaUVec3 , integer):(LuaUVec3)
 
         dot : function(self:LuaUVec3 , LuaUVec3):(integer)
 
@@ -4762,6 +6631,10 @@ global record CoreBevyAPI
         min_element : function(self:LuaUVec3):(integer)
 
         max_element : function(self:LuaUVec3):(integer)
+
+        element_sum : function(self:LuaUVec3):(integer)
+
+        element_product : function(self:LuaUVec3):(integer)
 
         cmpeq : function(self:LuaUVec3 , LuaUVec3):(LuaBVec3)
 
@@ -4805,7 +6678,9 @@ global record CoreBevyAPI
 
         saturating_div : function(self:LuaUVec3 , LuaUVec3):(LuaUVec3)
 
-        clone : function(self:LuaUVec3):(LuaUVec3)
+        wrapping_add_signed : function(self:LuaUVec3 , LuaIVec3):(LuaUVec3)
+
+        saturating_add_signed : function(self:LuaUVec3 , LuaIVec3):(LuaUVec3)
 
         new : function(integer , integer , integer):(LuaUVec3)
 
@@ -4821,17 +6696,17 @@ global record CoreBevyAPI
 
         __newindex : function(self:LuaUVec3 , integer , integer)
 
-        __mul : function(any , any):(any)
-
         __sub : function(any , any):(any)
+
+        __mul : function(any , any):(any)
 
         __add : function(any , any):(any)
 
-        __eq : function(any , any):(any)
+        __div : function(any , any):(any)
 
         __mod : function(any , any):(any)
 
-        __div : function(any , any):(any)
+        __eq : function(any , any):(any)
 
     end
     
@@ -4850,17 +6725,17 @@ global record CoreBevyAPI
 
         from_array : function({integer}):(LuaUVec3)
 
-        __mul : function(any , any):(any)
-
         __sub : function(any , any):(any)
+
+        __mul : function(any , any):(any)
 
         __add : function(any , any):(any)
 
-        __eq : function(any , any):(any)
+        __div : function(any , any):(any)
 
         __mod : function(any , any):(any)
 
-        __div : function(any , any):(any)
+        __eq : function(any , any):(any)
 
     end
     
@@ -4887,9 +6762,21 @@ global record CoreBevyAPI
 
         w : integer
 
+        clone : function(self:LuaUVec4):(LuaUVec4)
+
+        assert_receiver_is_total_eq : function(self:LuaUVec4)
+
         to_array : function(self:LuaUVec4):({integer})
 
         truncate : function(self:LuaUVec4):(LuaUVec3)
+
+        with_x : function(self:LuaUVec4 , integer):(LuaUVec4)
+
+        with_y : function(self:LuaUVec4 , integer):(LuaUVec4)
+
+        with_z : function(self:LuaUVec4 , integer):(LuaUVec4)
+
+        with_w : function(self:LuaUVec4 , integer):(LuaUVec4)
 
         dot : function(self:LuaUVec4 , LuaUVec4):(integer)
 
@@ -4904,6 +6791,10 @@ global record CoreBevyAPI
         min_element : function(self:LuaUVec4):(integer)
 
         max_element : function(self:LuaUVec4):(integer)
+
+        element_sum : function(self:LuaUVec4):(integer)
+
+        element_product : function(self:LuaUVec4):(integer)
 
         cmpeq : function(self:LuaUVec4 , LuaUVec4):(LuaBVec4)
 
@@ -4945,9 +6836,9 @@ global record CoreBevyAPI
 
         saturating_div : function(self:LuaUVec4 , LuaUVec4):(LuaUVec4)
 
-        clone : function(self:LuaUVec4):(LuaUVec4)
+        wrapping_add_signed : function(self:LuaUVec4 , LuaIVec4):(LuaUVec4)
 
-        assert_receiver_is_total_eq : function(self:LuaUVec4)
+        saturating_add_signed : function(self:LuaUVec4 , LuaIVec4):(LuaUVec4)
 
         new : function(integer , integer , integer , integer):(LuaUVec4)
 
@@ -4967,13 +6858,13 @@ global record CoreBevyAPI
 
         __mul : function(any , any):(any)
 
+        __add : function(any , any):(any)
+
         __div : function(any , any):(any)
 
         __sub : function(any , any):(any)
 
         __mod : function(any , any):(any)
-
-        __add : function(any , any):(any)
 
     end
     
@@ -4996,13 +6887,13 @@ global record CoreBevyAPI
 
         __mul : function(any , any):(any)
 
+        __add : function(any , any):(any)
+
         __div : function(any , any):(any)
 
         __sub : function(any , any):(any)
 
         __mod : function(any , any):(any)
-
-        __add : function(any , any):(any)
 
     end
     
@@ -5029,6 +6920,10 @@ global record CoreBevyAPI
 
         extend : function(self:LuaU64Vec2 , integer):(LuaU64Vec3)
 
+        with_x : function(self:LuaU64Vec2 , integer):(LuaU64Vec2)
+
+        with_y : function(self:LuaU64Vec2 , integer):(LuaU64Vec2)
+
         dot : function(self:LuaU64Vec2 , LuaU64Vec2):(integer)
 
         dot_into_vec : function(self:LuaU64Vec2 , LuaU64Vec2):(LuaU64Vec2)
@@ -5042,6 +6937,10 @@ global record CoreBevyAPI
         min_element : function(self:LuaU64Vec2):(integer)
 
         max_element : function(self:LuaU64Vec2):(integer)
+
+        element_sum : function(self:LuaU64Vec2):(integer)
+
+        element_product : function(self:LuaU64Vec2):(integer)
 
         cmpeq : function(self:LuaU64Vec2 , LuaU64Vec2):(LuaBVec2)
 
@@ -5083,6 +6982,10 @@ global record CoreBevyAPI
 
         saturating_div : function(self:LuaU64Vec2 , LuaU64Vec2):(LuaU64Vec2)
 
+        wrapping_add_signed : function(self:LuaU64Vec2 , LuaI64Vec2):(LuaU64Vec2)
+
+        saturating_add_signed : function(self:LuaU64Vec2 , LuaI64Vec2):(LuaU64Vec2)
+
         new : function(integer , integer):(LuaU64Vec2)
 
         splat : function(integer):(LuaU64Vec2)
@@ -5093,17 +6996,17 @@ global record CoreBevyAPI
 
         __tostring : function(self:LuaU64Vec2):(string)
 
-        __eq : function(any , any):(any)
+        __div : function(any , any):(any)
 
         __mul : function(any , any):(any)
 
-        __mod : function(any , any):(any)
+        __eq : function(any , any):(any)
 
-        __div : function(any , any):(any)
+        __add : function(any , any):(any)
 
         __sub : function(any , any):(any)
 
-        __add : function(any , any):(any)
+        __mod : function(any , any):(any)
 
     end
     
@@ -5122,17 +7025,17 @@ global record CoreBevyAPI
 
         from_array : function({integer}):(LuaU64Vec2)
 
-        __eq : function(any , any):(any)
+        __div : function(any , any):(any)
 
         __mul : function(any , any):(any)
 
-        __mod : function(any , any):(any)
+        __eq : function(any , any):(any)
 
-        __div : function(any , any):(any)
+        __add : function(any , any):(any)
 
         __sub : function(any , any):(any)
 
-        __add : function(any , any):(any)
+        __mod : function(any , any):(any)
 
     end
     
@@ -5155,13 +7058,19 @@ global record CoreBevyAPI
 
         z : integer
 
-        assert_receiver_is_total_eq : function(self:LuaU64Vec3)
+        clone : function(self:LuaU64Vec3):(LuaU64Vec3)
 
         to_array : function(self:LuaU64Vec3):({integer})
 
         extend : function(self:LuaU64Vec3 , integer):(LuaU64Vec4)
 
         truncate : function(self:LuaU64Vec3):(LuaU64Vec2)
+
+        with_x : function(self:LuaU64Vec3 , integer):(LuaU64Vec3)
+
+        with_y : function(self:LuaU64Vec3 , integer):(LuaU64Vec3)
+
+        with_z : function(self:LuaU64Vec3 , integer):(LuaU64Vec3)
 
         dot : function(self:LuaU64Vec3 , LuaU64Vec3):(integer)
 
@@ -5178,6 +7087,10 @@ global record CoreBevyAPI
         min_element : function(self:LuaU64Vec3):(integer)
 
         max_element : function(self:LuaU64Vec3):(integer)
+
+        element_sum : function(self:LuaU64Vec3):(integer)
+
+        element_product : function(self:LuaU64Vec3):(integer)
 
         cmpeq : function(self:LuaU64Vec3 , LuaU64Vec3):(LuaBVec3)
 
@@ -5221,7 +7134,11 @@ global record CoreBevyAPI
 
         saturating_div : function(self:LuaU64Vec3 , LuaU64Vec3):(LuaU64Vec3)
 
-        clone : function(self:LuaU64Vec3):(LuaU64Vec3)
+        wrapping_add_signed : function(self:LuaU64Vec3 , LuaI64Vec3):(LuaU64Vec3)
+
+        saturating_add_signed : function(self:LuaU64Vec3 , LuaI64Vec3):(LuaU64Vec3)
+
+        assert_receiver_is_total_eq : function(self:LuaU64Vec3)
 
         new : function(integer , integer , integer):(LuaU64Vec3)
 
@@ -5233,17 +7150,17 @@ global record CoreBevyAPI
 
         __tostring : function(self:LuaU64Vec3):(string)
 
-        __mul : function(any , any):(any)
-
-        __div : function(any , any):(any)
-
-        __add : function(any , any):(any)
-
-        __eq : function(any , any):(any)
+        __sub : function(any , any):(any)
 
         __mod : function(any , any):(any)
 
-        __sub : function(any , any):(any)
+        __eq : function(any , any):(any)
+
+        __div : function(any , any):(any)
+
+        __mul : function(any , any):(any)
+
+        __add : function(any , any):(any)
 
     end
     
@@ -5262,17 +7179,17 @@ global record CoreBevyAPI
 
         from_array : function({integer}):(LuaU64Vec3)
 
-        __mul : function(any , any):(any)
-
-        __div : function(any , any):(any)
-
-        __add : function(any , any):(any)
-
-        __eq : function(any , any):(any)
+        __sub : function(any , any):(any)
 
         __mod : function(any , any):(any)
 
-        __sub : function(any , any):(any)
+        __eq : function(any , any):(any)
+
+        __div : function(any , any):(any)
+
+        __mul : function(any , any):(any)
+
+        __add : function(any , any):(any)
 
     end
     
@@ -5299,11 +7216,19 @@ global record CoreBevyAPI
 
         w : integer
 
-        assert_receiver_is_total_eq : function(self:LuaU64Vec4)
+        clone : function(self:LuaU64Vec4):(LuaU64Vec4)
 
         to_array : function(self:LuaU64Vec4):({integer})
 
         truncate : function(self:LuaU64Vec4):(LuaU64Vec3)
+
+        with_x : function(self:LuaU64Vec4 , integer):(LuaU64Vec4)
+
+        with_y : function(self:LuaU64Vec4 , integer):(LuaU64Vec4)
+
+        with_z : function(self:LuaU64Vec4 , integer):(LuaU64Vec4)
+
+        with_w : function(self:LuaU64Vec4 , integer):(LuaU64Vec4)
 
         dot : function(self:LuaU64Vec4 , LuaU64Vec4):(integer)
 
@@ -5318,6 +7243,10 @@ global record CoreBevyAPI
         min_element : function(self:LuaU64Vec4):(integer)
 
         max_element : function(self:LuaU64Vec4):(integer)
+
+        element_sum : function(self:LuaU64Vec4):(integer)
+
+        element_product : function(self:LuaU64Vec4):(integer)
 
         cmpeq : function(self:LuaU64Vec4 , LuaU64Vec4):(LuaBVec4)
 
@@ -5359,7 +7288,11 @@ global record CoreBevyAPI
 
         saturating_div : function(self:LuaU64Vec4 , LuaU64Vec4):(LuaU64Vec4)
 
-        clone : function(self:LuaU64Vec4):(LuaU64Vec4)
+        wrapping_add_signed : function(self:LuaU64Vec4 , LuaI64Vec4):(LuaU64Vec4)
+
+        saturating_add_signed : function(self:LuaU64Vec4 , LuaI64Vec4):(LuaU64Vec4)
+
+        assert_receiver_is_total_eq : function(self:LuaU64Vec4)
 
         new : function(integer , integer , integer , integer):(LuaU64Vec4)
 
@@ -5371,17 +7304,17 @@ global record CoreBevyAPI
 
         __tostring : function(self:LuaU64Vec4):(string)
 
-        __sub : function(any , any):(any)
-
         __mul : function(any , any):(any)
-
-        __add : function(any , any):(any)
 
         __div : function(any , any):(any)
 
+        __mod : function(any , any):(any)
+
         __eq : function(any , any):(any)
 
-        __mod : function(any , any):(any)
+        __add : function(any , any):(any)
+
+        __sub : function(any , any):(any)
 
     end
     
@@ -5400,17 +7333,17 @@ global record CoreBevyAPI
 
         from_array : function({integer}):(LuaU64Vec4)
 
-        __sub : function(any , any):(any)
-
         __mul : function(any , any):(any)
-
-        __add : function(any , any):(any)
 
         __div : function(any , any):(any)
 
+        __mod : function(any , any):(any)
+
         __eq : function(any , any):(any)
 
-        __mod : function(any , any):(any)
+        __add : function(any , any):(any)
+
+        __sub : function(any , any):(any)
 
     end
     
@@ -5435,6 +7368,10 @@ global record CoreBevyAPI
 
         extend : function(self:LuaVec2 , number):(LuaVec3)
 
+        with_x : function(self:LuaVec2 , number):(LuaVec2)
+
+        with_y : function(self:LuaVec2 , number):(LuaVec2)
+
         dot : function(self:LuaVec2 , LuaVec2):(number)
 
         dot_into_vec : function(self:LuaVec2 , LuaVec2):(LuaVec2)
@@ -5448,6 +7385,10 @@ global record CoreBevyAPI
         min_element : function(self:LuaVec2):(number)
 
         max_element : function(self:LuaVec2):(number)
+
+        element_sum : function(self:LuaVec2):(number)
+
+        element_product : function(self:LuaVec2):(number)
 
         cmpeq : function(self:LuaVec2 , LuaVec2):(LuaBVec2)
 
@@ -5491,6 +7432,8 @@ global record CoreBevyAPI
 
         normalize : function(self:LuaVec2):(LuaVec2)
 
+        normalize_or : function(self:LuaVec2 , LuaVec2):(LuaVec2)
+
         normalize_or_zero : function(self:LuaVec2):(LuaVec2)
 
         is_normalized : function(self:LuaVec2):(boolean)
@@ -5513,6 +7456,8 @@ global record CoreBevyAPI
 
         fract : function(self:LuaVec2):(LuaVec2)
 
+        fract_gl : function(self:LuaVec2):(LuaVec2)
+
         exp : function(self:LuaVec2):(LuaVec2)
 
         powf : function(self:LuaVec2 , number):(LuaVec2)
@@ -5520,6 +7465,10 @@ global record CoreBevyAPI
         recip : function(self:LuaVec2):(LuaVec2)
 
         lerp : function(self:LuaVec2 , LuaVec2 , number):(LuaVec2)
+
+        move_towards : function(self:LuaVec2 , LuaVec2 , number):(LuaVec2)
+
+        midpoint : function(self:LuaVec2 , LuaVec2):(LuaVec2)
 
         abs_diff_eq : function(self:LuaVec2 , LuaVec2 , number):(boolean)
 
@@ -5567,19 +7516,19 @@ global record CoreBevyAPI
 
         __newindex : function(self:LuaVec2 , integer , number)
 
+        __div : function(any , any):(any)
+
         __unm : function(any):(any)
+
+        __mul : function(any , any):(any)
 
         __mod : function(any , any):(any)
 
-        __div : function(any , any):(any)
+        __sub : function(any , any):(any)
 
         __add : function(any , any):(any)
 
         __eq : function(any , any):(any)
-
-        __sub : function(any , any):(any)
-
-        __mul : function(any , any):(any)
 
     end
     
@@ -5600,19 +7549,19 @@ global record CoreBevyAPI
 
         from_angle : function(number):(LuaVec2)
 
+        __div : function(any , any):(any)
+
         __unm : function(any):(any)
+
+        __mul : function(any , any):(any)
 
         __mod : function(any , any):(any)
 
-        __div : function(any , any):(any)
+        __sub : function(any , any):(any)
 
         __add : function(any , any):(any)
 
         __eq : function(any , any):(any)
-
-        __sub : function(any , any):(any)
-
-        __mul : function(any , any):(any)
 
     end
     
@@ -5629,6 +7578,12 @@ global record CoreBevyAPI
 
         truncate : function(self:LuaVec3A):(LuaVec2)
 
+        with_x : function(self:LuaVec3A , number):(LuaVec3A)
+
+        with_y : function(self:LuaVec3A , number):(LuaVec3A)
+
+        with_z : function(self:LuaVec3A , number):(LuaVec3A)
+
         dot : function(self:LuaVec3A , LuaVec3A):(number)
 
         dot_into_vec : function(self:LuaVec3A , LuaVec3A):(LuaVec3A)
@@ -5644,6 +7599,10 @@ global record CoreBevyAPI
         min_element : function(self:LuaVec3A):(number)
 
         max_element : function(self:LuaVec3A):(number)
+
+        element_sum : function(self:LuaVec3A):(number)
+
+        element_product : function(self:LuaVec3A):(number)
 
         cmpeq : function(self:LuaVec3A , LuaVec3A):(LuaBVec3A)
 
@@ -5687,6 +7646,8 @@ global record CoreBevyAPI
 
         normalize : function(self:LuaVec3A):(LuaVec3A)
 
+        normalize_or : function(self:LuaVec3A , LuaVec3A):(LuaVec3A)
+
         normalize_or_zero : function(self:LuaVec3A):(LuaVec3A)
 
         is_normalized : function(self:LuaVec3A):(boolean)
@@ -5709,6 +7670,8 @@ global record CoreBevyAPI
 
         fract : function(self:LuaVec3A):(LuaVec3A)
 
+        fract_gl : function(self:LuaVec3A):(LuaVec3A)
+
         exp : function(self:LuaVec3A):(LuaVec3A)
 
         powf : function(self:LuaVec3A , number):(LuaVec3A)
@@ -5716,6 +7679,10 @@ global record CoreBevyAPI
         recip : function(self:LuaVec3A):(LuaVec3A)
 
         lerp : function(self:LuaVec3A , LuaVec3A , number):(LuaVec3A)
+
+        move_towards : function(self:LuaVec3A , LuaVec3A , number):(LuaVec3A)
+
+        midpoint : function(self:LuaVec3A , LuaVec3A):(LuaVec3A)
 
         abs_diff_eq : function(self:LuaVec3A , LuaVec3A , number):(boolean)
 
@@ -5759,19 +7726,19 @@ global record CoreBevyAPI
 
         __newindex : function(self:LuaVec3A , integer , number)
 
-        __mul : function(any , any):(any)
-
-        __eq : function(any , any):(any)
+        __div : function(any , any):(any)
 
         __mod : function(any , any):(any)
 
-        __add : function(any , any):(any)
+        __unm : function(any):(any)
 
         __sub : function(any , any):(any)
 
-        __div : function(any , any):(any)
+        __mul : function(any , any):(any)
 
-        __unm : function(any):(any)
+        __add : function(any , any):(any)
+
+        __eq : function(any , any):(any)
 
     end
     
@@ -5790,19 +7757,19 @@ global record CoreBevyAPI
 
         from_array : function({number}):(LuaVec3A)
 
-        __mul : function(any , any):(any)
-
-        __eq : function(any , any):(any)
+        __div : function(any , any):(any)
 
         __mod : function(any , any):(any)
 
-        __add : function(any , any):(any)
+        __unm : function(any):(any)
 
         __sub : function(any , any):(any)
 
-        __div : function(any , any):(any)
+        __mul : function(any , any):(any)
 
-        __unm : function(any):(any)
+        __add : function(any , any):(any)
+
+        __eq : function(any , any):(any)
 
     end
     
@@ -5813,11 +7780,17 @@ global record CoreBevyAPI
     
     --
 
-        clone : function(self:LuaVec4):(LuaVec4)
-
         to_array : function(self:LuaVec4):({number})
 
         truncate : function(self:LuaVec4):(LuaVec3)
+
+        with_x : function(self:LuaVec4 , number):(LuaVec4)
+
+        with_y : function(self:LuaVec4 , number):(LuaVec4)
+
+        with_z : function(self:LuaVec4 , number):(LuaVec4)
+
+        with_w : function(self:LuaVec4 , number):(LuaVec4)
 
         dot : function(self:LuaVec4 , LuaVec4):(number)
 
@@ -5832,6 +7805,10 @@ global record CoreBevyAPI
         min_element : function(self:LuaVec4):(number)
 
         max_element : function(self:LuaVec4):(number)
+
+        element_sum : function(self:LuaVec4):(number)
+
+        element_product : function(self:LuaVec4):(number)
 
         cmpeq : function(self:LuaVec4 , LuaVec4):(LuaBVec4A)
 
@@ -5875,6 +7852,8 @@ global record CoreBevyAPI
 
         normalize : function(self:LuaVec4):(LuaVec4)
 
+        normalize_or : function(self:LuaVec4 , LuaVec4):(LuaVec4)
+
         normalize_or_zero : function(self:LuaVec4):(LuaVec4)
 
         is_normalized : function(self:LuaVec4):(boolean)
@@ -5897,6 +7876,8 @@ global record CoreBevyAPI
 
         fract : function(self:LuaVec4):(LuaVec4)
 
+        fract_gl : function(self:LuaVec4):(LuaVec4)
+
         exp : function(self:LuaVec4):(LuaVec4)
 
         powf : function(self:LuaVec4 , number):(LuaVec4)
@@ -5904,6 +7885,10 @@ global record CoreBevyAPI
         recip : function(self:LuaVec4):(LuaVec4)
 
         lerp : function(self:LuaVec4 , LuaVec4 , number):(LuaVec4)
+
+        move_towards : function(self:LuaVec4 , LuaVec4 , number):(LuaVec4)
+
+        midpoint : function(self:LuaVec4 , LuaVec4):(LuaVec4)
 
         abs_diff_eq : function(self:LuaVec4 , LuaVec4 , number):(boolean)
 
@@ -5925,6 +7910,8 @@ global record CoreBevyAPI
 
         as_u64vec4 : function(self:LuaVec4):(LuaU64Vec4)
 
+        clone : function(self:LuaVec4):(LuaVec4)
+
         new : function(number , number , number , number):(LuaVec4)
 
         splat : function(number):(LuaVec4)
@@ -5939,19 +7926,19 @@ global record CoreBevyAPI
 
         __newindex : function(self:LuaVec4 , integer , number)
 
-        __div : function(any , any):(any)
-
-        __unm : function(any):(any)
-
-        __sub : function(any , any):(any)
-
         __add : function(any , any):(any)
-
-        __mod : function(any , any):(any)
 
         __mul : function(any , any):(any)
 
+        __unm : function(any):(any)
+
+        __mod : function(any , any):(any)
+
         __eq : function(any , any):(any)
+
+        __div : function(any , any):(any)
+
+        __sub : function(any , any):(any)
 
     end
     
@@ -5970,19 +7957,19 @@ global record CoreBevyAPI
 
         from_array : function({number}):(LuaVec4)
 
-        __div : function(any , any):(any)
-
-        __unm : function(any):(any)
-
-        __sub : function(any , any):(any)
-
         __add : function(any , any):(any)
-
-        __mod : function(any , any):(any)
 
         __mul : function(any , any):(any)
 
+        __unm : function(any):(any)
+
+        __mod : function(any , any):(any)
+
         __eq : function(any , any):(any)
+
+        __div : function(any , any):(any)
+
+        __sub : function(any , any):(any)
 
     end
     
@@ -6001,6 +7988,8 @@ global record CoreBevyAPI
 
         y : boolean
 
+        clone : function(self:LuaBVec2):(LuaBVec2)
+
         assert_receiver_is_total_eq : function(self:LuaBVec2)
 
         bitmask : function(self:LuaBVec2):(integer)
@@ -6011,13 +8000,13 @@ global record CoreBevyAPI
 
         test : function(self:LuaBVec2 , integer):(boolean)
 
-        clone : function(self:LuaBVec2):(LuaBVec2)
-
         set : function(self:LuaBVec2 , integer , boolean)
 
         new : function(boolean , boolean):(LuaBVec2)
 
         splat : function(boolean):(LuaBVec2)
+
+        from_array : function({boolean}):(LuaBVec2)
 
         __tostring : function(self:LuaBVec2):(string)
 
@@ -6035,6 +8024,8 @@ global record CoreBevyAPI
         new : function(boolean , boolean):(LuaBVec2)
 
         splat : function(boolean):(LuaBVec2)
+
+        from_array : function({boolean}):(LuaBVec2)
 
         __eq : function(any , any):(any)
 
@@ -6059,6 +8050,8 @@ global record CoreBevyAPI
 
         z : boolean
 
+        clone : function(self:LuaBVec3):(LuaBVec3)
+
         bitmask : function(self:LuaBVec3):(integer)
 
         any : function(self:LuaBVec3):(boolean)
@@ -6069,13 +8062,13 @@ global record CoreBevyAPI
 
         assert_receiver_is_total_eq : function(self:LuaBVec3)
 
-        clone : function(self:LuaBVec3):(LuaBVec3)
-
         set : function(self:LuaBVec3 , integer , boolean)
 
         new : function(boolean , boolean , boolean):(LuaBVec3)
 
         splat : function(boolean):(LuaBVec3)
+
+        from_array : function({boolean}):(LuaBVec3)
 
         __tostring : function(self:LuaBVec3):(string)
 
@@ -6093,6 +8086,8 @@ global record CoreBevyAPI
         new : function(boolean , boolean , boolean):(LuaBVec3)
 
         splat : function(boolean):(LuaBVec3)
+
+        from_array : function({boolean}):(LuaBVec3)
 
         __eq : function(any , any):(any)
 
@@ -6139,6 +8134,8 @@ global record CoreBevyAPI
 
         splat : function(boolean):(LuaBVec4)
 
+        from_array : function({boolean}):(LuaBVec4)
+
         __tostring : function(self:LuaBVec4):(string)
 
         __eq : function(any , any):(any)
@@ -6155,6 +8152,8 @@ global record CoreBevyAPI
         new : function(boolean , boolean , boolean , boolean):(LuaBVec4)
 
         splat : function(boolean):(LuaBVec4)
+
+        from_array : function({boolean}):(LuaBVec4)
 
         __eq : function(any , any):(any)
 
@@ -6175,9 +8174,15 @@ global record CoreBevyAPI
 
         y : number
 
+        clone : function(self:LuaDVec2):(LuaDVec2)
+
         to_array : function(self:LuaDVec2):({number})
 
         extend : function(self:LuaDVec2 , number):(LuaDVec3)
+
+        with_x : function(self:LuaDVec2 , number):(LuaDVec2)
+
+        with_y : function(self:LuaDVec2 , number):(LuaDVec2)
 
         dot : function(self:LuaDVec2 , LuaDVec2):(number)
 
@@ -6192,6 +8197,10 @@ global record CoreBevyAPI
         min_element : function(self:LuaDVec2):(number)
 
         max_element : function(self:LuaDVec2):(number)
+
+        element_sum : function(self:LuaDVec2):(number)
+
+        element_product : function(self:LuaDVec2):(number)
 
         cmpeq : function(self:LuaDVec2 , LuaDVec2):(LuaBVec2)
 
@@ -6235,6 +8244,8 @@ global record CoreBevyAPI
 
         normalize : function(self:LuaDVec2):(LuaDVec2)
 
+        normalize_or : function(self:LuaDVec2 , LuaDVec2):(LuaDVec2)
+
         normalize_or_zero : function(self:LuaDVec2):(LuaDVec2)
 
         is_normalized : function(self:LuaDVec2):(boolean)
@@ -6257,6 +8268,8 @@ global record CoreBevyAPI
 
         fract : function(self:LuaDVec2):(LuaDVec2)
 
+        fract_gl : function(self:LuaDVec2):(LuaDVec2)
+
         exp : function(self:LuaDVec2):(LuaDVec2)
 
         powf : function(self:LuaDVec2 , number):(LuaDVec2)
@@ -6264,6 +8277,10 @@ global record CoreBevyAPI
         recip : function(self:LuaDVec2):(LuaDVec2)
 
         lerp : function(self:LuaDVec2 , LuaDVec2 , number):(LuaDVec2)
+
+        move_towards : function(self:LuaDVec2 , LuaDVec2 , number):(LuaDVec2)
+
+        midpoint : function(self:LuaDVec2 , LuaDVec2):(LuaDVec2)
 
         abs_diff_eq : function(self:LuaDVec2 , LuaDVec2 , number):(boolean)
 
@@ -6295,8 +8312,6 @@ global record CoreBevyAPI
 
         as_u64vec2 : function(self:LuaDVec2):(LuaU64Vec2)
 
-        clone : function(self:LuaDVec2):(LuaDVec2)
-
         new : function(number , number):(LuaDVec2)
 
         splat : function(number):(LuaDVec2)
@@ -6315,17 +8330,17 @@ global record CoreBevyAPI
 
         __div : function(any , any):(any)
 
-        __eq : function(any , any):(any)
-
-        __mul : function(any , any):(any)
-
         __unm : function(any):(any)
 
         __add : function(any , any):(any)
 
-        __mod : function(any , any):(any)
+        __mul : function(any , any):(any)
+
+        __eq : function(any , any):(any)
 
         __sub : function(any , any):(any)
+
+        __mod : function(any , any):(any)
 
     end
     
@@ -6348,17 +8363,17 @@ global record CoreBevyAPI
 
         __div : function(any , any):(any)
 
-        __eq : function(any , any):(any)
-
-        __mul : function(any , any):(any)
-
         __unm : function(any):(any)
 
         __add : function(any , any):(any)
 
-        __mod : function(any , any):(any)
+        __mul : function(any , any):(any)
+
+        __eq : function(any , any):(any)
 
         __sub : function(any , any):(any)
+
+        __mod : function(any , any):(any)
 
     end
     
@@ -6381,11 +8396,19 @@ global record CoreBevyAPI
 
         z : number
 
+        clone : function(self:LuaDVec3):(LuaDVec3)
+
         to_array : function(self:LuaDVec3):({number})
 
         extend : function(self:LuaDVec3 , number):(LuaDVec4)
 
         truncate : function(self:LuaDVec3):(LuaDVec2)
+
+        with_x : function(self:LuaDVec3 , number):(LuaDVec3)
+
+        with_y : function(self:LuaDVec3 , number):(LuaDVec3)
+
+        with_z : function(self:LuaDVec3 , number):(LuaDVec3)
 
         dot : function(self:LuaDVec3 , LuaDVec3):(number)
 
@@ -6402,6 +8425,10 @@ global record CoreBevyAPI
         min_element : function(self:LuaDVec3):(number)
 
         max_element : function(self:LuaDVec3):(number)
+
+        element_sum : function(self:LuaDVec3):(number)
+
+        element_product : function(self:LuaDVec3):(number)
 
         cmpeq : function(self:LuaDVec3 , LuaDVec3):(LuaBVec3)
 
@@ -6445,6 +8472,8 @@ global record CoreBevyAPI
 
         normalize : function(self:LuaDVec3):(LuaDVec3)
 
+        normalize_or : function(self:LuaDVec3 , LuaDVec3):(LuaDVec3)
+
         normalize_or_zero : function(self:LuaDVec3):(LuaDVec3)
 
         is_normalized : function(self:LuaDVec3):(boolean)
@@ -6467,6 +8496,8 @@ global record CoreBevyAPI
 
         fract : function(self:LuaDVec3):(LuaDVec3)
 
+        fract_gl : function(self:LuaDVec3):(LuaDVec3)
+
         exp : function(self:LuaDVec3):(LuaDVec3)
 
         powf : function(self:LuaDVec3 , number):(LuaDVec3)
@@ -6474,6 +8505,10 @@ global record CoreBevyAPI
         recip : function(self:LuaDVec3):(LuaDVec3)
 
         lerp : function(self:LuaDVec3 , LuaDVec3 , number):(LuaDVec3)
+
+        move_towards : function(self:LuaDVec3 , LuaDVec3 , number):(LuaDVec3)
+
+        midpoint : function(self:LuaDVec3 , LuaDVec3):(LuaDVec3)
 
         abs_diff_eq : function(self:LuaDVec3 , LuaDVec3 , number):(boolean)
 
@@ -6503,8 +8538,6 @@ global record CoreBevyAPI
 
         as_u64vec3 : function(self:LuaDVec3):(LuaU64Vec3)
 
-        clone : function(self:LuaDVec3):(LuaDVec3)
-
         new : function(number , number , number):(LuaDVec3)
 
         splat : function(number):(LuaDVec3)
@@ -6521,17 +8554,17 @@ global record CoreBevyAPI
 
         __mod : function(any , any):(any)
 
-        __sub : function(any , any):(any)
-
-        __unm : function(any):(any)
-
-        __eq : function(any , any):(any)
+        __mul : function(any , any):(any)
 
         __add : function(any , any):(any)
 
-        __mul : function(any , any):(any)
-
         __div : function(any , any):(any)
+
+        __eq : function(any , any):(any)
+
+        __unm : function(any):(any)
+
+        __sub : function(any , any):(any)
 
     end
     
@@ -6552,17 +8585,17 @@ global record CoreBevyAPI
 
         __mod : function(any , any):(any)
 
-        __sub : function(any , any):(any)
-
-        __unm : function(any):(any)
-
-        __eq : function(any , any):(any)
+        __mul : function(any , any):(any)
 
         __add : function(any , any):(any)
 
-        __mul : function(any , any):(any)
-
         __div : function(any , any):(any)
+
+        __eq : function(any , any):(any)
+
+        __unm : function(any):(any)
+
+        __sub : function(any , any):(any)
 
     end
     
@@ -6589,9 +8622,19 @@ global record CoreBevyAPI
 
         w : number
 
+        clone : function(self:LuaDVec4):(LuaDVec4)
+
         to_array : function(self:LuaDVec4):({number})
 
         truncate : function(self:LuaDVec4):(LuaDVec3)
+
+        with_x : function(self:LuaDVec4 , number):(LuaDVec4)
+
+        with_y : function(self:LuaDVec4 , number):(LuaDVec4)
+
+        with_z : function(self:LuaDVec4 , number):(LuaDVec4)
+
+        with_w : function(self:LuaDVec4 , number):(LuaDVec4)
 
         dot : function(self:LuaDVec4 , LuaDVec4):(number)
 
@@ -6606,6 +8649,10 @@ global record CoreBevyAPI
         min_element : function(self:LuaDVec4):(number)
 
         max_element : function(self:LuaDVec4):(number)
+
+        element_sum : function(self:LuaDVec4):(number)
+
+        element_product : function(self:LuaDVec4):(number)
 
         cmpeq : function(self:LuaDVec4 , LuaDVec4):(LuaBVec4)
 
@@ -6649,6 +8696,8 @@ global record CoreBevyAPI
 
         normalize : function(self:LuaDVec4):(LuaDVec4)
 
+        normalize_or : function(self:LuaDVec4 , LuaDVec4):(LuaDVec4)
+
         normalize_or_zero : function(self:LuaDVec4):(LuaDVec4)
 
         is_normalized : function(self:LuaDVec4):(boolean)
@@ -6671,6 +8720,8 @@ global record CoreBevyAPI
 
         fract : function(self:LuaDVec4):(LuaDVec4)
 
+        fract_gl : function(self:LuaDVec4):(LuaDVec4)
+
         exp : function(self:LuaDVec4):(LuaDVec4)
 
         powf : function(self:LuaDVec4 , number):(LuaDVec4)
@@ -6678,6 +8729,10 @@ global record CoreBevyAPI
         recip : function(self:LuaDVec4):(LuaDVec4)
 
         lerp : function(self:LuaDVec4 , LuaDVec4 , number):(LuaDVec4)
+
+        move_towards : function(self:LuaDVec4 , LuaDVec4 , number):(LuaDVec4)
+
+        midpoint : function(self:LuaDVec4 , LuaDVec4):(LuaDVec4)
 
         abs_diff_eq : function(self:LuaDVec4 , LuaDVec4 , number):(boolean)
 
@@ -6699,8 +8754,6 @@ global record CoreBevyAPI
 
         as_u64vec4 : function(self:LuaDVec4):(LuaU64Vec4)
 
-        clone : function(self:LuaDVec4):(LuaDVec4)
-
         new : function(number , number , number , number):(LuaDVec4)
 
         splat : function(number):(LuaDVec4)
@@ -6717,17 +8770,17 @@ global record CoreBevyAPI
 
         __mul : function(any , any):(any)
 
+        __eq : function(any , any):(any)
+
         __add : function(any , any):(any)
+
+        __div : function(any , any):(any)
 
         __sub : function(any , any):(any)
 
-        __mod : function(any , any):(any)
-
         __unm : function(any):(any)
 
-        __eq : function(any , any):(any)
-
-        __div : function(any , any):(any)
+        __mod : function(any , any):(any)
 
     end
     
@@ -6748,17 +8801,17 @@ global record CoreBevyAPI
 
         __mul : function(any , any):(any)
 
+        __eq : function(any , any):(any)
+
         __add : function(any , any):(any)
+
+        __div : function(any , any):(any)
 
         __sub : function(any , any):(any)
 
-        __mod : function(any , any):(any)
-
         __unm : function(any):(any)
 
-        __eq : function(any , any):(any)
-
-        __div : function(any , any):(any)
+        __mod : function(any , any):(any)
 
     end
     
@@ -6768,6 +8821,8 @@ global record CoreBevyAPI
         userdata
     
     --
+
+        clone : function(self:LuaMat2):(LuaMat2)
 
         to_cols_array : function(self:LuaMat2):({number})
 
@@ -6797,11 +8852,13 @@ global record CoreBevyAPI
 
         mul_scalar : function(self:LuaMat2 , number):(LuaMat2)
 
+        div_scalar : function(self:LuaMat2 , number):(LuaMat2)
+
         abs_diff_eq : function(self:LuaMat2 , LuaMat2 , number):(boolean)
 
-        as_dmat2 : function(self:LuaMat2):(LuaDMat2)
+        abs : function(self:LuaMat2):(LuaMat2)
 
-        clone : function(self:LuaMat2):(LuaMat2)
+        as_dmat2 : function(self:LuaMat2):(LuaDMat2)
 
         from_cols : function(LuaVec2 , LuaVec2):(LuaMat2)
 
@@ -6821,11 +8878,13 @@ global record CoreBevyAPI
 
         __mul : function(any , any):(any)
 
-        __add : function(any , any):(any)
+        __div : function(any , any):(any)
+
+        __sub : function(any , any):(any)
 
         __unm : function(any):(any)
 
-        __sub : function(any , any):(any)
+        __add : function(any , any):(any)
 
         __eq : function(any , any):(any)
 
@@ -6852,11 +8911,13 @@ global record CoreBevyAPI
 
         __mul : function(any , any):(any)
 
-        __add : function(any , any):(any)
+        __div : function(any , any):(any)
+
+        __sub : function(any , any):(any)
 
         __unm : function(any):(any)
 
-        __sub : function(any , any):(any)
+        __add : function(any , any):(any)
 
         __eq : function(any , any):(any)
 
@@ -6880,8 +8941,6 @@ global record CoreBevyAPI
         y_axis : LuaVec3
 
         z_axis : LuaVec3
-
-        clone : function(self:LuaMat3):(LuaMat3)
 
         to_cols_array : function(self:LuaMat3):({number})
 
@@ -6917,9 +8976,15 @@ global record CoreBevyAPI
 
         mul_scalar : function(self:LuaMat3 , number):(LuaMat3)
 
+        div_scalar : function(self:LuaMat3 , number):(LuaMat3)
+
         abs_diff_eq : function(self:LuaMat3 , LuaMat3 , number):(boolean)
 
+        abs : function(self:LuaMat3):(LuaMat3)
+
         as_dmat3 : function(self:LuaMat3):(LuaDMat3)
+
+        clone : function(self:LuaMat3):(LuaMat3)
 
         from_cols : function(LuaVec3 , LuaVec3 , LuaVec3):(LuaMat3)
 
@@ -6953,15 +9018,17 @@ global record CoreBevyAPI
 
         __index : function(self:LuaMat3 , integer):(LuaVec3)
 
-        __add : function(any , any):(any)
+        __sub : function(any , any):(any)
 
-        __unm : function(any):(any)
+        __div : function(any , any):(any)
 
         __eq : function(any , any):(any)
 
-        __mul : function(any , any):(any)
+        __unm : function(any):(any)
 
-        __sub : function(any , any):(any)
+        __add : function(any , any):(any)
+
+        __mul : function(any , any):(any)
 
     end
     
@@ -7000,15 +9067,17 @@ global record CoreBevyAPI
 
         from_mat2 : function(LuaMat2):(LuaMat3)
 
-        __add : function(any , any):(any)
+        __sub : function(any , any):(any)
 
-        __unm : function(any):(any)
+        __div : function(any , any):(any)
 
         __eq : function(any , any):(any)
 
-        __mul : function(any , any):(any)
+        __unm : function(any):(any)
 
-        __sub : function(any , any):(any)
+        __add : function(any , any):(any)
+
+        __mul : function(any , any):(any)
 
     end
     
@@ -7065,7 +9134,11 @@ global record CoreBevyAPI
 
         mul_scalar : function(self:LuaMat3A , number):(LuaMat3A)
 
+        div_scalar : function(self:LuaMat3A , number):(LuaMat3A)
+
         abs_diff_eq : function(self:LuaMat3A , LuaMat3A , number):(boolean)
+
+        abs : function(self:LuaMat3A):(LuaMat3A)
 
         as_dmat3 : function(self:LuaMat3A):(LuaDMat3)
 
@@ -7103,15 +9176,17 @@ global record CoreBevyAPI
 
         __index : function(self:LuaMat3A , integer):(LuaVec3A)
 
-        __add : function(any , any):(any)
+        __div : function(any , any):(any)
 
         __unm : function(any):(any)
 
-        __eq : function(any , any):(any)
-
         __sub : function(any , any):(any)
 
+        __eq : function(any , any):(any)
+
         __mul : function(any , any):(any)
+
+        __add : function(any , any):(any)
 
     end
     
@@ -7150,15 +9225,17 @@ global record CoreBevyAPI
 
         from_mat2 : function(LuaMat2):(LuaMat3A)
 
-        __add : function(any , any):(any)
+        __div : function(any , any):(any)
 
         __unm : function(any):(any)
 
-        __eq : function(any , any):(any)
-
         __sub : function(any , any):(any)
 
+        __eq : function(any , any):(any)
+
         __mul : function(any , any):(any)
+
+        __add : function(any , any):(any)
 
     end
     
@@ -7225,7 +9302,11 @@ global record CoreBevyAPI
 
         mul_scalar : function(self:LuaMat4 , number):(LuaMat4)
 
+        div_scalar : function(self:LuaMat4 , number):(LuaMat4)
+
         abs_diff_eq : function(self:LuaMat4 , LuaMat4 , number):(boolean)
+
+        abs : function(self:LuaMat4):(LuaMat4)
 
         as_dmat4 : function(self:LuaMat4):(LuaDMat4)
 
@@ -7289,15 +9370,17 @@ global record CoreBevyAPI
 
         __index : function(self:LuaMat4 , integer):(LuaVec4)
 
-        __add : function(any , any):(any)
-
         __mul : function(any , any):(any)
 
         __unm : function(any):(any)
 
-        __eq : function(any , any):(any)
+        __add : function(any , any):(any)
 
         __sub : function(any , any):(any)
+
+        __eq : function(any , any):(any)
+
+        __div : function(any , any):(any)
 
     end
     
@@ -7364,15 +9447,17 @@ global record CoreBevyAPI
 
         orthographic_rh : function(number , number , number , number , number , number):(LuaMat4)
 
-        __add : function(any , any):(any)
-
         __mul : function(any , any):(any)
 
         __unm : function(any):(any)
 
-        __eq : function(any , any):(any)
+        __add : function(any , any):(any)
 
         __sub : function(any , any):(any)
+
+        __eq : function(any , any):(any)
+
+        __div : function(any , any):(any)
 
     end
     
@@ -7421,7 +9506,11 @@ global record CoreBevyAPI
 
         mul_scalar : function(self:LuaDMat2 , number):(LuaDMat2)
 
+        div_scalar : function(self:LuaDMat2 , number):(LuaDMat2)
+
         abs_diff_eq : function(self:LuaDMat2 , LuaDMat2 , number):(boolean)
+
+        abs : function(self:LuaDMat2):(LuaDMat2)
 
         as_mat2 : function(self:LuaDMat2):(LuaMat2)
 
@@ -7439,13 +9528,15 @@ global record CoreBevyAPI
 
         __index : function(self:LuaDMat2 , integer):(LuaDVec2)
 
-        __mul : function(any , any):(any)
-
-        __add : function(any , any):(any)
-
         __eq : function(any , any):(any)
 
         __unm : function(any):(any)
+
+        __div : function(any , any):(any)
+
+        __mul : function(any , any):(any)
+
+        __add : function(any , any):(any)
 
         __sub : function(any , any):(any)
 
@@ -7468,13 +9559,15 @@ global record CoreBevyAPI
 
         from_mat3 : function(LuaDMat3):(LuaDMat2)
 
-        __mul : function(any , any):(any)
-
-        __add : function(any , any):(any)
-
         __eq : function(any , any):(any)
 
         __unm : function(any):(any)
+
+        __div : function(any , any):(any)
+
+        __mul : function(any , any):(any)
+
+        __add : function(any , any):(any)
 
         __sub : function(any , any):(any)
 
@@ -7498,6 +9591,8 @@ global record CoreBevyAPI
         y_axis : LuaDVec3
 
         z_axis : LuaDVec3
+
+        clone : function(self:LuaDMat3):(LuaDMat3)
 
         to_cols_array : function(self:LuaDMat3):({number})
 
@@ -7531,11 +9626,13 @@ global record CoreBevyAPI
 
         mul_scalar : function(self:LuaDMat3 , number):(LuaDMat3)
 
+        div_scalar : function(self:LuaDMat3 , number):(LuaDMat3)
+
         abs_diff_eq : function(self:LuaDMat3 , LuaDMat3 , number):(boolean)
 
-        as_mat3 : function(self:LuaDMat3):(LuaMat3)
+        abs : function(self:LuaDMat3):(LuaDMat3)
 
-        clone : function(self:LuaDMat3):(LuaDMat3)
+        as_mat3 : function(self:LuaDMat3):(LuaMat3)
 
         from_cols : function(LuaDVec3 , LuaDVec3 , LuaDVec3):(LuaDMat3)
 
@@ -7569,15 +9666,17 @@ global record CoreBevyAPI
 
         __index : function(self:LuaDMat3 , integer):(LuaDVec3)
 
-        __mul : function(any , any):(any)
-
         __add : function(any , any):(any)
+
+        __sub : function(any , any):(any)
+
+        __div : function(any , any):(any)
 
         __unm : function(any):(any)
 
         __eq : function(any , any):(any)
 
-        __sub : function(any , any):(any)
+        __mul : function(any , any):(any)
 
     end
     
@@ -7616,15 +9715,17 @@ global record CoreBevyAPI
 
         from_mat2 : function(LuaDMat2):(LuaDMat3)
 
-        __mul : function(any , any):(any)
-
         __add : function(any , any):(any)
+
+        __sub : function(any , any):(any)
+
+        __div : function(any , any):(any)
 
         __unm : function(any):(any)
 
         __eq : function(any , any):(any)
 
-        __sub : function(any , any):(any)
+        __mul : function(any , any):(any)
 
     end
     
@@ -7650,6 +9751,8 @@ global record CoreBevyAPI
         z_axis : LuaDVec4
 
         w_axis : LuaDVec4
+
+        clone : function(self:LuaDMat4):(LuaDMat4)
 
         to_cols_array : function(self:LuaDMat4):({number})
 
@@ -7685,11 +9788,13 @@ global record CoreBevyAPI
 
         mul_scalar : function(self:LuaDMat4 , number):(LuaDMat4)
 
+        div_scalar : function(self:LuaDMat4 , number):(LuaDMat4)
+
         abs_diff_eq : function(self:LuaDMat4 , LuaDMat4 , number):(boolean)
 
-        as_mat4 : function(self:LuaDMat4):(LuaMat4)
+        abs : function(self:LuaDMat4):(LuaDMat4)
 
-        clone : function(self:LuaDMat4):(LuaDMat4)
+        as_mat4 : function(self:LuaDMat4):(LuaMat4)
 
         from_cols : function(LuaDVec4 , LuaDVec4 , LuaDVec4 , LuaDVec4):(LuaDMat4)
 
@@ -7749,15 +9854,17 @@ global record CoreBevyAPI
 
         __index : function(self:LuaDMat4 , integer):(LuaDVec4)
 
-        __sub : function(any , any):(any)
-
         __add : function(any , any):(any)
 
         __unm : function(any):(any)
 
-        __eq : function(any , any):(any)
+        __sub : function(any , any):(any)
 
         __mul : function(any , any):(any)
+
+        __eq : function(any , any):(any)
+
+        __div : function(any , any):(any)
 
     end
     
@@ -7822,15 +9929,17 @@ global record CoreBevyAPI
 
         orthographic_rh : function(number , number , number , number , number , number):(LuaDMat4)
 
-        __sub : function(any , any):(any)
-
         __add : function(any , any):(any)
 
         __unm : function(any):(any)
 
-        __eq : function(any , any):(any)
+        __sub : function(any , any):(any)
 
         __mul : function(any , any):(any)
+
+        __eq : function(any , any):(any)
+
+        __div : function(any , any):(any)
 
     end
     
@@ -7849,8 +9958,6 @@ global record CoreBevyAPI
 
         translation : LuaVec2
 
-        clone : function(self:LuaAffine2):(LuaAffine2)
-
         to_cols_array : function(self:LuaAffine2):({number})
 
         to_cols_array_2d : function(self:LuaAffine2):({{number}})
@@ -7866,6 +9973,8 @@ global record CoreBevyAPI
         abs_diff_eq : function(self:LuaAffine2 , LuaAffine2 , number):(boolean)
 
         inverse : function(self:LuaAffine2):(LuaAffine2)
+
+        clone : function(self:LuaAffine2):(LuaAffine2)
 
         from_cols : function(LuaVec2 , LuaVec2 , LuaVec2):(LuaAffine2)
 
@@ -8001,9 +10110,9 @@ global record CoreBevyAPI
 
         __tostring : function(self:LuaAffine3A):(string)
 
-        __mul : function(any , any):(any)
-
         __eq : function(any , any):(any)
+
+        __mul : function(any , any):(any)
 
     end
     
@@ -8048,9 +10157,9 @@ global record CoreBevyAPI
 
         look_at_rh : function(LuaVec3 , LuaVec3 , LuaVec3):(LuaAffine3A)
 
-        __mul : function(any , any):(any)
-
         __eq : function(any , any):(any)
+
+        __mul : function(any , any):(any)
 
     end
     
@@ -8369,15 +10478,15 @@ global record CoreBevyAPI
 
         __tostring : function(self:LuaDQuat):(string)
 
-        __div : function(any , any):(any)
+        __sub : function(any , any):(any)
+
+        __unm : function(any):(any)
 
         __mul : function(any , any):(any)
 
         __add : function(any , any):(any)
 
-        __unm : function(any):(any)
-
-        __sub : function(any , any):(any)
+        __div : function(any , any):(any)
 
         __eq : function(any , any):(any)
 
@@ -8420,15 +10529,15 @@ global record CoreBevyAPI
 
         from_affine3 : function(LuaDAffine3):(LuaDQuat)
 
-        __div : function(any , any):(any)
+        __sub : function(any , any):(any)
+
+        __unm : function(any):(any)
 
         __mul : function(any , any):(any)
 
         __add : function(any , any):(any)
 
-        __unm : function(any):(any)
-
-        __sub : function(any , any):(any)
+        __div : function(any , any):(any)
 
         __eq : function(any , any):(any)
 
@@ -8441,9 +10550,9 @@ global record CoreBevyAPI
     
     --
 
-        assert_receiver_is_total_eq : function(self:LuaEulerRot)
-
         clone : function(self:LuaEulerRot):(LuaEulerRot)
+
+        assert_receiver_is_total_eq : function(self:LuaEulerRot)
 
         __tostring : function(self:LuaEulerRot):(string)
 
@@ -8474,6 +10583,8 @@ global record CoreBevyAPI
 
         splat : function(boolean):(LuaBVec3A)
 
+        from_array : function({boolean}):(LuaBVec3A)
+
         __tostring : function(self:LuaBVec3A):(string)
 
         __eq : function(any , any):(any)
@@ -8490,6 +10601,8 @@ global record CoreBevyAPI
         new : function(boolean , boolean , boolean):(LuaBVec3A)
 
         splat : function(boolean):(LuaBVec3A)
+
+        from_array : function({boolean}):(LuaBVec3A)
 
         __eq : function(any , any):(any)
 
@@ -8518,6 +10631,8 @@ global record CoreBevyAPI
 
         splat : function(boolean):(LuaBVec4A)
 
+        from_array : function({boolean}):(LuaBVec4A)
+
         __tostring : function(self:LuaBVec4A):(string)
 
         __eq : function(any , any):(any)
@@ -8535,1043 +10650,7 @@ global record CoreBevyAPI
 
         splat : function(boolean):(LuaBVec4A)
 
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaDirection2d
-
-        userdata
-    
-    --
-
-        clone : function(self:LuaDirection2d):(LuaDirection2d)
-
-        new_unchecked : function(LuaVec2):(LuaDirection2d)
-
-        __tostring : function(self:LuaDirection2d):(string)
-
-        __unm : function(any):(any)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record ClassLuaDirection2d
-
-        userdata
-    
-    --Collection of static methods for [``].
-
-        new_unchecked : function(LuaVec2):(LuaDirection2d)
-
-        __unm : function(any):(any)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaCircle
-
-        userdata
-    
-    --
-
-        radius : number
-
-        clone : function(self:LuaCircle):(LuaCircle)
-
-        diameter : function(self:LuaCircle):(number)
-
-        area : function(self:LuaCircle):(number)
-
-        perimeter : function(self:LuaCircle):(number)
-
-        closest_point : function(self:LuaCircle , LuaVec2):(LuaVec2)
-
-        new : function(number):(LuaCircle)
-
-        __tostring : function(self:LuaCircle):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record ClassLuaCircle
-
-        userdata
-    
-    --Collection of static methods for [``].
-
-        new : function(number):(LuaCircle)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaEllipse
-
-        userdata
-    
-    --
-
-        half_size : LuaVec2
-
-        clone : function(self:LuaEllipse):(LuaEllipse)
-
-        semi_major : function(self:LuaEllipse):(number)
-
-        semi_minor : function(self:LuaEllipse):(number)
-
-        area : function(self:LuaEllipse):(number)
-
-        new : function(number , number):(LuaEllipse)
-
-        from_size : function(LuaVec2):(LuaEllipse)
-
-        __tostring : function(self:LuaEllipse):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record ClassLuaEllipse
-
-        userdata
-    
-    --Collection of static methods for [``].
-
-        new : function(number , number):(LuaEllipse)
-
-        from_size : function(LuaVec2):(LuaEllipse)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaPlane2d
-
-        userdata
-    
-    --
-
-        normal : LuaDirection2d
-
-        clone : function(self:LuaPlane2d):(LuaPlane2d)
-
-        new : function(LuaVec2):(LuaPlane2d)
-
-        __tostring : function(self:LuaPlane2d):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record ClassLuaPlane2d
-
-        userdata
-    
-    --Collection of static methods for [``].
-
-        new : function(LuaVec2):(LuaPlane2d)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaLine2d
-
-        userdata
-    
-    --
-
-        direction : LuaDirection2d
-
-        clone : function(self:LuaLine2d):(LuaLine2d)
-
-        __tostring : function(self:LuaLine2d):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaSegment2d
-
-        userdata
-    
-    --
-
-        direction : LuaDirection2d
-
-        half_length : number
-
-        direction : LuaDirection2d
-
-        half_length : number
-
-        point1 : function(self:LuaSegment2d):(LuaVec2)
-
-        point2 : function(self:LuaSegment2d):(LuaVec2)
-
-        clone : function(self:LuaSegment2d):(LuaSegment2d)
-
-        new : function(LuaDirection2d , number):(LuaSegment2d)
-
-        __tostring : function(self:LuaSegment2d):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record ClassLuaSegment2d
-
-        userdata
-    
-    --Collection of static methods for [``].
-
-        new : function(LuaDirection2d , number):(LuaSegment2d)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaTriangle2d
-
-        userdata
-    
-    --
-
-        vertices : ReflectedValue
-
-        area : function(self:LuaTriangle2d):(number)
-
-        perimeter : function(self:LuaTriangle2d):(number)
-
-        clone : function(self:LuaTriangle2d):(LuaTriangle2d)
-
-        reverse : function(self:LuaTriangle2d)
-
-        new : function(LuaVec2 , LuaVec2 , LuaVec2):(LuaTriangle2d)
-
-        __tostring : function(self:LuaTriangle2d):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record ClassLuaTriangle2d
-
-        userdata
-    
-    --Collection of static methods for [``].
-
-        new : function(LuaVec2 , LuaVec2 , LuaVec2):(LuaTriangle2d)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaRectangle
-
-        userdata
-    
-    --
-
-        half_size : LuaVec2
-
-        size : function(self:LuaRectangle):(LuaVec2)
-
-        area : function(self:LuaRectangle):(number)
-
-        perimeter : function(self:LuaRectangle):(number)
-
-        closest_point : function(self:LuaRectangle , LuaVec2):(LuaVec2)
-
-        clone : function(self:LuaRectangle):(LuaRectangle)
-
-        new : function(number , number):(LuaRectangle)
-
-        from_size : function(LuaVec2):(LuaRectangle)
-
-        from_corners : function(LuaVec2 , LuaVec2):(LuaRectangle)
-
-        __tostring : function(self:LuaRectangle):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record ClassLuaRectangle
-
-        userdata
-    
-    --Collection of static methods for [``].
-
-        new : function(number , number):(LuaRectangle)
-
-        from_size : function(LuaVec2):(LuaRectangle)
-
-        from_corners : function(LuaVec2 , LuaVec2):(LuaRectangle)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaRegularPolygon
-
-        userdata
-    
-    --
-
-        circumcircle : LuaCircle
-
-        sides : integer
-
-        circumcircle : LuaCircle
-
-        sides : integer
-
-        clone : function(self:LuaRegularPolygon):(LuaRegularPolygon)
-
-        circumradius : function(self:LuaRegularPolygon):(number)
-
-        inradius : function(self:LuaRegularPolygon):(number)
-
-        side_length : function(self:LuaRegularPolygon):(number)
-
-        area : function(self:LuaRegularPolygon):(number)
-
-        perimeter : function(self:LuaRegularPolygon):(number)
-
-        internal_angle_degrees : function(self:LuaRegularPolygon):(number)
-
-        internal_angle_radians : function(self:LuaRegularPolygon):(number)
-
-        external_angle_degrees : function(self:LuaRegularPolygon):(number)
-
-        external_angle_radians : function(self:LuaRegularPolygon):(number)
-
-        new : function(number , integer):(LuaRegularPolygon)
-
-        __tostring : function(self:LuaRegularPolygon):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record ClassLuaRegularPolygon
-
-        userdata
-    
-    --Collection of static methods for [``].
-
-        new : function(number , integer):(LuaRegularPolygon)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaCapsule2d
-
-        userdata
-    
-    --
-
-        radius : number
-
-        half_length : number
-
-        radius : number
-
-        half_length : number
-
-        clone : function(self:LuaCapsule2d):(LuaCapsule2d)
-
-        new : function(number , number):(LuaCapsule2d)
-
-        __tostring : function(self:LuaCapsule2d):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record ClassLuaCapsule2d
-
-        userdata
-    
-    --Collection of static methods for [``].
-
-        new : function(number , number):(LuaCapsule2d)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaDirection3d
-
-        userdata
-    
-    --
-
-        clone : function(self:LuaDirection3d):(LuaDirection3d)
-
-        new_unchecked : function(LuaVec3):(LuaDirection3d)
-
-        __tostring : function(self:LuaDirection3d):(string)
-
-        __unm : function(any):(any)
-
-        __eq : function(any , any):(any)
-
-        __mul : function(any , any):(any)
-
-    end
-    
-    
-    record ClassLuaDirection3d
-
-        userdata
-    
-    --Collection of static methods for [``].
-
-        new_unchecked : function(LuaVec3):(LuaDirection3d)
-
-        __unm : function(any):(any)
-
-        __eq : function(any , any):(any)
-
-        __mul : function(any , any):(any)
-
-    end
-    
-    
-    record LuaSphere
-
-        userdata
-    
-    --
-
-        radius : number
-
-        clone : function(self:LuaSphere):(LuaSphere)
-
-        diameter : function(self:LuaSphere):(number)
-
-        area : function(self:LuaSphere):(number)
-
-        volume : function(self:LuaSphere):(number)
-
-        closest_point : function(self:LuaSphere , LuaVec3):(LuaVec3)
-
-        new : function(number):(LuaSphere)
-
-        __tostring : function(self:LuaSphere):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record ClassLuaSphere
-
-        userdata
-    
-    --Collection of static methods for [``].
-
-        new : function(number):(LuaSphere)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaPlane3d
-
-        userdata
-    
-    --
-
-        normal : LuaDirection3d
-
-        clone : function(self:LuaPlane3d):(LuaPlane3d)
-
-        new : function(LuaVec3):(LuaPlane3d)
-
-        __tostring : function(self:LuaPlane3d):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record ClassLuaPlane3d
-
-        userdata
-    
-    --Collection of static methods for [``].
-
-        new : function(LuaVec3):(LuaPlane3d)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaLine3d
-
-        userdata
-    
-    --
-
-        direction : LuaDirection3d
-
-        clone : function(self:LuaLine3d):(LuaLine3d)
-
-        __tostring : function(self:LuaLine3d):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaSegment3d
-
-        userdata
-    
-    --
-
-        direction : LuaDirection3d
-
-        half_length : number
-
-        direction : LuaDirection3d
-
-        half_length : number
-
-        clone : function(self:LuaSegment3d):(LuaSegment3d)
-
-        point1 : function(self:LuaSegment3d):(LuaVec3)
-
-        point2 : function(self:LuaSegment3d):(LuaVec3)
-
-        new : function(LuaDirection3d , number):(LuaSegment3d)
-
-        __tostring : function(self:LuaSegment3d):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record ClassLuaSegment3d
-
-        userdata
-    
-    --Collection of static methods for [``].
-
-        new : function(LuaDirection3d , number):(LuaSegment3d)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaCuboid
-
-        userdata
-    
-    --
-
-        half_size : LuaVec3
-
-        clone : function(self:LuaCuboid):(LuaCuboid)
-
-        size : function(self:LuaCuboid):(LuaVec3)
-
-        area : function(self:LuaCuboid):(number)
-
-        volume : function(self:LuaCuboid):(number)
-
-        closest_point : function(self:LuaCuboid , LuaVec3):(LuaVec3)
-
-        new : function(number , number , number):(LuaCuboid)
-
-        from_size : function(LuaVec3):(LuaCuboid)
-
-        from_corners : function(LuaVec3 , LuaVec3):(LuaCuboid)
-
-        __tostring : function(self:LuaCuboid):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record ClassLuaCuboid
-
-        userdata
-    
-    --Collection of static methods for [``].
-
-        new : function(number , number , number):(LuaCuboid)
-
-        from_size : function(LuaVec3):(LuaCuboid)
-
-        from_corners : function(LuaVec3 , LuaVec3):(LuaCuboid)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaCylinder
-
-        userdata
-    
-    --
-
-        radius : number
-
-        half_height : number
-
-        radius : number
-
-        half_height : number
-
-        clone : function(self:LuaCylinder):(LuaCylinder)
-
-        base : function(self:LuaCylinder):(LuaCircle)
-
-        lateral_area : function(self:LuaCylinder):(number)
-
-        base_area : function(self:LuaCylinder):(number)
-
-        area : function(self:LuaCylinder):(number)
-
-        volume : function(self:LuaCylinder):(number)
-
-        new : function(number , number):(LuaCylinder)
-
-        __tostring : function(self:LuaCylinder):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record ClassLuaCylinder
-
-        userdata
-    
-    --Collection of static methods for [``].
-
-        new : function(number , number):(LuaCylinder)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaCapsule3d
-
-        userdata
-    
-    --
-
-        radius : number
-
-        half_length : number
-
-        radius : number
-
-        half_length : number
-
-        clone : function(self:LuaCapsule3d):(LuaCapsule3d)
-
-        to_cylinder : function(self:LuaCapsule3d):(LuaCylinder)
-
-        area : function(self:LuaCapsule3d):(number)
-
-        volume : function(self:LuaCapsule3d):(number)
-
-        new : function(number , number):(LuaCapsule3d)
-
-        __tostring : function(self:LuaCapsule3d):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record ClassLuaCapsule3d
-
-        userdata
-    
-    --Collection of static methods for [``].
-
-        new : function(number , number):(LuaCapsule3d)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaCone
-
-        userdata
-    
-    --
-
-        radius : number
-
-        height : number
-
-        radius : number
-
-        height : number
-
-        base : function(self:LuaCone):(LuaCircle)
-
-        slant_height : function(self:LuaCone):(number)
-
-        lateral_area : function(self:LuaCone):(number)
-
-        base_area : function(self:LuaCone):(number)
-
-        area : function(self:LuaCone):(number)
-
-        volume : function(self:LuaCone):(number)
-
-        clone : function(self:LuaCone):(LuaCone)
-
-        __tostring : function(self:LuaCone):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaConicalFrustum
-
-        userdata
-    
-    --
-
-        radius_top : number
-
-        radius_bottom : number
-
-        height : number
-
-        radius_top : number
-
-        radius_bottom : number
-
-        height : number
-
-        clone : function(self:LuaConicalFrustum):(LuaConicalFrustum)
-
-        __tostring : function(self:LuaConicalFrustum):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaTorus
-
-        userdata
-    
-    --
-
-        minor_radius : number
-
-        major_radius : number
-
-        minor_radius : number
-
-        major_radius : number
-
-        inner_radius : function(self:LuaTorus):(number)
-
-        outer_radius : function(self:LuaTorus):(number)
-
-        area : function(self:LuaTorus):(number)
-
-        volume : function(self:LuaTorus):(number)
-
-        clone : function(self:LuaTorus):(LuaTorus)
-
-        new : function(number , number):(LuaTorus)
-
-        __tostring : function(self:LuaTorus):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record ClassLuaTorus
-
-        userdata
-    
-    --Collection of static methods for [``].
-
-        new : function(number , number):(LuaTorus)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaIRect
-
-        userdata
-    
-    --
-
-        min : LuaIVec2
-
-        max : LuaIVec2
-
-        min : LuaIVec2
-
-        max : LuaIVec2
-
-        clone : function(self:LuaIRect):(LuaIRect)
-
-        is_empty : function(self:LuaIRect):(boolean)
-
-        width : function(self:LuaIRect):(integer)
-
-        height : function(self:LuaIRect):(integer)
-
-        size : function(self:LuaIRect):(LuaIVec2)
-
-        half_size : function(self:LuaIRect):(LuaIVec2)
-
-        center : function(self:LuaIRect):(LuaIVec2)
-
-        contains : function(self:LuaIRect , LuaIVec2):(boolean)
-
-        union : function(self:LuaIRect , LuaIRect):(LuaIRect)
-
-        union_point : function(self:LuaIRect , LuaIVec2):(LuaIRect)
-
-        intersect : function(self:LuaIRect , LuaIRect):(LuaIRect)
-
-        inset : function(self:LuaIRect , integer):(LuaIRect)
-
-        as_rect : function(self:LuaIRect):(LuaRect)
-
-        as_urect : function(self:LuaIRect):(LuaURect)
-
-        assert_receiver_is_total_eq : function(self:LuaIRect)
-
-        new : function(integer , integer , integer , integer):(LuaIRect)
-
-        from_corners : function(LuaIVec2 , LuaIVec2):(LuaIRect)
-
-        from_center_size : function(LuaIVec2 , LuaIVec2):(LuaIRect)
-
-        from_center_half_size : function(LuaIVec2 , LuaIVec2):(LuaIRect)
-
-        __tostring : function(self:LuaIRect):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record ClassLuaIRect
-
-        userdata
-    
-    --Collection of static methods for [``].
-
-        new : function(integer , integer , integer , integer):(LuaIRect)
-
-        from_corners : function(LuaIVec2 , LuaIVec2):(LuaIRect)
-
-        from_center_size : function(LuaIVec2 , LuaIVec2):(LuaIRect)
-
-        from_center_half_size : function(LuaIVec2 , LuaIVec2):(LuaIRect)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaRect
-
-        userdata
-    
-    --
-
-        min : LuaVec2
-
-        max : LuaVec2
-
-        min : LuaVec2
-
-        max : LuaVec2
-
-        is_empty : function(self:LuaRect):(boolean)
-
-        width : function(self:LuaRect):(number)
-
-        height : function(self:LuaRect):(number)
-
-        size : function(self:LuaRect):(LuaVec2)
-
-        half_size : function(self:LuaRect):(LuaVec2)
-
-        center : function(self:LuaRect):(LuaVec2)
-
-        contains : function(self:LuaRect , LuaVec2):(boolean)
-
-        union : function(self:LuaRect , LuaRect):(LuaRect)
-
-        union_point : function(self:LuaRect , LuaVec2):(LuaRect)
-
-        intersect : function(self:LuaRect , LuaRect):(LuaRect)
-
-        inset : function(self:LuaRect , number):(LuaRect)
-
-        normalize : function(self:LuaRect , LuaRect):(LuaRect)
-
-        as_irect : function(self:LuaRect):(LuaIRect)
-
-        as_urect : function(self:LuaRect):(LuaURect)
-
-        clone : function(self:LuaRect):(LuaRect)
-
-        new : function(number , number , number , number):(LuaRect)
-
-        from_corners : function(LuaVec2 , LuaVec2):(LuaRect)
-
-        from_center_size : function(LuaVec2 , LuaVec2):(LuaRect)
-
-        from_center_half_size : function(LuaVec2 , LuaVec2):(LuaRect)
-
-        __tostring : function(self:LuaRect):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record ClassLuaRect
-
-        userdata
-    
-    --Collection of static methods for [``].
-
-        new : function(number , number , number , number):(LuaRect)
-
-        from_corners : function(LuaVec2 , LuaVec2):(LuaRect)
-
-        from_center_size : function(LuaVec2 , LuaVec2):(LuaRect)
-
-        from_center_half_size : function(LuaVec2 , LuaVec2):(LuaRect)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record LuaURect
-
-        userdata
-    
-    --
-
-        min : LuaUVec2
-
-        max : LuaUVec2
-
-        min : LuaUVec2
-
-        max : LuaUVec2
-
-        assert_receiver_is_total_eq : function(self:LuaURect)
-
-        is_empty : function(self:LuaURect):(boolean)
-
-        width : function(self:LuaURect):(integer)
-
-        height : function(self:LuaURect):(integer)
-
-        size : function(self:LuaURect):(LuaUVec2)
-
-        half_size : function(self:LuaURect):(LuaUVec2)
-
-        center : function(self:LuaURect):(LuaUVec2)
-
-        contains : function(self:LuaURect , LuaUVec2):(boolean)
-
-        union : function(self:LuaURect , LuaURect):(LuaURect)
-
-        union_point : function(self:LuaURect , LuaUVec2):(LuaURect)
-
-        intersect : function(self:LuaURect , LuaURect):(LuaURect)
-
-        inset : function(self:LuaURect , integer):(LuaURect)
-
-        as_rect : function(self:LuaURect):(LuaRect)
-
-        as_irect : function(self:LuaURect):(LuaIRect)
-
-        clone : function(self:LuaURect):(LuaURect)
-
-        new : function(integer , integer , integer , integer):(LuaURect)
-
-        from_corners : function(LuaUVec2 , LuaUVec2):(LuaURect)
-
-        from_center_size : function(LuaUVec2 , LuaUVec2):(LuaURect)
-
-        from_center_half_size : function(LuaUVec2 , LuaUVec2):(LuaURect)
-
-        __tostring : function(self:LuaURect):(string)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record ClassLuaURect
-
-        userdata
-    
-    --Collection of static methods for [``].
-
-        new : function(integer , integer , integer , integer):(LuaURect)
-
-        from_corners : function(LuaUVec2 , LuaUVec2):(LuaURect)
-
-        from_center_size : function(LuaUVec2 , LuaUVec2):(LuaURect)
-
-        from_center_half_size : function(LuaUVec2 , LuaUVec2):(LuaURect)
+        from_array : function({boolean}):(LuaBVec4A)
 
         __eq : function(any , any):(any)
 
@@ -9601,68 +10680,6 @@ global record CoreBevyAPI
     end
     
     
-    record LuaNonZeroIsize
-
-        userdata
-    
-    --
-
-        assert_receiver_is_total_eq : function(self:LuaNonZeroIsize)
-
-        get : function(self:LuaNonZeroIsize):(integer)
-
-        leading_zeros : function(self:LuaNonZeroIsize):(integer)
-
-        trailing_zeros : function(self:LuaNonZeroIsize):(integer)
-
-        abs : function(self:LuaNonZeroIsize):(LuaNonZeroIsize)
-
-        saturating_abs : function(self:LuaNonZeroIsize):(LuaNonZeroIsize)
-
-        wrapping_abs : function(self:LuaNonZeroIsize):(LuaNonZeroIsize)
-
-        unsigned_abs : function(self:LuaNonZeroIsize):(LuaNonZeroUsize)
-
-        is_positive : function(self:LuaNonZeroIsize):(boolean)
-
-        is_negative : function(self:LuaNonZeroIsize):(boolean)
-
-        saturating_neg : function(self:LuaNonZeroIsize):(LuaNonZeroIsize)
-
-        wrapping_neg : function(self:LuaNonZeroIsize):(LuaNonZeroIsize)
-
-        saturating_mul : function(self:LuaNonZeroIsize , LuaNonZeroIsize):(LuaNonZeroIsize)
-
-        saturating_pow : function(self:LuaNonZeroIsize , integer):(LuaNonZeroIsize)
-
-        clone : function(self:LuaNonZeroIsize):(LuaNonZeroIsize)
-
-        new_unchecked : function(integer):(LuaNonZeroIsize)
-
-        __tostring : function(self:LuaNonZeroIsize):(string)
-
-        __unm : function(any):(any)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
-    record ClassLuaNonZeroIsize
-
-        userdata
-    
-    --Collection of static methods for [``].
-
-        new_unchecked : function(integer):(LuaNonZeroIsize)
-
-        __unm : function(any):(any)
-
-        __eq : function(any , any):(any)
-
-    end
-    
-    
     record LuaUuid
 
         userdata
@@ -9685,9 +10702,11 @@ global record CoreBevyAPI
 
         is_max : function(self:LuaUuid):(boolean)
 
-        clone : function(self:LuaUuid):(LuaUuid)
+        get_node_id : function(self:LuaUuid):({integer})
 
         assert_receiver_is_total_eq : function(self:LuaUuid)
+
+        clone : function(self:LuaUuid):(LuaUuid)
 
         encode_buffer : function():({integer})
 
@@ -9770,11 +10789,175 @@ end
 
     --
 
+    global Identifier : CoreBevyAPI.ClassLuaIdentifier
+
+    --
+
     global GlobalTransform : CoreBevyAPI.ClassLuaGlobalTransform
 
     --
 
     global Transform : CoreBevyAPI.ClassLuaTransform
+
+    --
+
+    global AspectRatio : CoreBevyAPI.ClassLuaAspectRatio
+
+    --
+
+    global Ray2d : CoreBevyAPI.ClassLuaRay2d
+
+    --
+
+    global Ray3d : CoreBevyAPI.ClassLuaRay3d
+
+    --
+
+    global Rot2 : CoreBevyAPI.ClassLuaRot2
+
+    --
+
+    global Dir2 : CoreBevyAPI.ClassLuaDir2
+
+    --
+
+    global Dir3 : CoreBevyAPI.ClassLuaDir3
+
+    --
+
+    global Dir3A : CoreBevyAPI.ClassLuaDir3A
+
+    --
+
+    global IRect : CoreBevyAPI.ClassLuaIRect
+
+    --
+
+    global Rect : CoreBevyAPI.ClassLuaRect
+
+    --
+
+    global URect : CoreBevyAPI.ClassLuaURect
+
+    --
+
+    global Aabb2d : CoreBevyAPI.ClassLuaAabb2d
+
+    --
+
+    global BoundingCircle : CoreBevyAPI.ClassLuaBoundingCircle
+
+    --
+
+    global Circle : CoreBevyAPI.ClassLuaCircle
+
+    --
+
+    global Arc2d : CoreBevyAPI.ClassLuaArc2d
+
+    --
+
+    global Capsule2d : CoreBevyAPI.ClassLuaCapsule2d
+
+    --
+
+    global CircularSector : CoreBevyAPI.ClassLuaCircularSector
+
+    --
+
+    global CircularSegment : CoreBevyAPI.ClassLuaCircularSegment
+
+    --
+
+    global Ellipse : CoreBevyAPI.ClassLuaEllipse
+
+    --
+
+    global Plane2d : CoreBevyAPI.ClassLuaPlane2d
+
+    --
+
+    global Rectangle : CoreBevyAPI.ClassLuaRectangle
+
+    --
+
+    global RegularPolygon : CoreBevyAPI.ClassLuaRegularPolygon
+
+    --
+
+    global Rhombus : CoreBevyAPI.ClassLuaRhombus
+
+    --
+
+    global Segment2d : CoreBevyAPI.ClassLuaSegment2d
+
+    --
+
+    global Triangle2d : CoreBevyAPI.ClassLuaTriangle2d
+
+    --
+
+    global Sphere : CoreBevyAPI.ClassLuaSphere
+
+    --
+
+    global Cuboid : CoreBevyAPI.ClassLuaCuboid
+
+    --
+
+    global Cylinder : CoreBevyAPI.ClassLuaCylinder
+
+    --
+
+    global Capsule3d : CoreBevyAPI.ClassLuaCapsule3d
+
+    --
+
+    global Segment3d : CoreBevyAPI.ClassLuaSegment3d
+
+    --
+
+    global Torus : CoreBevyAPI.ClassLuaTorus
+
+    --
+
+    global Triangle3d : CoreBevyAPI.ClassLuaTriangle3d
+
+    --
+
+    global RayCast2d : CoreBevyAPI.ClassLuaRayCast2d
+
+    --
+
+    global AabbCast2d : CoreBevyAPI.ClassLuaAabbCast2d
+
+    --
+
+    global BoundingCircleCast : CoreBevyAPI.ClassLuaBoundingCircleCast
+
+    --
+
+    global RayCast3d : CoreBevyAPI.ClassLuaRayCast3d
+
+    --
+
+    global AabbCast3d : CoreBevyAPI.ClassLuaAabbCast3d
+
+    --
+
+    global BoundingSphereCast : CoreBevyAPI.ClassLuaBoundingSphereCast
+
+    --
+
+    global Annulus : CoreBevyAPI.ClassLuaAnnulus
+
+    --
+
+    global Plane3d : CoreBevyAPI.ClassLuaPlane3d
+
+    --
+
+    global Tetrahedron : CoreBevyAPI.ClassLuaTetrahedron
 
     --
 
@@ -9823,50 +11006,6 @@ end
     --
 
     global Instant : CoreBevyAPI.ClassLuaInstant
-
-    --
-
-    global NonZeroI128 : CoreBevyAPI.ClassLuaNonZeroI128
-
-    --
-
-    global NonZeroI16 : CoreBevyAPI.ClassLuaNonZeroI16
-
-    --
-
-    global NonZeroI32 : CoreBevyAPI.ClassLuaNonZeroI32
-
-    --
-
-    global NonZeroI64 : CoreBevyAPI.ClassLuaNonZeroI64
-
-    --
-
-    global NonZeroI8 : CoreBevyAPI.ClassLuaNonZeroI8
-
-    --
-
-    global NonZeroU128 : CoreBevyAPI.ClassLuaNonZeroU128
-
-    --
-
-    global NonZeroU16 : CoreBevyAPI.ClassLuaNonZeroU16
-
-    --
-
-    global NonZeroU32 : CoreBevyAPI.ClassLuaNonZeroU32
-
-    --
-
-    global NonZeroU64 : CoreBevyAPI.ClassLuaNonZeroU64
-
-    --
-
-    global NonZeroU8 : CoreBevyAPI.ClassLuaNonZeroU8
-
-    --
-
-    global NonZeroUsize : CoreBevyAPI.ClassLuaNonZeroUsize
 
     --
 
@@ -10019,90 +11158,6 @@ end
     --
 
     global BVec4A : CoreBevyAPI.ClassLuaBVec4A
-
-    --
-
-    global Direction2d : CoreBevyAPI.ClassLuaDirection2d
-
-    --
-
-    global Circle : CoreBevyAPI.ClassLuaCircle
-
-    --
-
-    global Ellipse : CoreBevyAPI.ClassLuaEllipse
-
-    --
-
-    global Plane2d : CoreBevyAPI.ClassLuaPlane2d
-
-    --
-
-    global Segment2d : CoreBevyAPI.ClassLuaSegment2d
-
-    --
-
-    global Triangle2d : CoreBevyAPI.ClassLuaTriangle2d
-
-    --
-
-    global Rectangle : CoreBevyAPI.ClassLuaRectangle
-
-    --
-
-    global RegularPolygon : CoreBevyAPI.ClassLuaRegularPolygon
-
-    --
-
-    global Capsule2d : CoreBevyAPI.ClassLuaCapsule2d
-
-    --
-
-    global Direction3d : CoreBevyAPI.ClassLuaDirection3d
-
-    --
-
-    global Sphere : CoreBevyAPI.ClassLuaSphere
-
-    --
-
-    global Plane3d : CoreBevyAPI.ClassLuaPlane3d
-
-    --
-
-    global Segment3d : CoreBevyAPI.ClassLuaSegment3d
-
-    --
-
-    global Cuboid : CoreBevyAPI.ClassLuaCuboid
-
-    --
-
-    global Cylinder : CoreBevyAPI.ClassLuaCylinder
-
-    --
-
-    global Capsule3d : CoreBevyAPI.ClassLuaCapsule3d
-
-    --
-
-    global Torus : CoreBevyAPI.ClassLuaTorus
-
-    --
-
-    global IRect : CoreBevyAPI.ClassLuaIRect
-
-    --
-
-    global Rect : CoreBevyAPI.ClassLuaRect
-
-    --
-
-    global URect : CoreBevyAPI.ClassLuaURect
-
-    --
-
-    global NonZeroIsize : CoreBevyAPI.ClassLuaNonZeroIsize
 
     --
 
